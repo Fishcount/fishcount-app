@@ -24,4 +24,24 @@ class EspecieModel {
     this.diasIntervalo,
     this.taxaCrescimento,
   );
+
+  EspecieModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    descricao = json['descricao'];
+    pesoMedio = json['pesoMedio'];
+    tamanhoMedio = json['tamanhoMedio'];
+    qtdeMediaRacao = json['qtdeMediaRacao'];
+    diasIntervalo = json['diasIntervalo'];
+    taxaCrescimento = json['taxaCrescimento'];
+  }
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "descricao": descricao,
+        "pesoMedio": pesoMedio,
+        "tamanhoMedio": tamanhoMedio,
+        "qtdeMediaRacao": qtdeMediaRacao,
+        "diasIntervalo": diasIntervalo,
+        "taxaCrescimento": taxaCrescimento
+      };
 }
