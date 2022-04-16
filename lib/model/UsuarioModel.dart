@@ -2,7 +2,7 @@ import 'package:fishcount_app/model/EmailModel.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/model/TelefoneModel.dart';
 
-class UserModel {
+class UsuarioModel {
   late int id;
 
   late String nome;
@@ -15,7 +15,7 @@ class UserModel {
 
   late List<LoteModel> lotes;
 
-  UserModel(
+  UsuarioModel(
     this.id,
     this.nome,
     this.senha,
@@ -24,7 +24,13 @@ class UserModel {
     this.lotes,
   );
 
-  UserModel.fromJson(Map<String, dynamic> json) {
+  /// Construtor para salvar os dados do usuario localmente
+  UsuarioModel.toLocalDataBase(
+    this.nome,
+    this.senha,
+  );
+
+  UsuarioModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     nome = json['nome'];
     senha = json['senha'];
