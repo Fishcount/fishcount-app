@@ -13,6 +13,11 @@ class EmailModel {
     this.tipoEmail,
   );
 
+  EmailModel.toLocaDatabase(
+    this.descricao,
+    this.tipoEmail,
+  );
+
   EmailModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     descricao = json['descricao'];

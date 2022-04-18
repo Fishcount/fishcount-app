@@ -13,6 +13,11 @@ class TelefoneModel {
     this.tipoTelefone,
   );
 
+  TelefoneModel.toLocalDataBase(
+    this.descricao,
+    this.tipoTelefone,
+  );
+
   TelefoneModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     descricao = json['descricao'];

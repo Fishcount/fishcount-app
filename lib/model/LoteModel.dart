@@ -1,4 +1,5 @@
 import 'package:fishcount_app/model/TanqueModel.dart';
+import 'package:fishcount_app/model/UsuarioModel.dart';
 
 class LoteModel {
   late int id;
@@ -11,6 +12,10 @@ class LoteModel {
     this.id,
     this.descricao,
     this.tanques,
+  );
+
+  LoteModel.toLocalDatabase(
+    this.descricao,
   );
 
   LoteModel.fromJson(Map<String, dynamic> json) {

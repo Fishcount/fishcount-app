@@ -24,7 +24,6 @@ class UsuarioModel {
     this.lotes,
   );
 
-  /// Construtor para salvar os dados do usuario localmente
   UsuarioModel.toLocalDataBase(
     this.nome,
     this.senha,
