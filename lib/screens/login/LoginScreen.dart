@@ -1,4 +1,4 @@
-import 'package:fishcount_app/patterns/Constants.dart';
+import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/screens/login/LoginController.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/IconWidget.dart';
@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: SizedBox(
                     width: 200,
                     height: 200,
-                    child: Image.asset(Constants.imageLogo),
+                    child: Image.asset(ImagePaths.imageLogo),
                   ),
                 ),
                 Container(
@@ -72,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     textColor: Colors.blueGrey,
                     onPressed: () {
                       LoginController().doLogin(
+                        context,
                         _emailController.text,
                         _senhaController.text,
                       );

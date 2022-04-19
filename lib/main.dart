@@ -1,16 +1,19 @@
-import 'package:fishcount_app/screens/CadastroScreen.dart';
-import 'package:fishcount_app/screens/LotesScreen.dart';
-import 'package:fishcount_app/screens/TanquesScreen.dart';
-import 'package:fishcount_app/screens/login/LoginScreen.dart';
+import 'package:fishcount_app/constants/AppPaths.dart';
+import 'package:fishcount_app/screens/lote/LotesScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(MaterialApp(
     routes: {
-      '/login': (context) => const LoginScreen(),
-      '/cadastro': (context) => const CadastroScreen(),
-      '/lotes': (context) => const LotesScreen(),
-      '/tanques': (context) => const TanquesScreen(),
+      AppPaths.loginPath: (context) => AppPaths.paths[AppPaths.loginPath]!,
+      AppPaths.lotesPath: (context) => AppPaths.paths[AppPaths.lotesPath]!,
+      AppPaths.tanquesPath: (context) => AppPaths.paths[AppPaths.tanquesPath]!,
+      AppPaths.cadastroUsuarioPath: (context) =>
+          AppPaths.paths[AppPaths.cadastroUsuarioPath]!,
+      AppPaths.cadastroTanquePath: (context) =>
+          AppPaths.paths[AppPaths.cadastroTanquePath]!,
+      AppPaths.cadastroLotePath: (context) =>
+          AppPaths.paths[AppPaths.cadastroLotePath]!,
     },
     title: 'FishCount',
     debugShowCheckedModeBanner: false,
@@ -18,6 +21,6 @@ void main() {
     theme: ThemeData.light(),
     darkTheme: ThemeData.dark(),
     themeMode: ThemeMode.system,
-    home: const LoginScreen(),
+    home: const LotesScreen(),
   ));
 }
