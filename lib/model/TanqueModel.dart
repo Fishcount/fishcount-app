@@ -5,13 +5,13 @@ class TanqueModel {
 
   late String especie;
 
-  late DateTime ultimaAnalise;
+  late String ultimaAnalise;
 
-  late DateTime proximaAnalise;
+  late String proximaAnalise;
 
-  late DateTime dataUltimaAnalise;
+  late String dataUltimaAnalise;
 
-  late DateTime dataUltimoTratamento;
+  late String dataUltimoTratamento;
 
   late List<AnaliseModel> analises;
 
@@ -22,7 +22,6 @@ class TanqueModel {
     this.proximaAnalise,
     this.dataUltimaAnalise,
     this.dataUltimoTratamento,
-    this.analises,
   );
 
   TanqueModel.fromJson(Map<String, dynamic> json) {

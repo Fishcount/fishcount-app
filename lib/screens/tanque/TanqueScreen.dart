@@ -5,29 +5,20 @@ import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class LotesScreen extends StatefulWidget {
-  const LotesScreen({Key? key}) : super(key: key);
+class TanquesScreen extends StatefulWidget {
+  final int? loteId;
+
+  const TanquesScreen({Key? key, this.loteId}) : super(key: key);
 
   @override
-  State<LotesScreen> createState() => _LotesScreenState();
+  State<TanquesScreen> createState() => _TanquesScreenState();
 }
 
-class _LotesScreenState extends State<LotesScreen> {
+class _TanquesScreenState extends State<TanquesScreen> {
   final TextEditingController _pesquisaController = TextEditingController();
-  List<LoteModel> lotes = [];
-  Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-  int? userId;
-
-  @override
-  void initState() {
-    prefs.then((value) {
-      value.setString("userEmail", "email@teste.com");
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,21 +38,6 @@ class _LotesScreenState extends State<LotesScreen> {
                 prefixIcon: const Icon(Icons.search),
                 hintText: "Pesquisar",
                 obscureText: false,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.only(top: 8),
-                    child: LotesController.getUserEmail(),
-                  ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.only(top: 8),
-                    child: LotesController.getQtdeLotes(lotes),
-                  )
-                ],
               ),
               Container(
                 margin: const EdgeInsets.only(top: 20),

@@ -1,3 +1,4 @@
+import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
@@ -5,18 +6,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CadastroLoteScreen extends StatefulWidget {
-  const CadastroLoteScreen({Key? key}) : super(key: key);
+  final LoteModel? lote;
+
+  const CadastroLoteScreen({Key? key, this.lote}) : super(key: key);
 
   @override
   State<CadastroLoteScreen> createState() => _CadastroLoteScreenState();
 }
 
 class _CadastroLoteScreenState extends State<CadastroLoteScreen> {
-  TextEditingController _nomeLoteController = TextEditingController();
-  TextEditingController _localLoteController = TextEditingController();
+  final TextEditingController _nomeLoteController = TextEditingController();
+
+  //final TextEditingController _localLoteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    _nomeLoteController.text =
+        widget.lote != null ? widget.lote!.descricao : "";
+
     return Scaffold(
       appBar: CustomAppBar.getAppBar(),
       // bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(context),
@@ -43,7 +50,7 @@ class _CadastroLoteScreenState extends State<CadastroLoteScreen> {
                 obscureText: false,
               ),
             ),
-            Container(
+            /* Container(
               padding: const EdgeInsets.only(top: 20),
               child: TextFieldWidget(
                 controller: _nomeLoteController,
@@ -53,7 +60,7 @@ class _CadastroLoteScreenState extends State<CadastroLoteScreen> {
                 iconColor: Colors.blueGrey,
                 obscureText: false,
               ),
-            ),
+            ),*/
             Container(
               padding: const EdgeInsets.only(top: 40),
               child: ElevatedButtonWidget(

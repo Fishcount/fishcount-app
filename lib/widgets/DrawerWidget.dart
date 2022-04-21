@@ -1,4 +1,5 @@
 import 'package:fishcount_app/constants/AppImages.dart';
+import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               textColor: Colors.white,
               textSize: 20,
               radioBorder: 50,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, AppPaths.loginPath);
+              },
             ),
           ),
         ],

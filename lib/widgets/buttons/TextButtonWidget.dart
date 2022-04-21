@@ -5,12 +5,14 @@ class TextButtonWidget extends StatefulWidget {
   final String buttonText;
   final Color textColor;
   final double textSize;
+  final Function() onPressed;
 
   const TextButtonWidget(
       {Key? key,
       required this.buttonText,
       required this.textColor,
-      required this.textSize})
+      required this.textSize,
+      required this.onPressed})
       : super(key: key);
 
   @override
@@ -32,7 +34,7 @@ class _TextButtonWidgetState extends State<TextButtonWidget> {
         alignment: Alignment.center,
         visualDensity: VisualDensity.comfortable,
       ),
-      onPressed: () {},
+      onPressed: widget.onPressed,
     );
   }
 }

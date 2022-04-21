@@ -1,9 +1,9 @@
-import 'package:fishcount_app/screens/CadastroScreen.dart';
 import 'package:fishcount_app/screens/login/LoginScreen.dart';
 import 'package:fishcount_app/screens/lote/CadastroLoteScreen.dart';
 import 'package:fishcount_app/screens/lote/LotesScreen.dart';
 import 'package:fishcount_app/screens/tanque/CadastroTanqueScreen.dart';
-import 'package:fishcount_app/screens/tanque/TanquesScreen.dart';
+import 'package:fishcount_app/screens/tanque/TanqueScreen.dart';
+import 'package:fishcount_app/screens/usuario/CadastroUsuarioScreen.dart';
 import 'package:flutter/cupertino.dart';
 
 class AppPaths {
@@ -18,7 +18,7 @@ class AppPaths {
     loginPath: LoginScreen(),
     lotesPath: LotesScreen(),
     tanquesPath: TanquesScreen(),
-    cadastroUsuarioPath: CadastroScreen(),
+    cadastroUsuarioPath: CadastroUsuarioScreen(),
     cadastroLotePath: CadastroLoteScreen(),
     cadastroTanquePath: CadastroTanqueScreen(),
   };

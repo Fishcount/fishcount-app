@@ -1,4 +1,5 @@
 import 'package:fishcount_app/constants/AppImages.dart';
+import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/screens/login/LoginController.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/IconWidget.dart';
@@ -29,10 +30,16 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 Center(
-                  child: SizedBox(
-                    width: 200,
-                    height: 200,
-                    child: Image.asset(ImagePaths.imageLogo),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, AppPaths.lotesPath);
+                    },
+                    child: SizedBox(
+                      width: 200,
+                      height: 200,
+                      child: Image.asset(ImagePaths.imageLogo),
+                    ),
                   ),
                 ),
                 Container(
@@ -64,12 +71,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                   padding: const EdgeInsets.only(top: 40),
                   child: ElevatedButtonWidget(
+                    textSize: 18,
+                    radioBorder: 20,
+                    horizontalPadding: 30,
+                    verticalPadding: 10,
+                    textColor: Colors.white,
+                    buttonColor: Colors.blue,
                     paddingAll: 10,
-                    textSize: 20,
-                    radioBorder: 18,
                     buttonText: "Entrar".toUpperCase(),
-                    buttonColor: Colors.yellowAccent.shade700,
-                    textColor: Colors.blueGrey,
                     onPressed: () {
                       LoginController().doLogin(
                         context,
@@ -81,10 +90,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Container(
                   padding: const EdgeInsets.only(top: 40),
-                  child: const TextButtonWidget(
+                  child: TextButtonWidget(
                     textColor: Colors.black54,
                     textSize: 20,
                     buttonText: "Criar Conta",
+                    onPressed: () {
+                      Navigator.pushNamed(
+                          context, AppPaths.cadastroUsuarioPath);
+                    },
                   ),
                 ),
                 Container(

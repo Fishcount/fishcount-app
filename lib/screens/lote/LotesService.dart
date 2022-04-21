@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/api/dio/CustomDio.dart';
 import 'package:fishcount_app/constants/api/ApiLote.dart';
+import 'package:fishcount_app/mock/LotesMock.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,8 +13,9 @@ class LotesService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       int? userId = prefs.getInt('userId');
       if (userId == null) {
-        return [];
+        return LotesMock().getLoteModel();
       }
+      return LotesMock().getLoteModel();
       Response<List<dynamic>> response = await CustomDio()
           .getAll(url.replaceAll("{parentId}", userId.toString()));
 
