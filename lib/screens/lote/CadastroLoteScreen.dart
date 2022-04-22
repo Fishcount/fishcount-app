@@ -1,4 +1,5 @@
 import 'package:fishcount_app/model/LoteModel.dart';
+import 'package:fishcount_app/screens/lote/LotesController.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
@@ -17,8 +18,6 @@ class CadastroLoteScreen extends StatefulWidget {
 class _CadastroLoteScreenState extends State<CadastroLoteScreen> {
   final TextEditingController _nomeLoteController = TextEditingController();
 
-  //final TextEditingController _localLoteController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     _nomeLoteController.text =
@@ -26,7 +25,6 @@ class _CadastroLoteScreenState extends State<CadastroLoteScreen> {
 
     return Scaffold(
       appBar: CustomAppBar.getAppBar(),
-      // bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(context),
       body: Container(
         alignment: Alignment.bottomCenter,
         padding: const EdgeInsets.all(20),
@@ -34,9 +32,10 @@ class _CadastroLoteScreenState extends State<CadastroLoteScreen> {
           children: [
             Container(
               padding: const EdgeInsets.only(top: 30),
-              child: const Text(
-                "Novo Lote",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              child: Text(
+                widget.lote != null ? widget.lote!.descricao : "Novo Lote",
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
             Container(
@@ -50,17 +49,6 @@ class _CadastroLoteScreenState extends State<CadastroLoteScreen> {
                 obscureText: false,
               ),
             ),
-            /* Container(
-              padding: const EdgeInsets.only(top: 20),
-              child: TextFieldWidget(
-                controller: _nomeLoteController,
-                hintText: "Local do lote",
-                prefixIcon: const Icon(Icons.place),
-                focusedBorderColor: Colors.blueGrey,
-                iconColor: Colors.blueGrey,
-                obscureText: false,
-              ),
-            ),*/
             Container(
               padding: const EdgeInsets.only(top: 40),
               child: ElevatedButtonWidget(
@@ -70,10 +58,13 @@ class _CadastroLoteScreenState extends State<CadastroLoteScreen> {
                 verticalPadding: 10,
                 textColor: Colors.white,
                 buttonColor: Colors.blue,
-                buttonText: "Salvar",
-                onPressed: () {},
+                buttonText: widget.lote != null ? "Atualizar" : "Salvar",
+                onPressed: () => {
+                  LotesController().salvarLote(
+                      context, widget.lote, _nomeLoteController.text)
+                },
               ),
-            )
+            ),
           ],
         ),
       ),

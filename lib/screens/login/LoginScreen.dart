@@ -22,6 +22,8 @@ class _LoginScreenState extends State<LoginScreen> {
     TextEditingController _emailController = TextEditingController();
     TextEditingController _senhaController = TextEditingController();
 
+    _emailController.text = "admin@admin.com";
+    _senhaController.text = "admin";
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {

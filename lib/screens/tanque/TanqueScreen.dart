@@ -1,6 +1,8 @@
+import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
-import 'package:fishcount_app/screens/lote/LotesController.dart';
-import 'package:fishcount_app/screens/lote/LotesService.dart';
+import 'package:fishcount_app/model/TanqueModel.dart';
+import 'package:fishcount_app/screens/tanque/TanqueController.dart';
+import 'package:fishcount_app/screens/tanque/TanqueService.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
@@ -9,9 +11,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TanquesScreen extends StatefulWidget {
-  final int? loteId;
+  final LoteModel? lote;
 
-  const TanquesScreen({Key? key, this.loteId}) : super(key: key);
+  const TanquesScreen({Key? key, this.lote}) : super(key: key);
 
   @override
   State<TanquesScreen> createState() => _TanquesScreenState();
@@ -25,7 +27,8 @@ class _TanquesScreenState extends State<TanquesScreen> {
     return Scaffold(
       appBar: CustomAppBar.getAppBar(),
       drawer: const DrawerWidget(),
-      bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(context),
+      bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
+          context, AppPaths.cadastroTanquePath),
       body: Center(
         child: Container(
           padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
@@ -63,7 +66,7 @@ class _TanquesScreenState extends State<TanquesScreen> {
                         ),
                       ),
                       child: Text(
-                        "Lotes".toUpperCase(),
+                        "Tanques".toUpperCase(),
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -74,11 +77,12 @@ class _TanquesScreenState extends State<TanquesScreen> {
                       padding: const EdgeInsets.only(
                           top: 10, left: 10, right: 10, bottom: 10),
                       child: FutureBuilder(
-                        future: LotesService().listarLotesUsuario(),
-                        builder:
-                            (context, AsyncSnapshot<List<LoteModel>> snapshot) {
-                          return LotesController.resolverListaLotes(
-                              context, snapshot);
+                        future:
+                            TanqueSerice().listarTanquesFromLote(widget.lote!),
+                        builder: (context,
+                            AsyncSnapshot<List<TanqueModel>> snapshot) {
+                          return TanqueController()
+                              .resolverListaLotes(context, snapshot);
                         },
                       ),
                     )

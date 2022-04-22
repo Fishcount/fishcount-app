@@ -1,36 +1,67 @@
 import 'package:dio/dio.dart';
-import 'package:fishcount_app/api/dio/CustomDio.dart';
+import 'package:fishcount_app/constants/Responses.dart';
 import 'package:fishcount_app/constants/api/ApiLote.dart';
-import 'package:fishcount_app/mock/LotesMock.dart';
+import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
+import 'package:fishcount_app/screens/AbstractService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LotesService {
+class LotesService extends AbstractService {
   String url = ApiLote.baseUrl;
 
   Future<List<LoteModel>> listarLotesUsuario() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      int? userId = prefs.getInt('userId');
-      if (userId == null) {
-        return LotesMock().getLoteModel();
+      String managedUrl = _getManagedUrl(prefs);
+      if (managedUrl.isEmpty) {
+        return [];
       }
-      return LotesMock().getLoteModel();
-      Response<List<dynamic>> response = await CustomDio()
-          .getAll(url.replaceAll("{parentId}", userId.toString()));
+      Response<List<dynamic>> response = await getAll(managedUrl);
 
       if (response.statusCode == 200) {
         List<LoteModel> lotes = [];
         if (response.data != null) {
-          response.data!.forEach((element) {
-            lotes.add(LoteModel.fromJson(element));
-          });
+          if (response.data!.isEmpty) {
+            return [];
+          }
+          for (var lote in response.data!) {
+            lotes.add(LoteModel.fromJson(lote));
+          }
         }
-        return [];
+        return lotes;
       }
       return [];
     } on DioError catch (e) {
       rethrow;
     }
+  }
+
+  dynamic salvarOrAtualizarLote(LoteModel lote) async {
+    try {
+      SharedPreferences prefs = await getSharedPreferences();
+      String managedUrl = _getManagedUrl(prefs);
+      if (managedUrl.isEmpty) {
+        return;
+      }
+      if (lote.id != null) {
+        await put(managedUrl, lote.toJson());
+        return lote;
+      }
+      Response<dynamic> response = await post(managedUrl, lote.toJson());
+      if (response.statusCode == Responses.CREATED_STATUS_CODE) {
+        return LoteModel.fromJson(response.data);
+      }
+      return ErrorModel.fromJson(response.data);
+    } on DioError catch (e) {
+      return verifyDioError(e);
+    }
+  }
+
+  String _getManagedUrl(SharedPreferences prefs) {
+    int? userId = prefs.getInt('userId');
+    if (userId == null) {
+      return "";
+    }
+    return url.replaceAll("{parentId}", userId.toString());
   }
 }

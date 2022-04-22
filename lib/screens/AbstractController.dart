@@ -1,0 +1,154 @@
+import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
+import 'package:fishcount_app/widgets/custom/CustomSnackBar.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+abstract class AbstractController {
+  Container getCircularProgressIndicator() {
+    return Container(
+      padding: const EdgeInsets.only(top: 50),
+      child: const Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 5,
+          semanticsLabel: "Carregando",
+        ),
+      ),
+    );
+  }
+
+  Widget getNotFoundWidget(
+      BuildContext context, String message, String nextScreen) {
+    return Container(
+      padding: const EdgeInsets.only(top: 30),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(top: 30),
+            alignment: Alignment.center,
+            child: Text(
+              message,
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(top: 50),
+            child: ElevatedButtonWidget(
+              buttonText: "Novo",
+              textSize: 18,
+              radioBorder: 20,
+              horizontalPadding: 30,
+              verticalPadding: 10,
+              textColor: Colors.white,
+              buttonColor: Colors.blue,
+              onPressed: () {
+                Navigator.pushNamed(context, nextScreen);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getUserEmail() {
+    return FutureBuilder(
+      future: SharedPreferences.getInstance(),
+      builder: (context, AsyncSnapshot<SharedPreferences> snapshot) {
+        if (snapshot.hasData) {
+          return Text(
+            snapshot.data!.getString("userEmail")!,
+            style: const TextStyle(fontSize: 16),
+          );
+        }
+        return const Text("");
+      },
+    );
+  }
+
+  Container getEditIcon(BuildContext context, Widget editScreen) {
+    return Container(
+      padding: const EdgeInsets.only(left: 7),
+      child: GestureDetector(
+        child: const Icon(
+          LineIcons.edit,
+          color: Colors.black,
+          size: 30,
+        ),
+        onTap: () {
+          push(context, editScreen);
+        },
+      ),
+    );
+  }
+
+  Container getTrashIcon() {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.only(left: 5, right: 5),
+      decoration: const BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.only(
+          bottomRight: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
+      ),
+      child: GestureDetector(
+        child: const Icon(
+          LineIcons.alternateTrash,
+          size: 30,
+          color: Colors.white,
+        ),
+        onTap: () {},
+      ),
+    );
+  }
+
+  GestureDetector getDescricao(
+      BuildContext context, Widget nextScreen, String descricao) {
+    return GestureDetector(
+      onTap: () => pushReplacement(context, nextScreen),
+      child: Text(
+        descricao.toUpperCase(),
+        style: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+      ),
+    );
+  }
+
+  void pushReplacement(BuildContext context, Widget nextPage) {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => nextPage));
+  }
+
+  void push(BuildContext context, Widget nextPage) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => nextPage));
+  }
+
+  Widget getQtdeLotes(List<dynamic> list, String text) {
+    String controlarLotes = list.length > 1 ? "s" : "";
+    return Text(list.length.toString() + " $text" + controlarLotes);
+  }
+
+  Widget getDefaultErrorMessage(BuildContext context, dynamic response) {
+    return CustomSnackBar.getCustomSnackBar(context, response);
+  }
+
+  bool onHasValue(AsyncSnapshot<List<dynamic>> snapshot) {
+    return snapshot.hasData && snapshot.data!.isNotEmpty;
+  }
+
+  bool onDoneRequestWithEmptyValue(AsyncSnapshot<List<dynamic>> snapshot) {
+    return snapshot.connectionState == ConnectionState.done &&
+        snapshot.data != null &&
+        snapshot.data!.isEmpty;
+  }
+
+  bool onError(AsyncSnapshot<List<dynamic>> snapshot) {
+    return snapshot.hasError;
+  }
+}
