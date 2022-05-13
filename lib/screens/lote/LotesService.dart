@@ -3,7 +3,7 @@ import 'package:fishcount_app/constants/Responses.dart';
 import 'package:fishcount_app/constants/api/ApiLote.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
-import 'package:fishcount_app/screens/AbstractService.dart';
+import 'package:fishcount_app/screens/generic/AbstractService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LotesService extends AbstractService {

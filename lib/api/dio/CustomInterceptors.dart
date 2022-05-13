@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomInterceptors extends Interceptor {
-  static const List<String> notProtectedPaths = [AppPaths.loginPath];
+  static const List<String> notProtectedPaths = ["/login", "/usuario/cadastro"];
 
   @override
   void onRequest(

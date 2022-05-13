@@ -1,4 +1,5 @@
-import 'package:fishcount_app/constants/AppPaths.dart';
+import 'package:fishcount_app/screens/lote/LotesScreen.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
@@ -24,7 +25,8 @@ class CustomBottomSheet {
                     color: Colors.blueAccent,
                   ),
                   onTap: () {
-                    Navigator.pushNamed(context, AppPaths.lotesPath);
+                    NavigatorUtils.pushReplacement(
+                        context, const LotesScreen());
                   },
                 ),
                 const Text(

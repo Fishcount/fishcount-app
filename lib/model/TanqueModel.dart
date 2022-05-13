@@ -1,21 +1,17 @@
-import 'package:fishcount_app/model/AnaliseModel.dart';
-
 class TanqueModel {
   late int id;
 
   late String descricao;
 
-  late String especie;
+  late String? especie;
 
-  late String ultimaAnalise;
+  late String? ultimaAnalise;
 
-  late String proximaAnalise;
+  late String? proximaAnalise;
 
-  late String dataUltimaAnalise;
+  late String? dataUltimaAnalise;
 
-  late String dataUltimoTratamento;
-
-  late List<AnaliseModel> analises;
+  late String? dataUltimoTratamento;
 
   TanqueModel(
     this.id,
@@ -35,7 +31,6 @@ class TanqueModel {
     proximaAnalise = json['proximaAnalise'];
     dataUltimaAnalise = json['dataUltimaAnalise'];
     dataUltimoTratamento = json['dataUltimoTratamento'];
-    analises = List<AnaliseModel>.from(json['analises']);
   }
 
   Map<String, dynamic> toJson() => {
@@ -46,6 +41,5 @@ class TanqueModel {
         "proximaAnalise": proximaAnalise,
         "dataUltimaAnalise": dataUltimaAnalise,
         "dataUltimoTratamento": dataUltimoTratamento,
-        "analises": analises
       };
 }

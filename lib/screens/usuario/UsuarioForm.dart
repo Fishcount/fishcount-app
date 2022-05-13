@@ -1,16 +1,18 @@
+import 'package:fishcount_app/screens/usuario/UsuarioController.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 
-class CadastroUsuarioScreen extends StatefulWidget {
-  const CadastroUsuarioScreen({Key? key}) : super(key: key);
+class UsuarioForm extends StatefulWidget {
+  const UsuarioForm({Key? key}) : super(key: key);
 
   @override
-  State<CadastroUsuarioScreen> createState() => _CadastroUsuarioScreenState();
+  State<UsuarioForm> createState() => _UsuarioFormState();
 }
 
-class _CadastroUsuarioScreenState extends State<CadastroUsuarioScreen> {
+class _UsuarioFormState extends State<UsuarioForm> {
+  final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _telefoneController = TextEditingController();
@@ -36,8 +38,19 @@ class _CadastroUsuarioScreenState extends State<CadastroUsuarioScreen> {
               Container(
                 padding: const EdgeInsets.only(top: 50),
                 child: TextFieldWidget(
+                  controller: _nomeController,
+                  hintText: "Nome",
+                  prefixIcon: const Icon(Icons.person),
+                  iconColor: Colors.blueGrey,
+                  obscureText: false,
+                  focusedBorderColor: Colors.blueGrey,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 20),
+                child: TextFieldWidget(
                   controller: _emailController,
-                  hintText: "Digite seu email",
+                  hintText: "Email",
                   prefixIcon: const Icon(Icons.email),
                   iconColor: Colors.blueGrey,
                   obscureText: false,
@@ -48,7 +61,7 @@ class _CadastroUsuarioScreenState extends State<CadastroUsuarioScreen> {
                 padding: const EdgeInsets.only(top: 20),
                 child: TextFieldWidget(
                   controller: _telefoneController,
-                  hintText: "Digite seu telefone",
+                  hintText: "Celular",
                   prefixIcon: const Icon(Icons.phone_android),
                   iconColor: Colors.blueGrey,
                   obscureText: false,
@@ -58,19 +71,8 @@ class _CadastroUsuarioScreenState extends State<CadastroUsuarioScreen> {
               Container(
                 padding: const EdgeInsets.only(top: 20),
                 child: TextFieldWidget(
-                  controller: _cpfController,
-                  hintText: "Digite seu Cpf",
-                  prefixIcon: const Icon(Icons.perm_identity_sharp),
-                  iconColor: Colors.blueGrey,
-                  obscureText: false,
-                  focusedBorderColor: Colors.blueGrey,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 20),
-                child: TextFieldWidget(
                   controller: _senhaController,
-                  hintText: "Digite uma senha",
+                  hintText: "Senha",
                   prefixIcon: const Icon(Icons.password_rounded),
                   iconColor: Colors.blueGrey,
                   focusedBorderColor: Colors.blueGrey,
@@ -87,7 +89,14 @@ class _CadastroUsuarioScreenState extends State<CadastroUsuarioScreen> {
                   textColor: Colors.white,
                   buttonColor: Colors.blue,
                   buttonText: "Salvar",
-                  onPressed: () {},
+                  onPressed: () {
+                    UsuarioController().salvarUsuario(
+                        context,
+                        _nomeController.text,
+                        _emailController.text,
+                        _telefoneController.text,
+                        _senhaController.text);
+                  },
                 ),
               )
             ],

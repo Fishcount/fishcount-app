@@ -1,3 +1,5 @@
+import 'package:fishcount_app/constants/exceptions/ExceptionsMessage.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomSnackBar.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,7 +45,7 @@ abstract class AbstractController {
               textColor: Colors.white,
               buttonColor: Colors.blue,
               onPressed: () {
-                Navigator.pushNamed(context, nextScreen);
+                NavigatorUtils.pushNamed(context, nextScreen);
               },
             ),
           ),
@@ -77,7 +79,7 @@ abstract class AbstractController {
           size: 30,
         ),
         onTap: () {
-          push(context, editScreen);
+          NavigatorUtils.push(context, editScreen);
         },
       ),
     );
@@ -108,7 +110,7 @@ abstract class AbstractController {
   GestureDetector getDescricao(
       BuildContext context, Widget nextScreen, String descricao) {
     return GestureDetector(
-      onTap: () => pushReplacement(context, nextScreen),
+      onTap: () => NavigatorUtils.push(context, nextScreen),
       child: Text(
         descricao.toUpperCase(),
         style: const TextStyle(
@@ -120,18 +122,24 @@ abstract class AbstractController {
     );
   }
 
-  void pushReplacement(BuildContext context, Widget nextPage) {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => nextPage));
-  }
-
-  void push(BuildContext context, Widget nextPage) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => nextPage));
-  }
-
-  Widget getQtdeLotes(List<dynamic> list, String text) {
-    String controlarLotes = list.length > 1 ? "s" : "";
-    return Text(list.length.toString() + " $text" + controlarLotes);
+  Widget getQtdeModel(String qtdeText, Future<List<dynamic>> futureList) {
+    return FutureBuilder(
+        future: futureList,
+        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if (onHasValue(snapshot)) {
+            String controller = snapshot.data!.length > 1 ? "s" : "";
+            return Text(
+                snapshot.data!.length.toString() + " $qtdeText$controller");
+          }
+          if (onDoneRequestWithEmptyValue(snapshot)) {
+            return Text("0 $qtdeText");
+          }
+          if (onError(snapshot)) {
+            return getDefaultErrorMessage(
+                context, ExceptionsMessage.serverError);
+          }
+          return Text("");
+        });
   }
 
   Widget getDefaultErrorMessage(BuildContext context, dynamic response) {

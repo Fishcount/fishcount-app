@@ -3,6 +3,7 @@ import 'package:fishcount_app/model/AuthUserModel.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/screens/lote/LotesController.dart';
 import 'package:fishcount_app/screens/lote/LotesService.dart';
+import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 
 class LotesScreen extends StatefulWidget {
   final AuthUserModel? authUserModel;
+
   const LotesScreen({Key? key, this.authUserModel}) : super(key: key);
 
   @override
@@ -29,7 +31,7 @@ class _LotesScreenState extends State<LotesScreen> {
       bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
           context, AppPaths.cadastroLotePath),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
+        padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
         child: Column(
           children: [
             TextFieldWidget(
@@ -40,69 +42,26 @@ class _LotesScreenState extends State<LotesScreen> {
               hintText: "Pesquisar",
               obscureText: false,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(top: 8),
-                  child: LotesController().getUserEmail(),
-                ),
-                Container(
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(top: 8),
-                  child: LotesController().getQtdeLotes(lotes, "lote"),
-                ),
-              ],
+            const DividerWidget(
+              textBetween: "LOTES",
+              height: 40,
+              thikness: 2.5,
+              paddingLeft: 10,
+              paddingRight: 10,
+              color: Colors.blue,
+              textColor: Colors.black,
+              isBold: true,
             ),
-            Container(
-              margin: const EdgeInsets.only(top: 20),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black26),
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(30),
-                  topLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(15),
-                  bottomLeft: Radius.circular(15),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.only(top: 10, bottom: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[500],
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15),
-                      ),
-                    ),
-                    child: Text(
-                      "Lotes".toUpperCase(),
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(
-                        top: 10, left: 10, right: 10, bottom: 10),
-                    child: FutureBuilder(
-                      future: LotesService().listarLotesUsuario(),
-                      builder:
-                          (context, AsyncSnapshot<List<LoteModel>> snapshot) {
-                        if (snapshot.hasData) {
-                          lotes = snapshot.data!;
-                        }
-                        return LotesController()
-                            .resolverListaLotes(context, snapshot);
-                      },
-                    ),
-                  )
-                ],
-              ),
+            Column(
+              children: [
+                FutureBuilder(
+                  future: LotesService().listarLotesUsuario(),
+                  builder: (context, AsyncSnapshot<List<LoteModel>> snapshot) {
+                    return LotesController()
+                        .resolverListaLotes(context, snapshot);
+                  },
+                )
+              ],
             ),
           ],
         ),

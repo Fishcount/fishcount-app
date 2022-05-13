@@ -1,11 +1,9 @@
-import 'package:fishcount_app/model/enums/EnumTipoTelefone.dart';
-
 class TelefoneModel {
-  late int id;
+  late int? id;
 
   late String descricao;
 
-  late EnumTipoTelefone tipoTelefone;
+  late String tipoTelefone;
 
   TelefoneModel(
     this.id,

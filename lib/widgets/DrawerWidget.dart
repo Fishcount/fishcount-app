@@ -1,5 +1,8 @@
 import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
+import 'package:fishcount_app/screens/lote/LotesController.dart';
+import 'package:fishcount_app/screens/usuario/UsuarioDataForm.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -40,15 +43,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
           Container(
             alignment: Alignment.center,
-            child: const SizedBox(
-              child: Text(
-                "Nome do caboclo",
-                maxLines: 1,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
+            child: SizedBox(
+              child: LotesController().getUserEmail(),
               height: 20,
             ),
           ),
@@ -60,19 +56,21 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 "emaildocaboclo@gmail.com",
                 maxLines: 1,
                 style: TextStyle(
-                  // fontWeight: FontWeight.bold,
                   fontSize: 15,
                 ),
               ),
               height: 20,
             ),
           ),
-          const ListTile(
+          ListTile(
             isThreeLine: false,
             minVerticalPadding: 15,
             horizontalTitleGap: 15,
             leading: Icon(Icons.person),
-            title: Text("Meus dados"),
+            title: const Text("Meus dados"),
+            onTap: () {
+              NavigatorUtils.pushReplacement(context, const UsuarioDataForm());
+            },
           ),
           const ListTile(
             isThreeLine: false,

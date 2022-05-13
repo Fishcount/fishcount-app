@@ -6,8 +6,10 @@ class DividerWidget extends StatelessWidget {
   final double thikness;
   final double height;
   final Color color;
+  final Color textColor;
   final double paddingLeft;
   final double paddingRight;
+  final bool isBold;
 
   const DividerWidget({
     Key? key,
@@ -17,6 +19,8 @@ class DividerWidget extends StatelessWidget {
     required this.color,
     required this.paddingLeft,
     required this.paddingRight,
+    required this.textColor,
+    required this.isBold,
   }) : super(key: key);
 
   @override
@@ -37,9 +41,10 @@ class DividerWidget extends StatelessWidget {
           ),
           child: Text(
             textBetween,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 17,
-              color: Colors.black54,
+              color: textColor,
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
             ),
           ),
         ),

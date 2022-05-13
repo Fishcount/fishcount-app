@@ -3,7 +3,7 @@ import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/model/TelefoneModel.dart';
 
 class UsuarioModel {
-  late int id;
+  late int? id;
 
   late String nome;
 
@@ -33,17 +33,21 @@ class UsuarioModel {
     id = json['id'];
     nome = json['nome'];
     senha = json['senha'];
-    telefones = List<TelefoneModel>.from(json['telefones']);
-    emails = List<EmailModel>.from(json['emails']);
-    lotes = List<LoteModel>.from(json['lotes']);
+    telefones = List<TelefoneModel>.from(
+        json['telefones'].map((telefone) => TelefoneModel.fromJson(telefone)) ??
+            const []);
+    emails = List<EmailModel>.from(
+        json['emails'].map((email) => EmailModel.fromJson(email)) ?? const []);
+    lotes = List<LoteModel>.from(
+        json['lotes'].map((lote) => LoteModel.fromJson(lote)) ?? const []);
   }
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "nome": nome,
         "senha": senha,
-        "telefones": telefones,
-        "email": emails,
-        "lotes": lotes
+        "telefones": telefones.map((e) => e.toJson()).toList(),
+        "emails": emails.map((e) => e.toJson()).toList(),
+        "lotes": lotes.map((e) => e.toJson()).toList()
       };
 }

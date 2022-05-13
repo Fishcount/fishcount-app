@@ -6,16 +6,16 @@ import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CadastroLoteScreen extends StatefulWidget {
+class LoteForm extends StatefulWidget {
   final LoteModel? lote;
 
-  const CadastroLoteScreen({Key? key, this.lote}) : super(key: key);
+  const LoteForm({Key? key, this.lote}) : super(key: key);
 
   @override
-  State<CadastroLoteScreen> createState() => _CadastroLoteScreenState();
+  State<LoteForm> createState() => _LoteFormState();
 }
 
-class _CadastroLoteScreenState extends State<CadastroLoteScreen> {
+class _LoteFormState extends State<LoteForm> {
   final TextEditingController _nomeLoteController = TextEditingController();
 
   @override

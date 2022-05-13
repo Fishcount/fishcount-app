@@ -13,10 +13,9 @@ class LoginController {
     AuthUserModel userModel = AuthUserModel(email, senha);
     ConnectionUtils().isConnected().then((isConnected) {
       if (isConnected) {
-        print("conectado");
         loginWithApi(userModel, context);
       } else {
-        print("nao conectado");
+        print("Consultar banco local");
         // consultar banco local
       }
     });

@@ -111,6 +111,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     paddingLeft: 10,
                     paddingRight: 10,
                     color: Colors.black26,
+                    textColor: Colors.black26,
+                    isBold: false,
                   ),
                 ),
                 Container(

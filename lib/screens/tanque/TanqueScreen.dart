@@ -3,6 +3,7 @@ import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/model/TanqueModel.dart';
 import 'package:fishcount_app/screens/tanque/TanqueController.dart';
 import 'package:fishcount_app/screens/tanque/TanqueService.dart';
+import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
@@ -42,53 +43,28 @@ class _TanquesScreenState extends State<TanquesScreen> {
                 hintText: "Pesquisar",
                 obscureText: false,
               ),
-              Container(
-                margin: const EdgeInsets.only(top: 20),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black26),
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(30),
-                    topLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(15),
-                    bottomLeft: Radius.circular(15),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[500],
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(15),
-                          topLeft: Radius.circular(15),
-                        ),
-                      ),
-                      child: Text(
-                        "Tanques".toUpperCase(),
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(
-                          top: 10, left: 10, right: 10, bottom: 10),
-                      child: FutureBuilder(
-                        future:
-                            TanqueSerice().listarTanquesFromLote(widget.lote!),
-                        builder: (context,
-                            AsyncSnapshot<List<TanqueModel>> snapshot) {
-                          return TanqueController()
-                              .resolverListaLotes(context, snapshot);
-                        },
-                      ),
-                    )
-                  ],
-                ),
+              const DividerWidget(
+                textBetween: "TANQUES",
+                height: 40,
+                thikness: 2.5,
+                paddingLeft: 10,
+                paddingRight: 10,
+                color: Colors.blue,
+                textColor: Colors.black,
+                isBold: true,
               ),
+              Column(
+                children: [
+                  FutureBuilder(
+                    future: TanqueSerice().listarTanquesFromLote(widget.lote!),
+                    builder:
+                        (context, AsyncSnapshot<List<TanqueModel>> snapshot) {
+                      return TanqueController()
+                          .resolverListaTanques(context, snapshot);
+                    },
+                  ),
+                ],
+              )
             ],
           ),
         ),
