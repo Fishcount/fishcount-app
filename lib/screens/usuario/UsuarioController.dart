@@ -5,13 +5,12 @@ import 'package:fishcount_app/model/TelefoneModel.dart';
 import 'package:fishcount_app/model/UsuarioModel.dart';
 import 'package:fishcount_app/model/enums/EnumTipoEmail.dart';
 import 'package:fishcount_app/model/enums/EnumTipoTelefone.dart';
+import 'package:fishcount_app/repository/UsuarioRepository.dart';
 import 'package:fishcount_app/screens/generic/AbstractController.dart';
 import 'package:fishcount_app/screens/lote/LotesScreen.dart';
-import 'package:fishcount_app/repository/UsuarioRepository.dart';
 import 'package:fishcount_app/service/UsuarioService.dart';
-
-import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/cupertino.dart';
 
 class UsuarioController extends AbstractController {

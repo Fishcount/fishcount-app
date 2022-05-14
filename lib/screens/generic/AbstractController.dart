@@ -1,8 +1,7 @@
-import 'package:fishcount_app/constants/exceptions/ExceptionsMessage.dart';
+import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
-import 'package:fishcount_app/widgets/custom/CustomSnackBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
@@ -61,7 +60,9 @@ abstract class AbstractController {
       builder: (context, AsyncSnapshot<SharedPreferences> snapshot) {
         if (snapshot.hasData) {
           return Text(
-            snapshot.data!.getString("userEmail") != null ? snapshot.data!.getString("userEmail")! : "",
+            snapshot.data!.getString("userEmail") != null
+                ? snapshot.data!.getString("userEmail")!
+                : "",
             style: const TextStyle(fontSize: 16),
           );
         }
@@ -137,7 +138,7 @@ abstract class AbstractController {
           }
           if (onError(snapshot)) {
             return ErrorHandler.getDefaultErrorMessage(
-                context, ExceptionsMessage.serverError);
+                context, ErrorMessage.serverError);
           }
           return Text("");
         });

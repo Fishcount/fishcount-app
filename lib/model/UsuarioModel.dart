@@ -9,6 +9,8 @@ class UsuarioModel {
 
   late String senha;
 
+  late String email;
+
   late List<TelefoneModel> telefones;
 
   late List<EmailModel> emails;
@@ -37,6 +39,12 @@ class UsuarioModel {
         json['lotes'].map((lote) => LoteModel.fromJson(lote)) ?? const []);
   }
 
+  UsuarioModel.fromDatabase(Map<String, dynamic> map) {
+    id = map['id'];
+    email = map['email'];
+    senha = map['senha'];
+  }
+
   Map<String, dynamic> toJson() => {
         "id": id,
         "nome": nome,
@@ -47,7 +55,7 @@ class UsuarioModel {
       };
 
   Map<String, dynamic> toLocalDataBase() => {
-    "email": emails.first.descricao,
-    "senha": senha,
-  };
+        "email": emails.first.descricao,
+        "senha": senha,
+      };
 }

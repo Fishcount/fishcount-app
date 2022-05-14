@@ -3,6 +3,8 @@ import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/model/TanqueModel.dart';
 import 'package:fishcount_app/screens/tanque/TanqueController.dart';
 import 'package:fishcount_app/service/TanqueService.dart';
+import 'package:fishcount_app/utils/ConnectionUtils.dart';
+import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
@@ -22,6 +24,14 @@ class TanquesScreen extends StatefulWidget {
 
 class _TanquesScreenState extends State<TanquesScreen> {
   final TextEditingController _pesquisaController = TextEditingController();
+
+  Future<List<TanqueModel>> listarTanques() async {
+    bool isConnected = await ConnectionUtils().isConnected();
+    if (isConnected){
+      return TanqueSerice().listarTanquesFromLote(widget.lote!);
+    }
+    return TanqueSerice().listarTanquesFromLote(widget.lote!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +66,7 @@ class _TanquesScreenState extends State<TanquesScreen> {
               Column(
                 children: [
                   FutureBuilder(
-                    future: TanqueSerice().listarTanquesFromLote(widget.lote!),
+                    future: listarTanques(),
                     builder:
                         (context, AsyncSnapshot<List<TanqueModel>> snapshot) {
                       return TanqueController()

@@ -5,7 +5,6 @@ import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
-import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,7 +40,8 @@ class LotesService extends AbstractService {
 
   dynamic salvarOrAtualizarLote(LoteModel lote) async {
     try {
-      SharedPreferences prefs = await SharedPreferencesUtils.getSharedPreferences();
+      SharedPreferences prefs =
+          await SharedPreferencesUtils.getSharedPreferences();
       String managedUrl = _getManagedUrl(prefs);
       if (managedUrl.isEmpty) {
         return;

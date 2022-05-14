@@ -1,5 +1,5 @@
 import 'package:fishcount_app/constants/AppPaths.dart';
-import 'package:fishcount_app/constants/exceptions/ExceptionsMessage.dart';
+import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/screens/generic/AbstractController.dart';
 import 'package:fishcount_app/screens/tanque/TanqueForm.dart';
@@ -17,11 +17,12 @@ class TanqueController extends AbstractController {
       return _listaTanques(context, snapshot.data!);
     }
     if (onDoneRequestWithEmptyValue(snapshot)) {
-      return getNotFoundWidget(context, ExceptionsMessage.usuarioSemTanque,
-          AppPaths.cadastroTanquePath);
+      return getNotFoundWidget(
+          context, ErrorMessage.usuarioSemTanque, AppPaths.cadastroTanquePath);
     }
     if (onError(snapshot)) {
-      return ErrorHandler.getDefaultErrorMessage(context, ExceptionsMessage.serverError);
+      return ErrorHandler.getDefaultErrorMessage(
+          context, ErrorMessage.serverError);
     }
     return getCircularProgressIndicator();
   }

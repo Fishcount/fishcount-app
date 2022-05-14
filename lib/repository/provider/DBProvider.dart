@@ -51,6 +51,7 @@ class DBProvider {
       """
        create table tanque(
           id integer not null primary key,
+          descricao text not null,
           especie text not null,
           ultimaAnalise text,
           proximaAnalise text,

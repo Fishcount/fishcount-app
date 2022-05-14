@@ -6,14 +6,14 @@ import 'package:fishcount_app/repository/LoteRepository.dart';
 import 'package:fishcount_app/screens/generic/AbstractController.dart';
 import 'package:fishcount_app/screens/lote/LoteForm.dart';
 import 'package:fishcount_app/screens/lote/LotesScreen.dart';
-import 'package:fishcount_app/service/LotesService.dart';
 import 'package:fishcount_app/screens/tanque/TanqueScreen.dart';
+import 'package:fishcount_app/service/LotesService.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
-import '../../constants/exceptions/ExceptionsMessage.dart';
+import '../../constants/exceptions/ErrorMessage.dart';
 
 class LotesController extends AbstractController {
   Future<dynamic> salvarLote(
@@ -60,11 +60,11 @@ class LotesController extends AbstractController {
     }
     if (onDoneRequestWithEmptyValue(snapshot)) {
       return getNotFoundWidget(
-          context, ExceptionsMessage.usuarioSemLote, AppPaths.cadastroLotePath);
+          context, ErrorMessage.usuarioSemLote, AppPaths.cadastroLotePath);
     }
     if (onError(snapshot)) {
       return getNotFoundWidget(
-          context, ExceptionsMessage.usuarioSemLote, AppPaths.cadastroLotePath);
+          context, ErrorMessage.usuarioSemLote, AppPaths.cadastroLotePath);
     }
     return getCircularProgressIndicator();
   }
@@ -82,7 +82,7 @@ class LotesController extends AbstractController {
           }
           if (onError(snapshot)) {
             return ErrorHandler.getDefaultErrorMessage(
-                context, ExceptionsMessage.serverError);
+                context, ErrorMessage.serverError);
           }
           return const Text("");
         });
@@ -153,7 +153,9 @@ class LotesController extends AbstractController {
                         Container(
                           padding: const EdgeInsets.only(left: 10, top: 10),
                           child: Text(
-                            lote.tanques != null ? lote.tanques!.length.toString() + " Tanques" : "0 tanques",
+                            lote.tanques != null
+                                ? lote.tanques!.length.toString() + " Tanques"
+                                : "0 tanques",
                             style: const TextStyle(
                               fontSize: 12,
                             ),

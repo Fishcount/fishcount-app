@@ -1,4 +1,5 @@
-import 'package:fishcount_app/constants/exceptions/ExceptionsMessage.dart';
+import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
+import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/repository/provider/DBProvider.dart';
@@ -6,36 +7,36 @@ import 'package:fishcount_app/screens/lote/LotesScreen.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoteRepository {
   dynamic save(BuildContext context, LoteModel loteModel) async {
     try {
-      int? userId = await SharedPreferencesUtils.getUserIdFromShared();
+      int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
+          EnumSharedPreferences.userId);
       if (userId == null) {
         return ErrorHandler.getDefaultErrorMessage(
-            context, ExceptionsMessage.serverError);
+            context, ErrorMessage.serverError);
       }
 
       final db = await DBProvider().init();
       int idlote = await db.insert("lote", loteModel.toLocalDatabase(userId));
       if (idlote == 0) {
         return ErrorHandler.getDefaultErrorMessage(
-            context, ExceptionsMessage.serverError);
+            context, ErrorMessage.serverError);
       }
       NavigatorUtils.pushReplacement(context, const LotesScreen());
     } on Exception catch (e) {
       return ErrorHandler.getDefaultErrorMessage(
-          context, ExceptionsMessage.serverError);
+          context, ErrorMessage.serverError);
     }
   }
 
   Future<List<LoteModel>> listarLotesUsuario(BuildContext context) async {
     try {
-      int? userId = await SharedPreferencesUtils.getUserIdFromShared();
-      if (userId == null){
-        ErrorHandler.getDefaultErrorMessage(
-            context, ExceptionsMessage.serverError);
+      int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
+          EnumSharedPreferences.userId);
+      if (userId == null) {
+        ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
         return [];
       }
 
@@ -56,8 +57,7 @@ class LoteRepository {
         return LoteModel.fromJson(maps[index]);
       });
     } on Exception catch (e) {
-      ErrorHandler.getDefaultErrorMessage(
-          context, ExceptionsMessage.serverError);
+      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
       return [];
     }
   }

@@ -1,3 +1,4 @@
+import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/model/AuthUserModel.dart';
 import 'package:fishcount_app/model/UsuarioModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,20 +7,28 @@ class SharedPreferencesUtils {
   static Future<void> addLocalSharedPreferences(
       int idUsuario, UsuarioModel usuario) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt("userId", idUsuario);
-    prefs.setString("userEmail", usuario.emails.first.descricao);
+    prefs.setInt(EnumSharedPreferences.userId.name, idUsuario);
+    prefs.setString(
+        EnumSharedPreferences.userEmail.name, usuario.emails.first.descricao);
   }
 
   static Future<void> addSharedPreferences(AuthUserModel auth) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("token", auth.token);
-    prefs.setInt("userId", auth.id);
-    prefs.setString("userEmail", auth.username);
+    prefs.setString(EnumSharedPreferences.accessToken.name, auth.token);
+    prefs.setInt(EnumSharedPreferences.userId.name, auth.id);
+    prefs.setString(EnumSharedPreferences.userEmail.name, auth.username);
   }
 
-  static Future<int?> getUserIdFromShared() async {
+  static Future<int?> getIntVariableFromShared(
+      EnumSharedPreferences shared) async {
     SharedPreferences prefs = await getSharedPreferences();
-    return prefs.getInt("userId");
+    return prefs.getInt(shared.name);
+  }
+
+  static Future<String?> getStringVariableFromShared(
+      EnumSharedPreferences shared) async {
+    SharedPreferences prefs = await getSharedPreferences();
+    return prefs.getString(shared.name);
   }
 
   static Future<SharedPreferences> getSharedPreferences() async {
