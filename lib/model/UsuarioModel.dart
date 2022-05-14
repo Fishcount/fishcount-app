@@ -24,11 +24,6 @@ class UsuarioModel {
     this.lotes,
   );
 
-  UsuarioModel.toLocalDataBase(
-    this.nome,
-    this.senha,
-  );
-
   UsuarioModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     nome = json['nome'];
@@ -50,4 +45,9 @@ class UsuarioModel {
         "emails": emails.map((e) => e.toJson()).toList(),
         "lotes": lotes.map((e) => e.toJson()).toList()
       };
+
+  Map<String, dynamic> toLocalDataBase() => {
+    "email": emails.first.descricao,
+    "senha": senha,
+  };
 }

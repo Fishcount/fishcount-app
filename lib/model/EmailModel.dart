@@ -11,10 +11,8 @@ class EmailModel {
     this.tipoEmail,
   );
 
-  EmailModel.toLocaDatabase(
-    this.descricao,
-    this.tipoEmail,
-  );
+  Map<String, dynamic> toLocalDatabase(int idUsuario) =>
+      {"descricao": descricao, "tipoEmail": tipoEmail, "id_usuario": idUsuario};
 
   EmailModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];

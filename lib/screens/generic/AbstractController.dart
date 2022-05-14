@@ -1,4 +1,5 @@
 import 'package:fishcount_app/constants/exceptions/ExceptionsMessage.dart';
+import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomSnackBar.dart';
@@ -60,7 +61,7 @@ abstract class AbstractController {
       builder: (context, AsyncSnapshot<SharedPreferences> snapshot) {
         if (snapshot.hasData) {
           return Text(
-            snapshot.data!.getString("userEmail")!,
+            snapshot.data!.getString("userEmail") != null ? snapshot.data!.getString("userEmail")! : "",
             style: const TextStyle(fontSize: 16),
           );
         }
@@ -135,15 +136,11 @@ abstract class AbstractController {
             return Text("0 $qtdeText");
           }
           if (onError(snapshot)) {
-            return getDefaultErrorMessage(
+            return ErrorHandler.getDefaultErrorMessage(
                 context, ExceptionsMessage.serverError);
           }
           return Text("");
         });
-  }
-
-  Widget getDefaultErrorMessage(BuildContext context, dynamic response) {
-    return CustomSnackBar.getCustomSnackBar(context, response);
   }
 
   bool onHasValue(AsyncSnapshot<List<dynamic>> snapshot) {

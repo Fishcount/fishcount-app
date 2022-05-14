@@ -1,5 +1,5 @@
 import 'package:fishcount_app/model/UsuarioModel.dart';
-import 'package:fishcount_app/screens/usuario/UsuarioService.dart';
+import 'package:fishcount_app/service/UsuarioService.dart';
 import 'package:flutter/cupertino.dart';
 
 class UsuarioDataForm extends StatefulWidget {

@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/constants/Responses.dart';
 import 'package:fishcount_app/constants/api/ApiUsuario.dart';
+import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/UsuarioModel.dart';
-import 'package:fishcount_app/screens/generic/AbstractService.dart';
-import 'package:fishcount_app/screens/login/LoginService.dart';
+import 'package:fishcount_app/service/generic/AbstractService.dart';
+import 'package:fishcount_app/service/LoginService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UsuarioService extends AbstractService {
@@ -46,7 +47,7 @@ class UsuarioService extends AbstractService {
       }
       return null;
     } on DioError catch (e) {
-      return verifyDioError(e);
+      return ErrorHandler.verifyDioError(e);
     }
   }
 }

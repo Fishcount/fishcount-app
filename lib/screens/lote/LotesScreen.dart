@@ -2,7 +2,7 @@ import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/model/AuthUserModel.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/screens/lote/LotesController.dart';
-import 'package:fishcount_app/screens/lote/LotesService.dart';
+import 'package:fishcount_app/service/LotesService.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';

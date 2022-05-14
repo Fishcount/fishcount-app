@@ -1,5 +1,6 @@
 import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/constants/exceptions/ExceptionsMessage.dart';
+import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/screens/generic/AbstractController.dart';
 import 'package:fishcount_app/screens/tanque/TanqueForm.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
@@ -20,7 +21,7 @@ class TanqueController extends AbstractController {
           AppPaths.cadastroTanquePath);
     }
     if (onError(snapshot)) {
-      return getDefaultErrorMessage(context, ExceptionsMessage.serverError);
+      return ErrorHandler.getDefaultErrorMessage(context, ExceptionsMessage.serverError);
     }
     return getCircularProgressIndicator();
   }

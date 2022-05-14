@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/model/AuthUserModel.dart';
-import 'package:fishcount_app/screens/login/LoginService.dart';
+import 'package:fishcount_app/service/LoginService.dart';
 import 'package:fishcount_app/screens/lote/LotesScreen.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/widgets/custom/CustomSnackBar.dart';

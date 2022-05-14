@@ -1,10 +1,11 @@
 import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
+import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/screens/generic/AbstractController.dart';
 import 'package:fishcount_app/screens/lote/LoteForm.dart';
 import 'package:fishcount_app/screens/lote/LotesScreen.dart';
-import 'package:fishcount_app/screens/lote/LotesService.dart';
+import 'package:fishcount_app/service/LotesService.dart';
 import 'package:fishcount_app/screens/tanque/TanqueScreen.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class LotesController extends AbstractController {
       NavigatorUtils.pushReplacement(context, const LotesScreen());
     }
     if (response is ErrorModel) {
-      return getDefaultErrorMessage(context, response.message);
+      return ErrorHandler.getDefaultErrorMessage(context, response.message);
     }
   }
 
@@ -62,7 +63,7 @@ class LotesController extends AbstractController {
             return Text("0 $text");
           }
           if (onError(snapshot)) {
-            return getDefaultErrorMessage(
+            return ErrorHandler.getDefaultErrorMessage(
                 context, ExceptionsMessage.serverError);
           }
           return const Text("");

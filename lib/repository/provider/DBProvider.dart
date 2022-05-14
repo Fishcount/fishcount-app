@@ -21,7 +21,7 @@ class DBProvider {
       """
       create table usuario( 
           id integer not null primary key, 
-          nome text, 
+          email text, 
           senha text
       );
       """,
