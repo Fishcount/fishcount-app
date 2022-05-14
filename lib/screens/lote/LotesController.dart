@@ -2,11 +2,13 @@ import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
+import 'package:fishcount_app/repository/LoteRepository.dart';
 import 'package:fishcount_app/screens/generic/AbstractController.dart';
 import 'package:fishcount_app/screens/lote/LoteForm.dart';
 import 'package:fishcount_app/screens/lote/LotesScreen.dart';
 import 'package:fishcount_app/service/LotesService.dart';
 import 'package:fishcount_app/screens/tanque/TanqueScreen.dart';
+import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
@@ -16,6 +18,22 @@ import '../../constants/exceptions/ExceptionsMessage.dart';
 class LotesController extends AbstractController {
   Future<dynamic> salvarLote(
       BuildContext context, LoteModel? managedLote, String nomeLote) async {
+    bool isConnected = await ConnectionUtils().isConnected();
+    if (isConnected) {
+      return saveWithApi(managedLote, nomeLote, context);
+    }
+    return saveLocal(managedLote, nomeLote, context);
+  }
+
+  Future<dynamic> saveLocal(
+      LoteModel? managedLote, String nomeLote, BuildContext context) async {
+    LoteModel lote = LoteModel(null, nomeLote, null);
+
+    return LoteRepository().save(context, lote);
+  }
+
+  Future<dynamic> saveWithApi(
+      LoteModel? managedLote, String nomeLote, BuildContext context) {
     if (managedLote != null) {
       managedLote.descricao = nomeLote;
       return resolverSalvarOrAtualizar(context, managedLote);
@@ -135,7 +153,7 @@ class LotesController extends AbstractController {
                         Container(
                           padding: const EdgeInsets.only(left: 10, top: 10),
                           child: Text(
-                            lote.tanques!.length.toString() + " Tanques",
+                            lote.tanques != null ? lote.tanques!.length.toString() + " Tanques" : "0 tanques",
                             style: const TextStyle(
                               fontSize: 12,
                             ),

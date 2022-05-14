@@ -13,9 +13,8 @@ class LoteModel {
     this.tanques,
   );
 
-  LoteModel.toLocalDatabase(
-    this.descricao,
-  );
+  Map<String, dynamic> toLocalDatabase(int idUsuario) =>
+      {"descricao": descricao, "id_usuario": idUsuario};
 
   LoteModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
