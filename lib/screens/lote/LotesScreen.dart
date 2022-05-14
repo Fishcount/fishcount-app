@@ -1,8 +1,10 @@
 import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/model/AuthUserModel.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
+import 'package:fishcount_app/repository/LoteRepository.dart';
 import 'package:fishcount_app/screens/lote/LotesController.dart';
 import 'package:fishcount_app/service/LotesService.dart';
+import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
@@ -22,6 +24,14 @@ class LotesScreen extends StatefulWidget {
 class _LotesScreenState extends State<LotesScreen> {
   final TextEditingController _pesquisaController = TextEditingController();
   List<LoteModel> lotes = [];
+
+  Future<List<LoteModel>>? listarLotes(BuildContext context) async {
+    bool isConnected = await ConnectionUtils().isConnected();
+    if (isConnected) {
+      return LotesService().listarLotesUsuario();
+    }
+    return LoteRepository().listarLotesUsuario(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +65,7 @@ class _LotesScreenState extends State<LotesScreen> {
             Column(
               children: [
                 FutureBuilder(
-                  future: LotesService().listarLotesUsuario(),
+                  future: listarLotes(context),
                   builder: (context, AsyncSnapshot<List<LoteModel>> snapshot) {
                     return LotesController()
                         .resolverListaLotes(context, snapshot);

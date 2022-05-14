@@ -5,6 +5,7 @@ import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
+import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
