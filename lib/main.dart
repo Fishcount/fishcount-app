@@ -1,4 +1,5 @@
 import 'package:fishcount_app/constants/AppPaths.dart';
+import 'package:fishcount_app/screens/login/LoginScreen.dart';
 import 'package:fishcount_app/screens/lote/LotesScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -18,9 +19,7 @@ void main() {
     title: 'FishCount',
     debugShowCheckedModeBanner: false,
     checkerboardOffscreenLayers: false,
-    theme: ThemeData.light(),
-    darkTheme: ThemeData.dark(),
-    themeMode: ThemeMode.system,
-    home: const LotesScreen(),
+    color: Colors.white,
+    home: const LoginScreen(),
   ));
 }

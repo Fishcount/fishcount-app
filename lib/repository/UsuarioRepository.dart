@@ -1,3 +1,4 @@
+import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/UsuarioModel.dart';
@@ -51,6 +52,27 @@ class UsuarioRepository {
     } on Exception catch (e) {
       return ErrorHandler.getDefaultErrorMessage(
           context, ErrorMessage.serverError);
+    }
+  }
+
+  Future<List<UsuarioModel>> buscarUsuario(BuildContext context) async {
+    try {
+      int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
+          EnumSharedPreferences.userId);
+      if (userId == null) {
+        ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+        return [];
+      }
+      final db = await DBProvider().init();
+      List<Map<String, Object?>> maps =
+          await db.query("usuario", where: "id = ?", whereArgs: [userId]);
+
+      return List.generate(maps.length, (index) {
+        return UsuarioModel.fromDatabase(maps[index]);
+      });
+    } on Exception catch (e) {
+      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      return [];
     }
   }
 }

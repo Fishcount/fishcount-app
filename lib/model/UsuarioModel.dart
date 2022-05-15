@@ -11,6 +11,8 @@ class UsuarioModel {
 
   late String email;
 
+  late String telefone;
+
   late List<TelefoneModel> telefones;
 
   late List<EmailModel> emails;
@@ -41,6 +43,7 @@ class UsuarioModel {
 
   UsuarioModel.fromDatabase(Map<String, dynamic> map) {
     id = map['id'];
+    nome = map['nome'];
     email = map['email'];
     senha = map['senha'];
   }
@@ -55,6 +58,7 @@ class UsuarioModel {
       };
 
   Map<String, dynamic> toLocalDataBase() => {
+        "nome": nome,
         "email": emails.first.descricao,
         "senha": senha,
       };

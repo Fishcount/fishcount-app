@@ -1,10 +1,10 @@
 import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/model/TanqueModel.dart';
+import 'package:fishcount_app/repository/TanqueRepository.dart';
 import 'package:fishcount_app/screens/tanque/TanqueController.dart';
 import 'package:fishcount_app/service/TanqueService.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
-import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
@@ -27,10 +27,10 @@ class _TanquesScreenState extends State<TanquesScreen> {
 
   Future<List<TanqueModel>> listarTanques() async {
     bool isConnected = await ConnectionUtils().isConnected();
-    if (isConnected){
+    if (isConnected) {
       return TanqueSerice().listarTanquesFromLote(widget.lote!);
     }
-    return TanqueSerice().listarTanquesFromLote(widget.lote!);
+    return TanqueRepository().listarTanques(context, widget.lote!.id!);
   }
 
   @override

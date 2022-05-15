@@ -66,10 +66,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             isThreeLine: false,
             minVerticalPadding: 15,
             horizontalTitleGap: 15,
-            leading: Icon(Icons.person),
+            leading: const Icon(Icons.person),
             title: const Text("Meus dados"),
             onTap: () {
-              NavigatorUtils.pushReplacement(context, const UsuarioDataForm());
+              NavigatorUtils.push(context, const UsuarioDataForm());
             },
           ),
           const ListTile(
