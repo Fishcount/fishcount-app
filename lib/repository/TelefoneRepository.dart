@@ -48,4 +48,22 @@ class TelefoneRepository {
       return [];
     }
   }
+
+  dynamic update(context, TelefoneModel telefoneModel, int userId) async {
+    try {
+      final db = await DBProvider().init();
+      int idTelefone = await db.update(
+        "telefone",
+        telefoneModel.toLocalDataBase(userId),
+        where: "id = ?",
+        whereArgs: [telefoneModel.id],
+      );
+
+      if (idTelefone == 0){
+        ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      }
+    } on Exception catch (e){
+      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+    }
+  }
 }

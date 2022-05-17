@@ -20,6 +20,10 @@ class TanqueForm extends StatefulWidget {
 class _TanqueFormState extends State<TanqueForm> {
   final TextEditingController _nomeTanqueController = TextEditingController();
 
+  List<String> especies = ["especie 1", "especie 2"];
+
+  String especieSelecionada = "especie 1";
+
   @override
   Widget build(BuildContext context) {
     _nomeTanqueController.text =
@@ -51,6 +55,19 @@ class _TanqueFormState extends State<TanqueForm> {
                 obscureText: false,
               ),
             ),
+            DropdownButton<String>(
+                items: especies.map((String dropDownStringItem) {
+                  return DropdownMenuItem<String>(
+                    value: dropDownStringItem,
+                    child: Text(dropDownStringItem),
+                  );
+                }).toList(),
+                onChanged: (String? novoItemSelecionado) {
+                  setState(() {
+                    this.especieSelecionada = novoItemSelecionado != null ? novoItemSelecionado : "";
+                  });
+                },
+                value: especieSelecionada),
             Container(
               padding: const EdgeInsets.only(top: 40),
               child: ElevatedButtonWidget(
@@ -62,8 +79,7 @@ class _TanqueFormState extends State<TanqueForm> {
                 buttonColor: Colors.blue,
                 buttonText: widget.tanque != null ? "Atualizar" : "Salvar",
                 onPressed: () => {
-                  // LotesController().salvarLote(
-                  //     context, widget.lote, _nomeLoteController.text)
+                  // TanqueController().onError()
                 },
               ),
             ),

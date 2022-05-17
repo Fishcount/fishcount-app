@@ -11,6 +11,9 @@ import 'package:line_icons/line_icons.dart';
 import '../../model/TanqueModel.dart';
 
 class TanqueController extends AbstractController {
+
+
+
   Widget resolverListaTanques(
       BuildContext context, AsyncSnapshot<List<TanqueModel>> snapshot) {
     if (onHasValue(snapshot)) {

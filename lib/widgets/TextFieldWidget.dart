@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class TextFieldWidget extends StatefulWidget {
   final TextEditingController controller;
@@ -8,6 +10,7 @@ class TextFieldWidget extends StatefulWidget {
   final Color iconColor;
   final bool obscureText;
   final TextInputType? keyBoardType;
+  final MaskTextInputFormatter? inputMask;
 
   const TextFieldWidget({
     Key? key,
@@ -18,6 +21,7 @@ class TextFieldWidget extends StatefulWidget {
     required this.iconColor,
     required this.obscureText,
     this.keyBoardType,
+    this.inputMask
   }) : super(key: key);
 
   @override
@@ -28,6 +32,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      inputFormatters: [widget.inputMask != null ? widget.inputMask! :  FilteringTextInputFormatter.singleLineFormatter],
       controller: widget.controller,
       obscureText: widget.obscureText,
       keyboardType: widget.keyBoardType,

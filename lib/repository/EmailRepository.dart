@@ -22,6 +22,25 @@ class EmailRepository {
     }
   }
 
+  dynamic update(
+      BuildContext context, EmailModel emailModel, int idUsuario) async {
+    try {
+      final db = await DBProvider().init();
+      int idEmail = await db.update(
+        "email",
+        emailModel.toLocalDatabase(idUsuario),
+        where: "id = ?",
+        whereArgs: [emailModel.id],
+      );
+
+      if (idEmail == 0) {
+        ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      }
+    } on Exception catch (e) {
+      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+    }
+  }
+
   Future<List<EmailModel>> listarEmails(BuildContext context) async {
     try {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
