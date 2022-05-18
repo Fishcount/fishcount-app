@@ -27,8 +27,10 @@ class LotesController extends AbstractController {
 
   Future<dynamic> saveLocal(
       LoteModel? managedLote, String nomeLote, BuildContext context) async {
+    if (managedLote != null) {
+      return LoteRepository().update(context, managedLote);
+    }
     LoteModel lote = LoteModel(null, nomeLote, null);
-
     return LoteRepository().save(context, lote);
   }
 

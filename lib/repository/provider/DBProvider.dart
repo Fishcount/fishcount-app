@@ -1,3 +1,4 @@
+import 'package:fishcount_app/repository/provider/Queries.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -17,86 +18,30 @@ class DBProvider {
   }
 
   Future<void> _createDatabase(Database db, int versao) async {
-    List<String> querys = [
-      """
-      create table usuario( 
-          id integer not null primary key, 
-          nome text,
-          email text, 
-          senha text
-      );
-      """,
-      """
-      create table telefone(
-          id integer not null primary key,
-          descricao text,
-          tipoTelefone text,
-          id_usuario integer
-      );
-      """,
-      """
-       create table email(
-          id integer not null primary key,
-          descricao text,
-          tipoEmail text,
-          id_usuario integer
-       );
-      """,
-      """
-      create table lote(
-          id integer not null primary key,
-          descricao text not null,
-          id_usuario integer
-      );   
-      """,
-      """
-       create table tanque(
-          id integer not null primary key,
-          descricao text not null,
-          especie text not null,
-          ultimaAnalise text,
-          proximaAnalise text,
-          dataUltimaAnalise text,
-          dataUltimoTratamento text,
-          id_lote integer
-       );
-      """,
-      """
-       create table analise(
-          id integer not null primary key,
-          qtdeRacao float,
-          pesoMedio float,
-          qtdeMediaRacao float,
-          dataAnalise text,
-          id_tanque integer
-       );
-      """,
-      """
-       create table especie(
-          id integer not null primary key,
-          descricao text,
-          pesoMedio float,
-          tamanhoMedio float,
-          qtdeMediaRacao integer,
-          diasIntervalo integer,
-          id_tanque integer
-       );
-      """,
-      """
-       create table taxaCrescimento(
-          id integer not null primary key,
-          periodoAnalise integer,
-          qtdeAumento float,
-          intervalo int,
-          unidadeAumento text,
-          unidadeIntervalo text,
-          id_especie integer
-       );
-      """
-    ];
-
-    for (String query in querys) {
+    for (String query in Querys.queries) {
       await db.execute(query);
+    }
+    int resultTaxaCrescimento = await db.rawInsert(
+      Querys.insertTaxaCrescimento,
+      [2.0, "CM", 20, "DIAS"],
+    );
+    if (resultTaxaCrescimento == 0){
+      print("insert de taxa de crescimento");
+    }
+
+    int resultEspecie = await db.rawInsert(
+      Querys.insertEspecie,
+      ["Tilápia", 350.0, "GR", 20.0, "CM", 10, "KG", 250, 1],
+    );
+    if (resultEspecie == 0){
+      print("insert de espécie");
+    }
+    int resultEspecie2 = await db.rawInsert(
+      Querys.insertEspecie,
+      ["Carpa", 350.0, "GR", 20.0, "CM", 10, "KG", 250, 1],
+    );
+    if (resultEspecie2 == 0){
+      print("insert de espécie");
     }
   }
 }

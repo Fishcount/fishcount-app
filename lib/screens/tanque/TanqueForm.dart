@@ -1,4 +1,6 @@
+import 'package:fishcount_app/model/EspecieModel.dart';
 import 'package:fishcount_app/model/TanqueModel.dart';
+import 'package:fishcount_app/repository/EspecieRepository.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
@@ -55,6 +57,36 @@ class _TanqueFormState extends State<TanqueForm> {
                 obscureText: false,
               ),
             ),
+            FutureBuilder(
+              future: EspecieRepository().listar(context),
+              builder: (context, AsyncSnapshot<List<EspecieModel>> snapshot) {
+                return Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(232, 232, 232, 232),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                  width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: DropdownButton<String>(
+                      value: snapshot.data!.first.descricao,
+                      isExpanded: true,
+                      items: snapshot.data!.map(
+                        (especie) {
+                          return DropdownMenuItem(
+                            value: especie.descricao,
+                            child: Container(
+                              child: Text(especie.descricao),
+                            ),
+                          );
+                        },
+                      ).toList(),
+                      onChanged: (String? novoItemSelecionado) {}),
+                );
+              },
+            ),
             DropdownButton<String>(
                 items: especies.map((String dropDownStringItem) {
                   return DropdownMenuItem<String>(
@@ -64,7 +96,7 @@ class _TanqueFormState extends State<TanqueForm> {
                 }).toList(),
                 onChanged: (String? novoItemSelecionado) {
                   setState(() {
-                    this.especieSelecionada = novoItemSelecionado != null ? novoItemSelecionado : "";
+                    this.especieSelecionada = novoItemSelecionado ?? "";
                   });
                 },
                 value: especieSelecionada),

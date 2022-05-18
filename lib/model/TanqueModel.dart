@@ -3,8 +3,6 @@ class TanqueModel {
 
   late String descricao;
 
-  late String? especie;
-
   late String? ultimaAnalise;
 
   late String? proximaAnalise;
@@ -16,7 +14,6 @@ class TanqueModel {
   TanqueModel(
     this.id,
     this.descricao,
-    this.especie,
     this.ultimaAnalise,
     this.proximaAnalise,
     this.dataUltimaAnalise,
@@ -25,7 +22,6 @@ class TanqueModel {
 
   TanqueModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    especie = json['especie'];
     descricao = json['descricao'];
     ultimaAnalise = json['ultimaAnalise'];
     proximaAnalise = json['proximaAnalise'];
@@ -33,9 +29,18 @@ class TanqueModel {
     dataUltimoTratamento = json['dataUltimoTratamento'];
   }
 
+  Map<String, dynamic> toLocalDatabase(int idEspecie, int idLote) => {
+    "descricao": descricao,
+    "ultimaAnalise": ultimaAnalise,
+    "proximaAnalise": proximaAnalise,
+    "dataUltimaAnalise": dataUltimaAnalise,
+    "dataUltimoTratamento": dataUltimoTratamento,
+    "id_especie": idEspecie,
+    "id_lote": idLote
+  };
+
   Map<String, dynamic> toJson() => {
         "id": id,
-        "especie": especie,
         "descricao": descricao,
         "ultimaAnalise": ultimaAnalise,
         "proximaAnalise": proximaAnalise,
