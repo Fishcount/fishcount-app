@@ -155,9 +155,7 @@ class LotesController extends AbstractController {
                         Container(
                           padding: const EdgeInsets.only(left: 10, top: 10),
                           child: Text(
-                            lote.tanques != null
-                                ? lote.tanques!.length.toString() + " Tanques"
-                                : "0 tanques",
+                            resolverQtdeTanques(lote),
                             style: const TextStyle(
                               fontSize: 12,
                             ),
@@ -228,5 +226,13 @@ class LotesController extends AbstractController {
         ),
       ),
     );
+  }
+
+  String resolverQtdeTanques(LoteModel lote) {
+    if (lote.tanques != null){
+      String qtde = lote.tanques!.length.toString();
+      return qtde + (lote.tanques!.length > 1 ? " Tanques" : " Tanque");
+    }
+    return "0 tanques";
   }
 }
