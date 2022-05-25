@@ -30,7 +30,7 @@ class DividerWidget extends StatelessWidget {
     return Row(
       children: <Widget>[
         _getSideLine(),
-        Padding(
+        Container(
             padding: EdgeInsets.only(
               left: paddingLeft,
               right: paddingRight,

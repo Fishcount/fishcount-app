@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fishcount_app/api/dio/CustomDio.dart';
 import 'package:fishcount_app/constants/Responses.dart';
 import 'package:fishcount_app/constants/api/ApiUsuario.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
@@ -12,14 +13,12 @@ class UsuarioService extends AbstractService {
 
   Future<List<UsuarioModel>> buscarUsuario() async {
     try {
-      String managedUrl = url + "/{id}";
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       int id = prefs.getInt("userId")!;
 
-      managedUrl = managedUrl.replaceAll("{id}", id.toString());
-
-      Response<dynamic> response = await getAll(managedUrl);
+      String managedUrl = url + "/$id";
+      Response<dynamic> response = await CustomDio().dioGet(managedUrl);
       if (response.statusCode == Responses.OK_STATUS_CODE) {
         return [UsuarioModel.fromJson(response.data)];
       }

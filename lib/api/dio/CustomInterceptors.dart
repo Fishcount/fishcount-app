@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
+import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomInterceptors extends Interceptor {
@@ -10,7 +12,13 @@ class CustomInterceptors extends Interceptor {
     if (!notProtectedPaths.contains(options.path)) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      options.headers["Authorization"] = "Bearer " + prefs.getString("token")!;
+      String? accessToken =
+          await SharedPreferencesUtils.getStringVariableFromShared(
+              EnumSharedPreferences.accessToken);
+      if (accessToken == null) {
+        return;
+      }
+      options.headers["Authorization"] = "Bearer " + accessToken;
     }
     super.onRequest(options, handler);
   }

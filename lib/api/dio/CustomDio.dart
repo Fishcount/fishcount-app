@@ -5,7 +5,7 @@ import 'package:fishcount_app/constants/api/Environment.dart';
 class CustomDio<T> {
   CustomDio() {
     Dio customDio = Dio();
-    customDio.options.baseUrl = Environment.localDev;
+    customDio.options.baseUrl = Environment.urlServer;
     customDio.interceptors.add(CustomInterceptors());
     dio = customDio;
   }
@@ -16,8 +16,11 @@ class CustomDio<T> {
       String url, Map<String, dynamic> data) async {
     return await dio.post(url, data: data);
   }
-
   Future<Response<List<dynamic>>> dioGetAll(String url) async {
+    return await dio.get(url);
+  }
+
+  Future<Response<dynamic>> dioGet(String url) async{
     return await dio.get(url);
   }
 
