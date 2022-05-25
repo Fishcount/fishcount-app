@@ -1,5 +1,6 @@
 import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
+import 'package:fishcount_app/screens/financeiro/FinanceiroScreen.dart';
 import 'package:fishcount_app/screens/lote/LotesController.dart';
 import 'package:fishcount_app/screens/usuario/UsuarioDataForm.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
@@ -72,12 +73,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               NavigatorUtils.push(context, const UsuarioDataForm());
             },
           ),
-          const ListTile(
+          ListTile(
             isThreeLine: false,
             minVerticalPadding: 15,
             horizontalTitleGap: 15,
             leading: Icon(Icons.monetization_on),
             title: Text("Financeiro"),
+            onTap: () {
+              NavigatorUtils.pushReplacement(context, FinanceiroScreen());
+            },
           ),
           const ListTile(
             isThreeLine: false,

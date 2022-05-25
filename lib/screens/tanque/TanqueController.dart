@@ -72,14 +72,14 @@ class TanqueController extends AbstractController {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            /*  NavigatorUtils.pushReplacement(
+                          /*onTap: () {
+                             NavigatorUtils.pushReplacement(
                               context,
                               (
                                 lote: tanque,
                               ),
-                            );*/
-                          },
+                            );
+                          },*/
                           child: Container(
                             padding: const EdgeInsets.only(left: 10, top: 10),
                             child: Text(
