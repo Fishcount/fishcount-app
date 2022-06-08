@@ -5,7 +5,7 @@ class Querys {
       unidadeAumento, 
       intervalo, 
       unidadeIntervalo
-      ) values (?, ?, ?, ?, ?)
+      ) values (?, ?, ?, ?)
       """;
 
   static const insertEspecie = """
@@ -19,7 +19,7 @@ class Querys {
       unidadeRacao,
       diasIntervalo,
       id_taxa_crescimento
-      ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) values (?, ?, ?, ?, ?, ?, ?, ?, ?)
   """;
 
   static const queries = [
