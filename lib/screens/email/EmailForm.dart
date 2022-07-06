@@ -19,16 +19,16 @@ class EmailForm extends StatefulWidget {
   State<EmailForm> createState() => _EmailFormState();
 }
 
-class _EmailFormState extends State<EmailForm> {
-  TextEditingController _emailController = TextEditingController();
 
+class _EmailFormState extends State<EmailForm> {
+  final TextEditingController _emailController = TextEditingController();
   EnumTipoEmail mainEnum = EnumTipoEmail.ADICIONAL;
   bool hasChanged = false;
 
   @override
   Widget build(BuildContext context) {
     _emailController.text =
-        widget.emailModel != null ? widget.emailModel!.descricao : "";
+        widget.emailModel != null ? widget.emailModel!.descricao : _emailController.text;
 
     return Scaffold(
       appBar: CustomAppBar.getAppBar(),
@@ -47,8 +47,9 @@ class _EmailFormState extends State<EmailForm> {
             Container(
               padding: const EdgeInsets.only(top: 50),
               child: TextFieldWidget(
+                labelText: "Email",
                 controller: _emailController,
-                hintText: "Email",
+                hintText: "Digite seu email",
                 prefixIcon: const Icon(Icons.account_balance_wallet_sharp),
                 focusedBorderColor: Colors.blueGrey,
                 iconColor: Colors.blueGrey,

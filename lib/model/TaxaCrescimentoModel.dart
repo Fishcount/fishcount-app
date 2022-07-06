@@ -25,10 +25,9 @@ class TaxaCrescimentoModel {
 
   TaxaCrescimentoModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    periodoAnalise = json['periodoAnalise'];
     qtdeAumento = json['qtdeAumento'];
-    intervalo = json['intervalo'];
     unidadeAumento = json['unidadeAumento'];
+    intervalo = json['intervalo'];
     unidadeIntervalo = json['unidadeIntervalo'];
   }
 

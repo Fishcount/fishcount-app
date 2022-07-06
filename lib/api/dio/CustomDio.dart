@@ -7,6 +7,8 @@ class CustomDio<T> {
     Dio customDio = Dio();
     customDio.options.baseUrl = Environment.urlServer;
     customDio.interceptors.add(CustomInterceptors());
+    customDio.options.connectTimeout = 5000;
+    customDio.options.receiveDataWhenStatusError = true;
     dio = customDio;
   }
 
@@ -24,7 +26,12 @@ class CustomDio<T> {
     return await dio.get(url);
   }
 
-  Future<void> dioPut(String url, Map<String, dynamic> data) async {
-    await dio.put(url, data: data);
+  Future<Response<void>> dioPut(String url, Map<String, dynamic> data) async {
+    return await dio.put(url, data: data);
   }
+
+  Future<Response<void>> dioDelete(String url) async {
+    return await dio.delete(url);
+  }
+
 }

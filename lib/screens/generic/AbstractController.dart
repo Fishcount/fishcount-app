@@ -144,17 +144,17 @@ abstract class AbstractController {
         });
   }
 
-  bool onHasValue(AsyncSnapshot<List<dynamic>> snapshot) {
-    return snapshot.hasData && snapshot.data!.isNotEmpty;
+  bool onHasValue(AsyncSnapshot<dynamic> snapshot) {
+      return snapshot.hasData || (snapshot.hasData && snapshot.data!.isNotEmpty);
   }
 
-  bool onDoneRequestWithEmptyValue(AsyncSnapshot<List<dynamic>> snapshot) {
+  bool onDoneRequestWithEmptyValue(AsyncSnapshot<dynamic> snapshot) {
     return snapshot.connectionState == ConnectionState.done &&
         snapshot.data != null &&
         snapshot.data!.isEmpty;
   }
 
-  bool onError(AsyncSnapshot<List<dynamic>> snapshot) {
+  bool onError(AsyncSnapshot<dynamic> snapshot) {
     return snapshot.hasError;
   }
 }

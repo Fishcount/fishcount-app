@@ -11,6 +11,8 @@ class PlanoModel {
 
   late int maxTanque;
 
+  late int qtdeParcela;
+
   PlanoModel(
     this.id,
     this.descricao,

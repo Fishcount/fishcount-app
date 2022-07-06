@@ -1,0 +1,6 @@
+enum EnumStatusPagamento{
+  ANALISE,
+  ABERTO,
+  PAGAMENTO_PARCIAL,
+  FINALIZADO,
+}

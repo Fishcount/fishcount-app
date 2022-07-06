@@ -8,14 +8,14 @@ class ItemContainerWidget extends StatefulWidget {
   final Function() onChange;
   final Function() onDelete;
 
-  const ItemContainerWidget(
-      {Key? key,
-      required this.titles,
-      required this.subTitles,
-      required this.prefixIcon,
-      required this.onChange,
-      required this.onDelete})
-      : super(key: key);
+  const ItemContainerWidget({
+    Key? key,
+    required this.titles,
+    required this.subTitles,
+    required this.prefixIcon,
+    required this.onChange,
+    required this.onDelete,
+  }) : super(key: key);
 
   @override
   State<ItemContainerWidget> createState() => _ItemContainerWidgetState();
@@ -68,7 +68,7 @@ class _ItemContainerWidgetState extends State<ItemContainerWidget> {
                 Icons.delete,
                 color: Colors.black,
               ),
-              onTap: widget.onDelete,
+              onTap: widget.onDelete
             ),
           ],
         ),

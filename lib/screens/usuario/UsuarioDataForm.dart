@@ -30,8 +30,6 @@ class UsuarioDataForm extends StatefulWidget {
 
 class _UsuarioDataFormState extends State<UsuarioDataForm> {
   final TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _telefoneController = TextEditingController();
 
   Future<List<UsuarioModel>> buscarUsuario() async {
     bool isConnected = await ConnectionUtils().isConnected();

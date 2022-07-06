@@ -121,21 +121,19 @@ class UsuarioController extends AbstractController {
                         alignment: Alignment.centerLeft,
                         child: const Text("Emails"),
                       ),
-                      Container(
-                        child: GestureDetector(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: const [
-                              Icon(
-                                Icons.add_box,
-                                color: Colors.blue,
-                                size: 25,
-                              ),
-                            ],
-                          ),
-                          onTap: () =>
-                              NavigatorUtils.push(context, const EmailForm()),
+                      GestureDetector(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: const [
+                            Icon(
+                              Icons.add_box,
+                              color: Colors.blue,
+                              size: 25,
+                            ),
+                          ],
                         ),
+                        onTap: () =>
+                            NavigatorUtils.push(context, const EmailForm()),
                       )
                     ],
                   ),

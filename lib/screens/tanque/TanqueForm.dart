@@ -1,13 +1,18 @@
 import 'package:fishcount_app/constants/AppImages.dart';
+import 'package:fishcount_app/constants/AppPaths.dart';
+import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
+import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/EspecieModel.dart';
 import 'package:fishcount_app/model/TanqueModel.dart';
 import 'package:fishcount_app/repository/EspecieRepository.dart';
+import 'package:fishcount_app/screens/tanque/TanqueController.dart';
+import 'package:fishcount_app/service/EspecieService.dart';
+import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:line_icons/line_icons.dart';
 
 class TanqueForm extends StatefulWidget {
   final TanqueModel? tanque;
@@ -24,11 +29,9 @@ class TanqueForm extends StatefulWidget {
 class _TanqueFormState extends State<TanqueForm> {
   final TextEditingController _nomeTanqueController = TextEditingController();
 
-  List<String> especies = ["especie 1", "especie 2"];
 
-  String especieSelecionada = "especie 1";
-
-  TextEditingController _controller = TextEditingController();
+  String descricaoEspecie = "";
+  EspecieModel? especieModel;
 
   @override
   Widget build(BuildContext context) {
@@ -63,151 +66,84 @@ class _TanqueFormState extends State<TanqueForm> {
                 obscureText: false,
               ),
             ),
-            FutureBuilder(
-              future: EspecieRepository().listar(context),
-              builder: (context, AsyncSnapshot<List<EspecieModel>> snapshot) {
-                return Container(
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(232, 232, 232, 232),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                  ),
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.only(top: 20),
-                  padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: DropdownButton<String>(
-                      value: snapshot.data!.first.descricao,
-                      isExpanded: true,
-                      items: snapshot.data!.map(
-                        (especie) {
-                          return DropdownMenuItem(
-                            value: especie.descricao,
-                            child: Container(
-                              child: Text(especie.descricao),
-                            ),
-                          );
-                        },
-                      ).toList(),
-                      onChanged: (String? novoItemSelecionado) {}),
-                );
-              },
-            ),
             Container(
-              margin: const EdgeInsets.only(top: 20),
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 160,
-                        height: 200,
-                        child: Image.asset(ImagePaths.imageLogo),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: 200,
-                              child: TextFieldWidget(
-                                controller: _controller,
-                                hintText: "Peso Médio",
-                                prefixIcon: const Icon(Icons.monitor_weight),
-                                focusedBorderColor: Colors.blue,
-                                iconColor: Colors.blue,
-                                obscureText: false,
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(top: 20),
-                              child: SizedBox(
-                                width: 200,
-                                child: TextFieldWidget(
-                                  controller: _controller,
-                                  hintText: "Tamanho médio",
-                                  prefixIcon: const Icon(LineIcons.signal),
-                                  focusedBorderColor: Colors.blue,
-                                  iconColor: Colors.blue,
-                                  obscureText: false,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(top: 20),
-                              child: SizedBox(
-                                width: 200,
-                                child: TextFieldWidget(
-                                  controller: _controller,
-                                  hintText: "Ração",
-                                  prefixIcon: const Icon(LineIcons.signal),
-                                  focusedBorderColor: Colors.blue,
-                                  iconColor: Colors.blue,
-                                  obscureText: false,
-                                ),
-                              ),
-                            )
-                          ],
+              padding: const EdgeInsets.only(top: 10),
+              child: FutureBuilder(
+                future: TanqueController().resolverListaEspecie(context),
+                builder: (context, AsyncSnapshot<List<EspecieModel>> snapshot) {
+                  if (TanqueController().onHasValue(snapshot)) {
+                    String firstValue = snapshot.data!.first.descricao;
+                    return Container(
+                      height: 60,
+                      alignment: Alignment.center,
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(232, 232, 232, 232),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
                         ),
-                      )
-                    ],
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 20),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.black),
                       ),
-                    ),
-                    child: const Text(
-                      "Texa de Crescimento",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 15),
-                    child: TextFieldWidget(
-                      controller: _controller,
-                      hintText: "Quantidade de aumento",
-                      prefixIcon: const Icon(LineIcons.signal),
-                      focusedBorderColor: Colors.blue,
-                      iconColor: Colors.blue,
-                      obscureText: false,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 15),
-                    child: TextFieldWidget(
-                      controller: _controller,
-                      hintText: "Intervalo de aumento",
-                      prefixIcon: const Icon(LineIcons.addressBookAlt),
-                      focusedBorderColor: Colors.blue,
-                      iconColor: Colors.blue,
-                      obscureText: false,
-                    ),
-                  ),
-                ],
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      child: DropdownButton<String>(
+                          value: descricaoEspecie != ""
+                              ? descricaoEspecie
+                              : firstValue,
+                          isExpanded: true,
+                          items: snapshot.data!
+                              .map(
+                                (especie) => DropdownMenuItem(
+                                  value: especie.descricao,
+                                  child: Text(especie.descricao),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (String? novoItemSelecionado) {
+                            setState(() {
+                              descricaoEspecie = novoItemSelecionado ?? "";
+                            });
+                          }),
+                    );
+                  }
+                  if (TanqueController()
+                      .onDoneRequestWithEmptyValue(snapshot)) {
+                    return TanqueController().getNotFoundWidget(
+                        context,
+                        ErrorMessage.usuarioSemTanque,
+                        AppPaths.cadastroTanquePath);
+                  }
+                  if (TanqueController().onError(snapshot)) {
+                    return ErrorHandler.getDefaultErrorMessage(
+                        context, ErrorMessage.serverError);
+                  }
+                  return Center(
+                    child: TanqueController().getCircularProgressIndicator(),
+                  );
+                },
               ),
             ),
+            descricaoEspecie == ""
+                ? const Text("")
+                : FutureBuilder(
+                    future: Future.delayed(
+                      Duration.zero,
+                      () => EspecieService()
+                          .findByDescricao(context, descricaoEspecie),
+                    ),
+                    builder: (context, AsyncSnapshot<EspecieModel> snapshot) {
+                      return TanqueController().resolverDadosEspecie(snapshot, context);
+                    },
+                  ),
             Container(
-              padding: const EdgeInsets.only(top: 35),
+              padding: const EdgeInsets.only(top: 30),
               child: ElevatedButtonWidget(
-                textSize: 18,
-                radioBorder: 20,
-                horizontalPadding: 30,
-                verticalPadding: 10,
-                textColor: Colors.white,
-                buttonColor: Colors.blue,
-                buttonText: widget.tanque != null ? "Atualizar" : "Salvar",
-                onPressed: () => {
-                  // TanqueController().onError()
-                },
+                buttonText: "Taxa de crescimento",
+                buttonColor: Colors.yellow.shade600,
+                radioBorder: 10,
+                verticalPadding: 20,
+                textColor: Colors.black,
+                textSize: 20,
+                onPressed: () {},
               ),
             ),
           ],
@@ -215,4 +151,6 @@ class _TanqueFormState extends State<TanqueForm> {
       ),
     );
   }
+
+
 }

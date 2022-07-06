@@ -7,11 +7,15 @@ class EspecieModel {
 
   late double pesoMedio;
 
+  late String unidadePesoMedio;
+
   late double tamanhoMedio;
+
+  late String unidadeTamanho;
 
   late int qtdeMediaRacao;
 
-  late int diasIntervalo;
+  late String unidadePesoRacao;
 
   late TaxaCrescimentoModel taxaCrescimento;
 
@@ -19,9 +23,11 @@ class EspecieModel {
     this.id,
     this.descricao,
     this.pesoMedio,
+    this.unidadePesoMedio,
     this.tamanhoMedio,
+    this.unidadeTamanho,
     this.qtdeMediaRacao,
-    this.diasIntervalo,
+    this.unidadePesoRacao,
     this.taxaCrescimento,
   );
 
@@ -29,19 +35,22 @@ class EspecieModel {
     id = json['id'];
     descricao = json['descricao'];
     pesoMedio = json['pesoMedio'];
+    unidadePesoMedio = json['unidadePesoMedio'];
     tamanhoMedio = json['tamanhoMedio'];
+    unidadeTamanho = json['unidadeTamanho'];
     qtdeMediaRacao = json['qtdeMediaRacao'];
-    diasIntervalo = json['diasIntervalo'];
-    taxaCrescimento = json['taxaCrescimento'];
+    unidadePesoRacao = json['unidadePesoRacao'];
+    // taxaCrescimento = TaxaCrescimentoModel.fromJson(json["taxaCrescimento"]);
   }
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "descricao": descricao,
         "pesoMedio": pesoMedio,
+        "unidadePesoMedio": unidadePesoMedio,
         "tamanhoMedio": tamanhoMedio,
+        "unidadetamanho": unidadeTamanho,
         "qtdeMediaRacao": qtdeMediaRacao,
-        "diasIntervalo": diasIntervalo,
-        "taxaCrescimento": taxaCrescimento
+        "unidadePesoRacao": unidadePesoRacao,
       };
 }

@@ -10,8 +10,6 @@ class CustomInterceptors extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     if (!notProtectedPaths.contains(options.path)) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
       String? accessToken =
           await SharedPreferencesUtils.getStringVariableFromShared(
               EnumSharedPreferences.accessToken);

@@ -1,17 +1,18 @@
 import 'package:dio/dio.dart';
+import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/constants/api/ApiLote.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/model/TanqueModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 
 class TanqueSerice extends AbstractService {
   String url = ApiLote.baseUrl + "/{loteId}/tanque";
 
   Future<List<TanqueModel>> listarTanquesFromLote(LoteModel lote) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      int? userId = prefs.getInt('userId');
+      int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
+          EnumSharedPreferences.userId);
 
       Response<List<dynamic>> response = await getAll(url
           .replaceAll("{parentId}", userId.toString())

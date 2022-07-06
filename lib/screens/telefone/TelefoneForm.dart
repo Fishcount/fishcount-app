@@ -1,13 +1,11 @@
+import 'package:fishcount_app/constants/Formatters.dart';
 import 'package:fishcount_app/model/TelefoneModel.dart';
 import 'package:fishcount_app/model/enums/EnumTipoTelefone.dart';
 import 'package:fishcount_app/screens/telefone/TelefoneController.dart';
-import 'package:fishcount_app/constants/Formatters.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'dart:convert';
 
 class TelefoneForm extends StatefulWidget {
   final TelefoneModel? telefoneModel;
@@ -29,21 +27,6 @@ class _TelefoneFormState extends State<TelefoneForm> {
 
   @override
   Widget build(BuildContext context) {
-
-    int _getPhoneFormat(){
-      try {
-        return int.parse(widget.telefoneModel!.descricao);
-      } on FormatException catch(e){
-        rethrow;
-      }
-    }
-
-
-
-    var formatter = NumberFormat('+55 ## #####-####');
-    _telefoneController.text =
-        widget.telefoneModel != null ? formatter.format(_getPhoneFormat()) : "";
-
     return Scaffold(
       appBar: CustomAppBar.getAppBar(),
       body: Container(
@@ -63,6 +46,7 @@ class _TelefoneFormState extends State<TelefoneForm> {
               child: TextFieldWidget(
                 controller: _telefoneController,
                 hintText: "Telefone",
+                labelText: widget.telefoneModel != null ? widget.telefoneModel!.descricao : "",
                 prefixIcon: const Icon(Icons.account_balance_wallet_sharp),
                 focusedBorderColor: Colors.blueGrey,
                 iconColor: Colors.blueGrey,
