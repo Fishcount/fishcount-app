@@ -15,7 +15,6 @@ class ErrorModel {
     message = json['message'];
     trace = json['trace'];
     status = json['status'];
-    details = json['details'];
   }
 
   Map<String, dynamic> toJson() => {

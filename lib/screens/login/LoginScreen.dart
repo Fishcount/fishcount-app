@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     paddingAll: 10,
                     buttonText: "Entrar".toUpperCase(),
                     onPressed: () {
-                      LoginController().doLogin(
+                      return LoginController().doLogin(
                         context,
                         _emailController.text,
                         _senhaController.text,
