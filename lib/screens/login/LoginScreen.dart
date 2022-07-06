@@ -38,8 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           context, AppPaths.lotesPath);
                     },
                     child: SizedBox(
-                      width: 200,
-                      height: 200,
+                      width: 150,
+                      height: 150,
                       child: Image.asset(ImagePaths.imageLogo),
                     ),
                   ),
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextFieldWidget(
                           controller: _senhaController,
                           hintText: "Senha",
-                          prefixIcon: const Icon(Icons.password_rounded),
+                          prefixIcon: const Icon(Icons.lock),
                           focusedBorderColor: Colors.blueGrey.shade100,
                           iconColor: Colors.blueGrey,
                           obscureText: true,
@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: TextButtonWidget(
                     textColor: Colors.black54,
                     textSize: 20,
-                    buttonText: "Criar Conta",
+                    buttonText: "Criar Conta".toUpperCase(),
                     onPressed: () {
                       Navigator.pushNamed(
                           context, AppPaths.cadastroUsuarioPath);
@@ -140,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       IconWidget(
-                        iconColor: Colors.deepOrange.shade300,
+                        iconColor: Colors.amber.shade700,
                         icon: LineIcons.googleLogo,
                         iconSize: 50,
                         gestureDetectorFunction: () {},
