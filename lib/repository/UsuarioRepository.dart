@@ -1,7 +1,7 @@
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
-import 'package:fishcount_app/model/UsuarioModel.dart';
+import 'package:fishcount_app/model/PessoaModel.dart';
 import 'package:fishcount_app/repository/EmailRepository.dart';
 import 'package:fishcount_app/repository/TelefoneRepository.dart';
 import 'package:fishcount_app/repository/provider/DBProvider.dart';
@@ -12,7 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 
 class UsuarioRepository {
-  dynamic save(BuildContext context, UsuarioModel usuarioModel) async {
+  dynamic save(BuildContext context, PessoaModel usuarioModel) async {
     try {
       final db = await DBProvider().init();
       int idUsuario = await db.insert("usuario", usuarioModel.toLocalDataBase(),
@@ -46,7 +46,7 @@ class UsuarioRepository {
       }
       NavigatorUtils.pushReplacement(context, const LotesScreen());
 
-      UsuarioModel usuarioModel = UsuarioModel.fromDatabase(login.first);
+      PessoaModel usuarioModel = PessoaModel.fromDatabase(login.first);
       SharedPreferencesUtils.addLocalSharedPreferences(
           usuarioModel.id!, usuarioModel);
     } on Exception catch (e) {
@@ -55,7 +55,7 @@ class UsuarioRepository {
     }
   }
 
-  Future<List<UsuarioModel>> buscarUsuario(BuildContext context) async {
+  Future<List<PessoaModel>> buscarUsuario(BuildContext context) async {
     try {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
@@ -68,7 +68,7 @@ class UsuarioRepository {
           await db.query("usuario", where: "id = ?", whereArgs: [userId]);
 
       return List.generate(maps.length, (index) {
-        return UsuarioModel.fromDatabase(maps[index]);
+        return PessoaModel.fromDatabase(maps[index]);
       });
     } on Exception catch (e) {
       ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);

@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomInterceptors extends Interceptor {
   static const List<String> notProtectedPaths = ["/login", "/usuario/cadastro"];

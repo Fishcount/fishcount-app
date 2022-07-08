@@ -1,3 +1,3 @@
-class ApiUsuario {
-  static const baseUrl = '/usuario';
+class ApiPessoa {
+  static const baseUrl = '/pessoa';
 }

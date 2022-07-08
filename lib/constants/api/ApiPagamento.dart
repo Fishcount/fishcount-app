@@ -1,5 +1,5 @@
 import 'package:fishcount_app/constants/api/ApiUsuario.dart';
 
 class ApiPagamento{
-  static const baseUrl = ApiUsuario.baseUrl + '/{parentId}/pagamento';
+  static const baseUrl = ApiPessoa.baseUrl + '/{parentId}/pagamento';
 }

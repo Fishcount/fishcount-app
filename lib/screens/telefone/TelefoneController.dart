@@ -3,7 +3,7 @@ import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/EmailModel.dart';
 import 'package:fishcount_app/model/TelefoneModel.dart';
-import 'package:fishcount_app/model/UsuarioModel.dart';
+import 'package:fishcount_app/model/PessoaModel.dart';
 import 'package:fishcount_app/repository/TelefoneRepository.dart';
 import 'package:fishcount_app/screens/generic/AbstractController.dart';
 import 'package:fishcount_app/screens/telefone/TelefoneForm.dart';

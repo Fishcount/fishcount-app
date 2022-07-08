@@ -2,14 +2,14 @@ import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/model/EmailModel.dart';
 import 'package:fishcount_app/model/TelefoneModel.dart';
-import 'package:fishcount_app/model/UsuarioModel.dart';
+import 'package:fishcount_app/model/PessoaModel.dart';
 import 'package:fishcount_app/repository/EmailRepository.dart';
 import 'package:fishcount_app/repository/TelefoneRepository.dart';
 import 'package:fishcount_app/repository/UsuarioRepository.dart';
 import 'package:fishcount_app/screens/email/EmailForm.dart';
 import 'package:fishcount_app/screens/telefone/TelefoneForm.dart';
 import 'package:fishcount_app/screens/usuario/UsuarioController.dart';
-import 'package:fishcount_app/service/UsuarioService.dart';
+import 'package:fishcount_app/service/PessoaService.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
@@ -31,10 +31,10 @@ class UsuarioDataForm extends StatefulWidget {
 class _UsuarioDataFormState extends State<UsuarioDataForm> {
   final TextEditingController _nomeController = TextEditingController();
 
-  Future<List<UsuarioModel>> buscarUsuario() async {
+  Future<List<PessoaModel>> buscarUsuario() async {
     bool isConnected = await ConnectionUtils().isConnected();
     if (isConnected) {
-      return UsuarioService().buscarUsuario();
+      return PessoaService().buscarPessoa();
     }
     return UsuarioRepository().buscarUsuario(context);
   }
@@ -50,7 +50,7 @@ class _UsuarioDataFormState extends State<UsuarioDataForm> {
           padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
           child: FutureBuilder(
             future: buscarUsuario(),
-            builder: (context, AsyncSnapshot<List<UsuarioModel>> snapshot) {
+            builder: (context, AsyncSnapshot<List<PessoaModel>> snapshot) {
               return UsuarioController().resolverDadosUsuario(context, snapshot, _nomeController);
             },
           ),

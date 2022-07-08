@@ -1,10 +1,14 @@
+import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/repository/LoteRepository.dart';
 import 'package:fishcount_app/screens/lote/LotesController.dart';
+import 'package:fishcount_app/screens/lote/LotesScreen.dart';
 import 'package:fishcount_app/service/LotesService.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
+import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
+import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
 import 'package:flutter/material.dart';
 
 class FinanceiroScreen extends StatefulWidget {
@@ -25,6 +29,8 @@ class _FinanceiroScreenState extends State<FinanceiroScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar.getAppBar(),
+      drawer: const DrawerWidget(),
+      bottomSheet: CustomBottomSheet.getCustomBottomSheet(context, AppPaths.cadastroLotePath),
       body: Container(
         padding: const EdgeInsets.only(top: 50, right: 20, left: 20),
         child: Column(

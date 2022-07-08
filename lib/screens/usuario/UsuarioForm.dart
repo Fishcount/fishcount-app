@@ -1,3 +1,4 @@
+import 'package:fishcount_app/constants/Formatters.dart';
 import 'package:fishcount_app/screens/usuario/UsuarioController.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
@@ -66,6 +67,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
                   iconColor: Colors.blueGrey,
                   obscureText: false,
                   focusedBorderColor: Colors.blueGrey,
+                  inputMask: Formatters.phoneMask,
                 ),
               ),
               Container(

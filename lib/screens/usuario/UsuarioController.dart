@@ -5,7 +5,7 @@ import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/EmailModel.dart';
 import 'package:fishcount_app/model/TelefoneModel.dart';
-import 'package:fishcount_app/model/UsuarioModel.dart';
+import 'package:fishcount_app/model/PessoaModel.dart';
 import 'package:fishcount_app/model/enums/EnumTipoEmail.dart';
 import 'package:fishcount_app/model/enums/EnumTipoTelefone.dart';
 import 'package:fishcount_app/repository/UsuarioRepository.dart';
@@ -15,7 +15,7 @@ import 'package:fishcount_app/screens/generic/AbstractController.dart';
 import 'package:fishcount_app/screens/lote/LotesScreen.dart';
 import 'package:fishcount_app/screens/telefone/TelefoneController.dart';
 import 'package:fishcount_app/screens/telefone/TelefoneForm.dart';
-import 'package:fishcount_app/service/UsuarioService.dart';
+import 'package:fishcount_app/service/PessoaService.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
@@ -37,17 +37,17 @@ class UsuarioController extends AbstractController {
 
   Future<dynamic> saveLocal(BuildContext context, String email, String celular,
       String nome, String senha) async {
-    UsuarioModel usuario = createUsuarioModel(email, celular, nome, senha);
+    PessoaModel usuario = createUsuarioModel(email, celular, nome, senha);
 
     return await UsuarioRepository().save(context, usuario);
   }
 
   Future<dynamic> saveWithApi(BuildContext context, String email,
       String celular, String nome, String senha) async {
-    UsuarioModel usuario = createUsuarioModel(email, celular, nome, senha);
+    PessoaModel usuario = createUsuarioModel(email, celular, nome, senha);
 
-    dynamic response = await UsuarioService().salvarOuAtualizarUsuario(usuario);
-    if (response is UsuarioModel) {
+    dynamic response = await PessoaService().salvarOuAtualizarUsuario(usuario);
+    if (response is PessoaModel) {
       NavigatorUtils.pushReplacement(context, const LotesScreen());
     }
     if (response is ErrorModel) {
@@ -55,19 +55,19 @@ class UsuarioController extends AbstractController {
     }
   }
 
-  UsuarioModel createUsuarioModel(
+  PessoaModel createUsuarioModel(
       String email, String celular, String nome, String senha) {
     EmailModel emailModel =
         EmailModel(null, email, EnumTipoEmail.PRINCIPAL.name);
     TelefoneModel telefoneModel =
         TelefoneModel(null, celular, EnumTipoTelefone.PRINCIPAL.name);
 
-    return UsuarioModel(null, nome, senha, [telefoneModel], [emailModel], []);
+    return PessoaModel(null, nome, senha, [telefoneModel], [emailModel], [], []);
   }
 
   Widget resolverDadosUsuario(
       BuildContext context,
-      AsyncSnapshot<List<UsuarioModel>> snapshot,
+      AsyncSnapshot<List<PessoaModel>> snapshot,
       TextEditingController _nomeController) {
     if (onHasValue(snapshot)) {
       return Column(

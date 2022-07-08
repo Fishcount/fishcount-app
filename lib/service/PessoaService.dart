@@ -1,26 +1,28 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/api/dio/CustomDio.dart';
+import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/constants/Responses.dart';
 import 'package:fishcount_app/constants/api/ApiUsuario.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
-import 'package:fishcount_app/model/UsuarioModel.dart';
+import 'package:fishcount_app/model/PessoaModel.dart';
 import 'package:fishcount_app/service/LoginService.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
+import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UsuarioService extends AbstractService {
-  String url = ApiUsuario.baseUrl;
+class PessoaService extends AbstractService {
+  String url = ApiPessoa.baseUrl;
 
-  Future<List<UsuarioModel>> buscarUsuario() async {
+  // @todo corrigir retorno para dynamic
+  Future<List<PessoaModel>> buscarPessoa() async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      int id = prefs.getInt("userId")!;
+      final int? id = await SharedPreferencesUtils.getIntVariableFromShared(EnumSharedPreferences.userId);
 
       String managedUrl = url + "/$id";
       Response<dynamic> response = await CustomDio().dioGet(managedUrl);
       if (response.statusCode == Responses.OK_STATUS_CODE) {
-        return [UsuarioModel.fromJson(response.data)];
+        return [PessoaModel.fromJson(response.data)];
       }
       return [];
     } on DioError catch (e) {
@@ -28,21 +30,23 @@ class UsuarioService extends AbstractService {
     }
   }
 
-  dynamic salvarOuAtualizarUsuario(UsuarioModel usuarioModel) async {
+  Future<dynamic> salvarOuAtualizarUsuario(PessoaModel pessoa) async {
     try {
-      if (usuarioModel.id != null) {
-        await put(url, usuarioModel.toJson());
-        return usuarioModel;
+      if (pessoa.id != null) {
+        int? pessoaId = await SharedPreferencesUtils.getIntVariableFromShared(EnumSharedPreferences.userId);
+
+        await put(url + "/$pessoaId", pessoa.toJson());
+        return pessoa;
       }
 
       Response<dynamic> response =
-          await post(url + "/cadastro", usuarioModel.toJson());
+          await post(url, pessoa.toJson());
       if (response.statusCode == Responses.CREATED_STATUS_CODE) {
         LoginService().doLogin(
-          usuarioModel.emails.first.descricao,
-          usuarioModel.senha,
+          pessoa.emails.first.descricao,
+          pessoa.senha,
         );
-        return UsuarioModel.fromJson(response.data);
+        return PessoaModel.fromJson(response.data);
       }
       return null;
     } on DioError catch (e) {

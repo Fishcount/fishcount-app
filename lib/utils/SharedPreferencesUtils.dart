@@ -1,11 +1,11 @@
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/model/AuthUserModel.dart';
-import 'package:fishcount_app/model/UsuarioModel.dart';
+import 'package:fishcount_app/model/PessoaModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesUtils {
   static Future<void> addLocalSharedPreferences(
-      int idUsuario, UsuarioModel usuario) async {
+      int idUsuario, PessoaModel usuario) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt(EnumSharedPreferences.userId.name, idUsuario);
     prefs.setString(
@@ -15,7 +15,7 @@ class SharedPreferencesUtils {
   static Future<void> addSharedPreferences(AuthUserModel auth) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(EnumSharedPreferences.accessToken.name, auth.token);
-    prefs.setInt(EnumSharedPreferences.userId.name, auth.id);
+    prefs.setInt(EnumSharedPreferences.userId.name, auth.pessoaId);
     prefs.setString(EnumSharedPreferences.userEmail.name, auth.username);
   }
 
