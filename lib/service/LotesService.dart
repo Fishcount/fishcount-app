@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/constants/Responses.dart';
 import 'package:fishcount_app/constants/api/ApiLote.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
@@ -13,12 +14,13 @@ class LotesService extends AbstractService {
 
   Future<List<LoteModel>> listarLotesUsuario() async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String managedUrl = _getManagedUrl(prefs);
-      if (managedUrl.isEmpty) {
+      int? pessoaId = await SharedPreferencesUtils.getIntVariableFromShared(EnumSharedPreferences.userId);
+      if (pessoaId == null) {
         return [];
       }
-      Response<List<dynamic>> response = await getAll(managedUrl);
+      url = url.replaceAll("{parentId}", pessoaId.toString());
+
+      Response<List<dynamic>> response = await getAll(url);
 
       if (response.statusCode == 200) {
         List<LoteModel> lotes = [];
@@ -40,17 +42,20 @@ class LotesService extends AbstractService {
 
   dynamic salvarOrAtualizarLote(LoteModel lote) async {
     try {
-      SharedPreferences prefs =
-          await SharedPreferencesUtils.getSharedPreferences();
-      String managedUrl = _getManagedUrl(prefs);
-      if (managedUrl.isEmpty) {
+      int? pessoaId = await SharedPreferencesUtils.getIntVariableFromShared(EnumSharedPreferences.userId);
+      if (pessoaId == null) {
+        return [];
+      }
+      url = url.replaceAll("{parentId}", pessoaId.toString());
+
+      if (url.isEmpty) {
         return;
       }
       if (lote.id != null) {
-        await put(managedUrl, lote.toJson());
+        await put(url, lote.toJson());
         return lote;
       }
-      Response<dynamic> response = await post(managedUrl, lote.toJson());
+      Response<dynamic> response = await post(url, lote.toJson());
       if (response.statusCode == Responses.CREATED_STATUS_CODE) {
         return LoteModel.fromJson(response.data);
       }
@@ -58,13 +63,5 @@ class LotesService extends AbstractService {
     } on DioError catch (e) {
       return ErrorHandler.verifyDioError(e);
     }
-  }
-
-  String _getManagedUrl(SharedPreferences prefs) {
-    int? userId = prefs.getInt('userId');
-    if (userId == null) {
-      return "";
-    }
-    return url.replaceAll("{parentId}", userId.toString());
   }
 }

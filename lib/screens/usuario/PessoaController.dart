@@ -24,8 +24,8 @@ import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class UsuarioController extends AbstractController {
-  Future<dynamic> salvarUsuario(BuildContext context, String nome, String email,
+class PessoaController extends AbstractController {
+  Future<dynamic> salvar(BuildContext context, String nome, String email,
       String celular, String senha) async {
     ConnectionUtils().isConnected().then((isConnected) {
       if (isConnected) {
@@ -37,16 +37,16 @@ class UsuarioController extends AbstractController {
 
   Future<dynamic> saveLocal(BuildContext context, String email, String celular,
       String nome, String senha) async {
-    PessoaModel usuario = createUsuarioModel(email, celular, nome, senha);
+    PessoaModel usuario = _createPessoaModel(email, celular, nome, senha);
 
     return await UsuarioRepository().save(context, usuario);
   }
 
   Future<dynamic> saveWithApi(BuildContext context, String email,
       String celular, String nome, String senha) async {
-    PessoaModel usuario = createUsuarioModel(email, celular, nome, senha);
+    PessoaModel pessoa = _createPessoaModel(email, celular, nome, senha);
 
-    dynamic response = await PessoaService().salvarOuAtualizarUsuario(usuario);
+    dynamic response = await PessoaService().salvarOuAtualizar(pessoa);
     if (response is PessoaModel) {
       NavigatorUtils.pushReplacement(context, const LotesScreen());
     }
@@ -55,14 +55,14 @@ class UsuarioController extends AbstractController {
     }
   }
 
-  PessoaModel createUsuarioModel(
+  PessoaModel _createPessoaModel(
       String email, String celular, String nome, String senha) {
     EmailModel emailModel =
         EmailModel(null, email, EnumTipoEmail.PRINCIPAL.name);
     TelefoneModel telefoneModel =
         TelefoneModel(null, celular, EnumTipoTelefone.PRINCIPAL.name);
 
-    return PessoaModel(null, nome, senha, [telefoneModel], [emailModel], [], []);
+    return PessoaModel(null, nome, senha, null, [telefoneModel], [emailModel], [], []);
   }
 
   Widget resolverDadosUsuario(
@@ -72,23 +72,26 @@ class UsuarioController extends AbstractController {
     if (onHasValue(snapshot)) {
       return Column(
         children: [
-          Container(
-            alignment: Alignment.center,
-            child: DividerWidget(
-              widgetBetween: CircleAvatar(
-                maxRadius: 70,
-                minRadius: 50,
-                child: Image.asset(ImagePaths.imageLogo),
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
+          GestureDetector(
+            child: Container(
+              alignment: Alignment.center,
+              child: DividerWidget(
+                widgetBetween: CircleAvatar(
+                  maxRadius: 70,
+                  minRadius: 50,
+                  child: Image.asset(ImagePaths.imageLogo),
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                ),
+                thikness: 2,
+                paddingRight: 10,
+                paddingLeft: 10,
+                height: 1,
+                color: Colors.blue,
+                isBold: false,
               ),
-              thikness: 2,
-              paddingRight: 10,
-              paddingLeft: 10,
-              height: 1,
-              color: Colors.blue,
-              isBold: false,
             ),
+            // onTap: ,
           ),
           Container(
             alignment: Alignment.center,

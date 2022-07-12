@@ -1,18 +1,18 @@
 import 'package:fishcount_app/constants/Formatters.dart';
-import 'package:fishcount_app/screens/usuario/UsuarioController.dart';
+import 'package:fishcount_app/screens/usuario/PessoaController.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 
-class UsuarioForm extends StatefulWidget {
-  const UsuarioForm({Key? key}) : super(key: key);
+class PessoaForm extends StatefulWidget {
+  const PessoaForm({Key? key}) : super(key: key);
 
   @override
-  State<UsuarioForm> createState() => _UsuarioFormState();
+  State<PessoaForm> createState() => _PessoaFormState();
 }
 
-class _UsuarioFormState extends State<UsuarioForm> {
+class _PessoaFormState extends State<PessoaForm> {
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
@@ -92,7 +92,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
                   buttonColor: Colors.blue,
                   buttonText: "Salvar",
                   onPressed: () {
-                    UsuarioController().salvarUsuario(
+                    PessoaController().salvar(
                         context,
                         _nomeController.text,
                         _emailController.text,

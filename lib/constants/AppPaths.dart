@@ -3,8 +3,8 @@ import 'package:fishcount_app/screens/lote/LoteForm.dart';
 import 'package:fishcount_app/screens/lote/LotesScreen.dart';
 import 'package:fishcount_app/screens/tanque/TanqueForm.dart';
 import 'package:fishcount_app/screens/tanque/TanqueScreen.dart';
-import 'package:fishcount_app/screens/usuario/UsuarioDataForm.dart';
-import 'package:fishcount_app/screens/usuario/UsuarioForm.dart';
+import 'package:fishcount_app/screens/usuario/PessoaDataForm.dart';
+import 'package:fishcount_app/screens/usuario/PessoaForm.dart';
 import 'package:flutter/cupertino.dart';
 
 class AppPaths {
@@ -20,8 +20,8 @@ class AppPaths {
     loginPath: LoginScreen(),
     lotesPath: LotesScreen(),
     tanquesPath: TanquesScreen(),
-    usuarioPath: UsuarioDataForm(),
-    cadastroUsuarioPath: UsuarioForm(),
+    usuarioPath: PessoaDataForm(),
+    cadastroUsuarioPath: PessoaForm(),
     cadastroLotePath: LoteForm(),
     cadastroTanquePath: TanqueForm(),
   };

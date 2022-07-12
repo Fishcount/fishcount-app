@@ -30,7 +30,7 @@ class PessoaService extends AbstractService {
     }
   }
 
-  Future<dynamic> salvarOuAtualizarUsuario(PessoaModel pessoa) async {
+  Future<dynamic> salvarOuAtualizar(PessoaModel pessoa) async {
     try {
       if (pessoa.id != null) {
         int? pessoaId = await SharedPreferencesUtils.getIntVariableFromShared(EnumSharedPreferences.userId);

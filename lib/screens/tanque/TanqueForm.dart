@@ -1,13 +1,10 @@
-import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/EspecieModel.dart';
 import 'package:fishcount_app/model/TanqueModel.dart';
-import 'package:fishcount_app/repository/EspecieRepository.dart';
 import 'package:fishcount_app/screens/tanque/TanqueController.dart';
 import 'package:fishcount_app/service/EspecieService.dart';
-import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
@@ -28,7 +25,6 @@ class TanqueForm extends StatefulWidget {
 
 class _TanqueFormState extends State<TanqueForm> {
   final TextEditingController _nomeTanqueController = TextEditingController();
-
 
   String descricaoEspecie = "";
   EspecieModel? especieModel;
@@ -125,13 +121,11 @@ class _TanqueFormState extends State<TanqueForm> {
             descricaoEspecie == ""
                 ? const Text("")
                 : FutureBuilder(
-                    future: Future.delayed(
-                      Duration.zero,
-                      () => EspecieService()
-                          .findByDescricao(context, descricaoEspecie),
-                    ),
+                    future: EspecieService()
+                        .findByDescricao(context, descricaoEspecie),
                     builder: (context, AsyncSnapshot<EspecieModel> snapshot) {
-                      return TanqueController().resolverDadosEspecie(snapshot, context);
+                      return TanqueController()
+                          .resolverDadosEspecie(snapshot, context);
                     },
                   ),
             Container(
@@ -151,6 +145,4 @@ class _TanqueFormState extends State<TanqueForm> {
       ),
     );
   }
-
-
 }

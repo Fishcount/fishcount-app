@@ -8,7 +8,7 @@ import 'package:fishcount_app/repository/TelefoneRepository.dart';
 import 'package:fishcount_app/repository/UsuarioRepository.dart';
 import 'package:fishcount_app/screens/email/EmailForm.dart';
 import 'package:fishcount_app/screens/telefone/TelefoneForm.dart';
-import 'package:fishcount_app/screens/usuario/UsuarioController.dart';
+import 'package:fishcount_app/screens/usuario/PessoaController.dart';
 import 'package:fishcount_app/service/PessoaService.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
@@ -21,14 +21,14 @@ import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class UsuarioDataForm extends StatefulWidget {
-  const UsuarioDataForm({Key? key}) : super(key: key);
+class PessoaDataForm extends StatefulWidget {
+  const PessoaDataForm({Key? key}) : super(key: key);
 
   @override
-  State<UsuarioDataForm> createState() => _UsuarioDataFormState();
+  State<PessoaDataForm> createState() => _PessoaDataFormState();
 }
 
-class _UsuarioDataFormState extends State<UsuarioDataForm> {
+class _PessoaDataFormState extends State<PessoaDataForm> {
   final TextEditingController _nomeController = TextEditingController();
 
   Future<List<PessoaModel>> buscarUsuario() async {
@@ -51,7 +51,7 @@ class _UsuarioDataFormState extends State<UsuarioDataForm> {
           child: FutureBuilder(
             future: buscarUsuario(),
             builder: (context, AsyncSnapshot<List<PessoaModel>> snapshot) {
-              return UsuarioController().resolverDadosUsuario(context, snapshot, _nomeController);
+              return PessoaController().resolverDadosUsuario(context, snapshot, _nomeController);
             },
           ),
         ),

@@ -7,7 +7,7 @@ import 'package:fishcount_app/model/enums/EnumTipoEmail.dart';
 import 'package:fishcount_app/repository/EmailRepository.dart';
 import 'package:fishcount_app/screens/email/EmailForm.dart';
 import 'package:fishcount_app/screens/generic/AbstractController.dart';
-import 'package:fishcount_app/screens/usuario/UsuarioDataForm.dart';
+import 'package:fishcount_app/screens/usuario/PessoaDataForm.dart';
 import 'package:fishcount_app/service/EmailService.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
@@ -111,7 +111,7 @@ class EmailController extends AbstractController {
     }
     await _resolverSaveOrUpdateLocal(emailModel, context, userId);
 
-    NavigatorUtils.pushReplacement(context, const UsuarioDataForm());
+    NavigatorUtils.pushReplacement(context, const PessoaDataForm());
   }
 
   Future<void> _resolverSaveOrUpdateLocal(
@@ -132,7 +132,7 @@ class EmailController extends AbstractController {
     }
     dynamic response = await _resolverSaveOrUpdate(emailModel, userId);
     if (response is EmailModel) {
-      NavigatorUtils.pushReplacement(context, const UsuarioDataForm());
+      NavigatorUtils.pushReplacement(context, const PessoaDataForm());
     }
     if (response is ErrorModel) {
       return ErrorHandler.getDefaultErrorMessage(context, response.message);
@@ -147,7 +147,7 @@ class EmailController extends AbstractController {
     }
     dynamic response = await EmailService().excluirEmail(emailId, userId);
     if (response == emailId) {
-      NavigatorUtils.pushReplacement(context, const UsuarioDataForm());
+      NavigatorUtils.pushReplacement(context, const PessoaDataForm());
     }
     if (response is ErrorModel) {
       return ErrorHandler.getDefaultErrorMessage(context, response.message);

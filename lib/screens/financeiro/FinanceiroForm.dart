@@ -71,7 +71,7 @@ class _FinanceiroformState extends State<FinanceiroForm> {
                 onPressed: () async {
                   widget.pessoaModel.cpf = _cpfController.text;
                   dynamic response = await PessoaService()
-                      .salvarOuAtualizarUsuario(widget.pessoaModel);
+                      .salvarOuAtualizar(widget.pessoaModel);
 
                   if (response is PessoaModel) {
                     NavigatorUtils.pushReplacement(context, const FinanceiroScreen());

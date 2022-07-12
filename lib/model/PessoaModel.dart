@@ -14,6 +14,8 @@ class PessoaModel {
 
   late String telefone;
 
+  late String? cpf;
+
   late List<TelefoneModel> telefones;
 
   late List<EmailModel> emails;
@@ -22,9 +24,8 @@ class PessoaModel {
 
   late List<EnderecoModel> enderecos;
 
-  late String cpf;
 
-  PessoaModel(this.id, this.nome, this.senha, this.telefones, this.emails,
+  PessoaModel(this.id, this.nome, this.senha, this.cpf, this.telefones, this.emails,
       this.lotes, this.enderecos);
 
   PessoaModel.fromJson(Map<String, dynamic> json) {

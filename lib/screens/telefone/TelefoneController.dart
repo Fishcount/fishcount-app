@@ -7,7 +7,7 @@ import 'package:fishcount_app/model/PessoaModel.dart';
 import 'package:fishcount_app/repository/TelefoneRepository.dart';
 import 'package:fishcount_app/screens/generic/AbstractController.dart';
 import 'package:fishcount_app/screens/telefone/TelefoneForm.dart';
-import 'package:fishcount_app/screens/usuario/UsuarioDataForm.dart';
+import 'package:fishcount_app/screens/usuario/PessoaDataForm.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
@@ -38,7 +38,7 @@ class TelefoneController extends AbstractController{
       await TelefoneRepository().update(context, telefoneModel, userId);
     }
 
-    NavigatorUtils.pushReplacement(context, const UsuarioDataForm());
+    NavigatorUtils.pushReplacement(context, const PessoaDataForm());
   }
 
   Widget getPhoneList(BuildContext context, List<TelefoneModel> telefones) {
