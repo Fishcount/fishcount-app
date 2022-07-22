@@ -67,7 +67,8 @@ class _TanqueFormState extends State<TanqueForm> {
               child: FutureBuilder(
                 future: TanqueController().resolverListaEspecie(context),
                 builder: (context, AsyncSnapshot<List<EspecieModel>> snapshot) {
-                  if (TanqueController().onHasValue(snapshot)) {
+                  if (snapshot.connectionState == ConnectionState.done &&
+                      (snapshot.hasData)) {
                     String firstValue = snapshot.data!.first.descricao;
                     return Container(
                       height: 60,
@@ -101,14 +102,15 @@ class _TanqueFormState extends State<TanqueForm> {
                           }),
                     );
                   }
-                  if (TanqueController()
-                      .onDoneRequestWithEmptyValue(snapshot)) {
+                  if (snapshot.connectionState == ConnectionState.done &&
+                      snapshot.data != null &&
+                      snapshot.data!.isEmpty) {
                     return TanqueController().getNotFoundWidget(
                         context,
                         ErrorMessage.usuarioSemTanque,
                         AppPaths.cadastroTanquePath);
                   }
-                  if (TanqueController().onError(snapshot)) {
+                  if (snapshot.hasError) {
                     return ErrorHandler.getDefaultErrorMessage(
                         context, ErrorMessage.serverError);
                   }
@@ -119,10 +121,15 @@ class _TanqueFormState extends State<TanqueForm> {
               ),
             ),
             descricaoEspecie == ""
-                ? const Text("")
+                ? FutureBuilder(
+                    future: EspecieService().findFirst(),
+                    builder: (context, AsyncSnapshot<EspecieModel> snapshot) {
+                      return TanqueController()
+                          .resolverDadosEspecie(snapshot, context);
+                    },
+                  )
                 : FutureBuilder(
-                    future: EspecieService()
-                        .findByDescricao(context, descricaoEspecie),
+                    future: EspecieService().findByDescricao(descricaoEspecie),
                     builder: (context, AsyncSnapshot<EspecieModel> snapshot) {
                       return TanqueController()
                           .resolverDadosEspecie(snapshot, context);

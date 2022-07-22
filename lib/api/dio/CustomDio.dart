@@ -18,6 +18,7 @@ class CustomDio<T> {
       String url, Map<String, dynamic> data) async {
     return await dio.post(url, data: data);
   }
+
   Future<Response<List<dynamic>>> dioGetAll(String url) async {
     return await dio.get(url);
   }

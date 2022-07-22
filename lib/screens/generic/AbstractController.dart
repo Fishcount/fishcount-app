@@ -145,7 +145,7 @@ abstract class AbstractController {
   }
 
   bool onHasValue(AsyncSnapshot<dynamic> snapshot) {
-      return snapshot.connectionState == ConnectionState.done && (snapshot.hasData || snapshot.data.isNotEmpty);
+      return snapshot.connectionState == ConnectionState.done && (snapshot.hasData);
   }
 
   bool onDoneRequestWithEmptyValue(AsyncSnapshot<dynamic> snapshot) {

@@ -22,10 +22,6 @@ class DrawerWidget extends StatefulWidget {
 class _DrawerWidgetState extends State<DrawerWidget> {
   final TextEditingController _cpfController = TextEditingController();
 
-  Future<XFile?> getImage() async {
-
-  }
-
   Future<void> _resolverPermissoes() async {
     final List<PessoaModel> pessoas = await PessoaService().buscarPessoa();
     final PessoaModel pessoa = pessoas.first;

@@ -8,9 +8,23 @@ import 'package:flutter/cupertino.dart';
 class EspecieService extends AbstractService {
   String url = ApiEspecie.baseUrl;
 
-  Future<EspecieModel> findByDescricao(BuildContext context, String descricao) async {
+  Future<EspecieModel> findByDescricao(String descricao) async {
     try {
       Response<dynamic> response = await CustomDio().dioGet(url + "/find?descricao=$descricao");
+
+      EspecieModel? especieModel;
+      if (response.statusCode == 200){
+        especieModel = EspecieModel.fromJson(response.data);
+      }
+      return especieModel!;
+    } on DioError catch (e){
+      rethrow;
+    }
+  }
+
+  Future<EspecieModel> findFirst() async {
+    try {
+      Response<dynamic> response = await CustomDio().dioGet(url + "/first");
 
       EspecieModel? especieModel;
       if (response.statusCode == 200){

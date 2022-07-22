@@ -247,9 +247,7 @@ class TanqueController extends AbstractController {
       return ErrorHandler.getDefaultErrorMessage(
           context, ErrorMessage.serverError);
     }
-    return Center(
-      child: TanqueController().getCircularProgressIndicator(),
-    );
+    return Text("");
   }
 
   String _resolverQtdeMediaRacao(AsyncSnapshot<EspecieModel> snapshot) =>
