@@ -93,12 +93,6 @@ class PlanoController extends AbstractController {
                             size: 25,
                           ),
                           onTap: () {
-                            // NavigatorUtils.push(
-                            //   context,
-                            //   LoteForm(
-                            //     lote: lote,
-                            //   ),
-                            // );
                           },
                         ),
                       ),
