@@ -1,10 +1,7 @@
 import 'package:fishcount_app/constants/AppPaths.dart';
-import 'package:fishcount_app/model/LoteModel.dart';
-import 'package:fishcount_app/repository/LoteRepository.dart';
-import 'package:fishcount_app/screens/lote/LotesController.dart';
-import 'package:fishcount_app/screens/lote/LotesScreen.dart';
-import 'package:fishcount_app/service/LotesService.dart';
-import 'package:fishcount_app/utils/ConnectionUtils.dart';
+import 'package:fishcount_app/model/PlanoModel.dart';
+import 'package:fishcount_app/screens/plano/PlanoController.dart';
+import 'package:fishcount_app/service/PlanoService.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
@@ -17,20 +14,15 @@ class FinanceiroScreen extends StatefulWidget {
   @override
   State<FinanceiroScreen> createState() => _FinanceiroScreenState();
 }
-Future<List<LoteModel>>? listarLotes(BuildContext context) async {
-  bool isConnected = await ConnectionUtils().isConnected();
-  if (isConnected) {
-    return LotesService().listarLotesUsuario();
-  }
-  return LoteRepository().listarLotesUsuario(context);
-}
+
 class _FinanceiroScreenState extends State<FinanceiroScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar.getAppBar(),
       drawer: const DrawerWidget(),
-      bottomSheet: CustomBottomSheet.getCustomBottomSheet(context, AppPaths.cadastroLotePath),
+      bottomSheet: CustomBottomSheet.getCustomBottomSheet(
+          context, AppPaths.cadastroLotePath),
       body: Container(
         padding: const EdgeInsets.only(top: 50, right: 20, left: 20),
         child: Column(
@@ -48,13 +40,24 @@ class _FinanceiroScreenState extends State<FinanceiroScreen> {
             ),
             SingleChildScrollView(
               child: FutureBuilder(
-                future: listarLotes(context),
-                builder: (context, AsyncSnapshot<List<LoteModel>> snapshot) {
-                  return LotesController()
-                      .resolverListaLotes(context, snapshot);
+                future: PlanoService().listarPlanos(),
+                builder: (context, AsyncSnapshot<List<PlanoModel>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done &&
+                      snapshot.hasData) {
+                    if (snapshot.hasData && snapshot.data!.isEmpty) {
+                      return const Text(
+                          "Não foi possível encontrar nenhum plano disponivel");
+                    }
+                    return PlanoController()
+                        .listarPlanos(snapshot.data!, context);
+                  }
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: CircularProgressIndicator(),
+                  );
                 },
-              )
-            )
+              ),
+            ),
           ],
         ),
       ),
