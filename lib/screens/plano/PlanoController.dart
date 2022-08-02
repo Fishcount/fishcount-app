@@ -2,7 +2,6 @@ import 'package:fishcount_app/model/PlanoModel.dart';
 import 'package:fishcount_app/screens/generic/AbstractController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:line_icons/line_icons.dart';
 
 class PlanoController extends AbstractController {
   Widget listarPlanos(List<PlanoModel> planoModel, BuildContext context) {
@@ -17,7 +16,7 @@ class PlanoController extends AbstractController {
             return Container(
               margin: const EdgeInsets.only(top: 15),
               alignment: Alignment.center,
-              height: 70,
+              height: 150,
               decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -34,92 +33,67 @@ class PlanoController extends AbstractController {
                   ),
                 ),
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 1.7,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              child: Container(
+                padding: const EdgeInsets.only(left: 10, top: 10, right: 10),
+                child: Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        GestureDetector(
-                          onTap: () {},
+                        Flexible(
                           child: Container(
-                            padding: const EdgeInsets.only(left: 10, top: 10),
                             child: Text(
                               plano.descricao,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                fontSize: 16,
+                                color: Colors.blue,
                                 fontWeight: FontWeight.bold,
+                                fontSize: 20,
                               ),
                             ),
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.only(left: 10, top: 10),
-                          child: Text(
-                           plano.descricao,
-                            style: const TextStyle(
-                              fontSize: 12,
-                            ),
+                        const Expanded(
+                          child: Divider(
+                            height: 1,
+                            thickness: 2,
+                            color: Colors.blue,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(
-                          right: 7,
-                          top: 12,
-                          bottom: 12,
-                        ),
-                        width: 30,
-                        decoration: const BoxDecoration(
-                          //color: Colors.blue,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        alignment: Alignment.center,
-                        child: GestureDetector(
-                          child: const Icon(
-                            LineIcons.edit,
-                            color: Colors.black,
-                            size: 25,
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Mínimo de tanques: " +
+                                  plano.minTanque.toString()),
+                              Text("Máximo de tanques: " +
+                                  plano.maxTanque.toString()),
+                              Text("Parcelas: " + plano.maxTanque.toString()),
+                              Text("Valor máximo: R\$ " +
+                                  plano.valorMaximo.toString()),
+                              Text("Valor mínimo: R\$ " +
+                                  plano.valorMinimo.toString()),
+                              // texto
+                            ],
                           ),
-                          onTap: () {
-                          },
                         ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(
-                          right: 6,
-                          top: 12,
-                          bottom: 12,
-                        ),
-                        width: 30,
-                        decoration: const BoxDecoration(
-                          //color: Colors.red,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        alignment: Alignment.center,
-                        child: GestureDetector(
-                          child: const Icon(
-                            LineIcons.trash,
-                            color: Colors.red,
-                            size: 25,
+                        Container(
+                          child: Column(
+                            children: [
+                              //botoes
+                            ],
                           ),
-                          onTap: () {},
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                        )
+                      ],
+                    )
+                  ],
+                ),
               ),
             );
           },
