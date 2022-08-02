@@ -24,7 +24,7 @@ class _FinanceiroScreenState extends State<FinanceiroScreen> {
       bottomSheet: CustomBottomSheet.getCustomBottomSheet(
           context, AppPaths.cadastroLotePath),
       body: Container(
-        padding: const EdgeInsets.only(top: 50, right: 20, left: 20),
+        padding: const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 20),
         child: Column(
           children: [
             const DividerWidget(
