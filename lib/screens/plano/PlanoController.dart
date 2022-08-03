@@ -1,5 +1,13 @@
+import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
+import 'package:fishcount_app/handler/ErrorHandler.dart';
+import 'package:fishcount_app/model/PagamentoModel.dart';
 import 'package:fishcount_app/model/PlanoModel.dart';
+import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
+import 'package:fishcount_app/model/enums/EnumTipoPagamento.dart';
+import 'package:fishcount_app/screens/financeiro/FinanceiroScreen.dart';
 import 'package:fishcount_app/screens/generic/AbstractController.dart';
+import 'package:fishcount_app/service/PagamentoService.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -72,26 +80,26 @@ class PlanoController extends AbstractController {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                padding: EdgeInsets.only(bottom: 5),
+                                padding: const EdgeInsets.only(bottom: 5),
                                 child: Text(
                                   "Mínimo de tanques: " +
                                       plano.minTanque.toString(),
-                                  style: TextStyle(fontSize: 15),
+                                  style: const TextStyle(fontSize: 15),
                                 ),
                               ),
                               Container(
-                                padding: EdgeInsets.only(bottom: 5),
+                                padding: const EdgeInsets.only(bottom: 5),
                                 child: Text(
                                   "Máximo de tanques: " +
                                       plano.maxTanque.toString(),
-                                  style: TextStyle(fontSize: 15),
+                                  style: const TextStyle(fontSize: 15),
                                 ),
                               ),
                               Container(
-                                padding: EdgeInsets.only(bottom: 5),
+                                padding: const EdgeInsets.only(bottom: 5),
                                 child: Text(
-                                    "Parcelas: " + plano.maxTanque.toString(),
-                                  style: TextStyle(fontSize: 15),
+                                  "Parcelas: " + plano.qtdeParcela.toString(),
+                                  style: const TextStyle(fontSize: 15),
                                 ),
                               ),
                             ],
@@ -110,7 +118,7 @@ class PlanoController extends AbstractController {
                                 radioBorder: 10,
                                 textSize: 17,
                                 textColor: Colors.white,
-                                onPressed: () {},
+                                onPressed: () => _assinarPlano(plano, context),
                               ),
                               ElevatedButtonWidget(
                                 buttonText: "Entrar em contato",
@@ -118,7 +126,7 @@ class PlanoController extends AbstractController {
                                 radioBorder: 3,
                                 textSize: 17,
                                 textColor: Colors.grey,
-                                onPressed: () {},
+                                onPressed: _enviarContato,
                               ),
                             ],
                           ),
@@ -129,11 +137,12 @@ class PlanoController extends AbstractController {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                          padding: EdgeInsets.only(top: 20),
+                          padding: const EdgeInsets.only(top: 20),
                           child: Text(
                             "Valor total do plano: R\$ " +
-                                plano.valorMinimo.toString(),
-                            style: TextStyle(
+                                plano.valorMinimo.toString() +
+                                "0",
+                            style: const TextStyle(
                                 fontSize: 20,
                                 color: Colors.blue,
                                 fontWeight: FontWeight.bold),
@@ -150,4 +159,35 @@ class PlanoController extends AbstractController {
       ),
     );
   }
+
+  _assinarPlano(PlanoModel plano, BuildContext context) async {
+    final PagamentoModel pagamentoModel = _gerarPagamentoFromPlano(plano);
+
+    dynamic response = await _incluirAssinaturaPlano(pagamentoModel);
+    if (response is PagamentoModel) {
+      NavigatorUtils.pushReplacement(context, FinanceiroScreen(pagamentoModel: response,));
+    }
+    if (response is ErrorModel) {
+      return ErrorHandler.getDefaultErrorMessage(context, response.message);
+    }
+  }
+
+  PagamentoModel _gerarPagamentoFromPlano(PlanoModel plano) {
+    return PagamentoModel(
+        null,
+        plano.valorMinimo,
+        plano.valorMinimo,
+        0,
+        0,
+        plano.qtdeParcela,
+        plano,
+        EnumTipoPagamento.PIX.name,
+        EnumStatusPagamento.ANALISE.name);
+  }
+
+  Future<dynamic> _incluirAssinaturaPlano(PagamentoModel pagamentoModel) async {
+    return await PagamentoService().incluirAssinaturaPlano(pagamentoModel);
+  }
+
+  _enviarContato() {}
 }

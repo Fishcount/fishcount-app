@@ -16,7 +16,6 @@ class PessoaService extends AbstractService {
   // @todo corrigir retorno para dynamic
   Future<List<PessoaModel>> buscarPessoa() async {
     try {
-
       final int? id = await SharedPreferencesUtils.getIntVariableFromShared(EnumSharedPreferences.userId);
 
       String managedUrl = url + "/$id";

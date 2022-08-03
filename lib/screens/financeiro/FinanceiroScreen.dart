@@ -1,4 +1,5 @@
 import 'package:fishcount_app/constants/AppPaths.dart';
+import 'package:fishcount_app/model/PagamentoModel.dart';
 import 'package:fishcount_app/model/PlanoModel.dart';
 import 'package:fishcount_app/screens/plano/PlanoController.dart';
 import 'package:fishcount_app/service/PlanoService.dart';
@@ -9,7 +10,12 @@ import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
 import 'package:flutter/material.dart';
 
 class FinanceiroScreen extends StatefulWidget {
-  const FinanceiroScreen({Key? key}) : super(key: key);
+  final PagamentoModel? pagamentoModel;
+
+  const FinanceiroScreen({
+    Key? key,
+    this.pagamentoModel,
+  }) : super(key: key);
 
   @override
   State<FinanceiroScreen> createState() => _FinanceiroScreenState();
@@ -24,7 +30,8 @@ class _FinanceiroScreenState extends State<FinanceiroScreen> {
       bottomSheet: CustomBottomSheet.getCustomBottomSheet(
           context, AppPaths.cadastroLotePath),
       body: Container(
-        padding: const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 20),
+        padding:
+            const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 20),
         child: Column(
           children: [
             const DividerWidget(

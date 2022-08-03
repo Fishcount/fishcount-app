@@ -23,6 +23,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   final TextEditingController _cpfController = TextEditingController();
 
   Future<void> _resolverPermissoes() async {
+    // todo Verificar se usuário pode possuir pagamentos / verificar cpf e se tem pagamentos no seu nome
+    // todo caso sim, enviar para a tela financeiro, caso não
     final List<PessoaModel> pessoas = await PessoaService().buscarPessoa();
     final PessoaModel pessoa = pessoas.first;
 

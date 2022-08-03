@@ -20,6 +20,7 @@ class PlanoModel {
     this.valorMaximo,
     this.minTanque,
     this.maxTanque,
+    this.qtdeParcela,
   );
 
   PlanoModel.fromJson(Map<String, dynamic> json) {
@@ -27,6 +28,7 @@ class PlanoModel {
     descricao = json['descricao'];
     valorMinimo = json['valorMinimo'];
     valorMaximo = json['valorMaximo'];
+    qtdeParcela = json['qtdeParcela'];
     minTanque = json['minTanque'];
     maxTanque = json['maxTanque'];
   }
@@ -36,6 +38,7 @@ class PlanoModel {
         "descricao": descricao,
         "valorMinimo": valorMinimo,
         "valorMaximo": valorMaximo,
+        "qtdeParcela": qtdeParcela,
         "minTanque": minTanque,
         "maxTanque": maxTanque
       };
