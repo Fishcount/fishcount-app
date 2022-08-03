@@ -1,16 +1,17 @@
 import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
+import 'package:fishcount_app/model/PagamentoModel.dart';
 import 'package:fishcount_app/model/PessoaModel.dart';
 import 'package:fishcount_app/screens/financeiro/FinanceiroForm.dart';
 import 'package:fishcount_app/screens/financeiro/FinanceiroScreen.dart';
 import 'package:fishcount_app/screens/lote/LotesController.dart';
 import 'package:fishcount_app/screens/usuario/PessoaDataForm.dart';
+import 'package:fishcount_app/service/PagamentoService.dart';
 import 'package:fishcount_app/service/PessoaService.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:images_picker/images_picker.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({Key? key}) : super(key: key);
@@ -23,18 +24,24 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   final TextEditingController _cpfController = TextEditingController();
 
   Future<void> _resolverPermissoes() async {
-    // todo Verificar se usuário pode possuir pagamentos / verificar cpf e se tem pagamentos no seu nome
-    // todo caso sim, enviar para a tela financeiro, caso não
     final List<PessoaModel> pessoas = await PessoaService().buscarPessoa();
-    final PessoaModel pessoa = pessoas.first;
 
-    if (pessoa.cpf == null || (pessoa.cpf != null && pessoa.cpf!.isEmpty)) {
-      NavigatorUtils.push(context, FinanceiroForm(pessoaModel: pessoa));
+    if (_pessoaHasCpf(pessoas.first)) {
+      NavigatorUtils.push(context, FinanceiroForm(pessoaModel: pessoas.first));
       return;
     }
+    final List<PagamentoModel> pagamentos =
+        await PagamentoService().buscarPagamentos();
 
-    NavigatorUtils.push(context, const FinanceiroScreen());
+    NavigatorUtils.push(
+        context,
+        FinanceiroScreen(
+          pagamentos: pagamentos,
+        ));
   }
+
+  bool _pessoaHasCpf(PessoaModel pessoa) =>
+      pessoa.cpf == null || (pessoa.cpf != null && pessoa.cpf!.isEmpty);
 
   @override
   Widget build(BuildContext context) {

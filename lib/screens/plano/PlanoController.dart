@@ -165,7 +165,7 @@ class PlanoController extends AbstractController {
 
     dynamic response = await _incluirAssinaturaPlano(pagamentoModel);
     if (response is PagamentoModel) {
-      NavigatorUtils.pushReplacement(context, FinanceiroScreen(pagamentoModel: response,));
+      NavigatorUtils.pushReplacement(context, FinanceiroScreen(pagamentos: [response],));
     }
     if (response is ErrorModel) {
       return ErrorHandler.getDefaultErrorMessage(context, response.message);

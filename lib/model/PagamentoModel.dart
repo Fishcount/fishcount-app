@@ -1,6 +1,4 @@
 import 'package:fishcount_app/model/PlanoModel.dart';
-import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
-import 'package:fishcount_app/model/enums/EnumTipoPagamento.dart';
 
 class PagamentoModel {
   late int? id;
@@ -40,21 +38,20 @@ class PagamentoModel {
     acrescimo = json['acrescimo'];
     desconto = json['desconto'];
     qtdeParcelas = json['qtdeParcelas'];
-    plano = json['plano'].map((plano) => PlanoModel.fromJson(plano));
+    // plano = json['plano'].map((plano) => PlanoModel.fromJson(plano));
     tipoPagamento = json['tipoPagamento'];
     statusPagamento = json['statusPagamento'];
   }
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "valor": valor,
-    "saldo": saldo,
-    "acrescimo": acrescimo,
-    "desconto": desconto,
-    "qtdeParcelas": qtdeParcelas,
-    "plano": plano,
-    "tipoPagamento": tipoPagamento,
-    "statusPagamento": statusPagamento,
-  };
-
+        "id": id,
+        "valor": valor,
+        "saldo": saldo,
+        "acrescimo": acrescimo,
+        "desconto": desconto,
+        "qtdeParcelas": qtdeParcelas,
+        "plano": plano,
+        "tipoPagamento": tipoPagamento,
+        "statusPagamento": statusPagamento,
+      };
 }

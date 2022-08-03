@@ -10,11 +10,11 @@ import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
 import 'package:flutter/material.dart';
 
 class FinanceiroScreen extends StatefulWidget {
-  final PagamentoModel? pagamentoModel;
+  final List<PagamentoModel>? pagamentos;
 
   const FinanceiroScreen({
     Key? key,
-    this.pagamentoModel,
+    this.pagamentos,
   }) : super(key: key);
 
   @override
@@ -22,6 +22,10 @@ class FinanceiroScreen extends StatefulWidget {
 }
 
 class _FinanceiroScreenState extends State<FinanceiroScreen> {
+  bool _showPagamentos() {
+    return widget.pagamentos != null && widget.pagamentos!.isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,10 +38,10 @@ class _FinanceiroScreenState extends State<FinanceiroScreen> {
             const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 20),
         child: Column(
           children: [
-            const DividerWidget(
+            DividerWidget(
               widgetBetween: Text(
-                "Financeiro",
-                style: TextStyle(color: Colors.blue, fontSize: 17),
+                _showPagamentos() ? "Pagamentos" : "Financeiro",
+                style: const TextStyle(color: Colors.blue, fontSize: 17),
               ),
               height: 1,
               thikness: 1,
@@ -45,26 +49,29 @@ class _FinanceiroScreenState extends State<FinanceiroScreen> {
               paddingLeft: 12,
               paddingRight: 12,
             ),
-            SingleChildScrollView(
-              child: FutureBuilder(
-                future: PlanoService().listarPlanos(),
-                builder: (context, AsyncSnapshot<List<PlanoModel>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done &&
-                      snapshot.hasData) {
-                    if (snapshot.hasData && snapshot.data!.isEmpty) {
-                      return const Text(
-                          "Não foi possível encontrar nenhum plano disponivel");
-                    }
-                    return PlanoController()
-                        .listarPlanos(snapshot.data!, context);
-                  }
-                  return const Padding(
-                    padding: EdgeInsets.only(top: 50),
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              ),
-            ),
+            _showPagamentos()
+                ? Text("Pagamentos")
+                : SingleChildScrollView(
+                    child: FutureBuilder(
+                      future: PlanoService().listarPlanos(),
+                      builder:
+                          (context, AsyncSnapshot<List<PlanoModel>> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done &&
+                            snapshot.hasData) {
+                          if (snapshot.hasData && snapshot.data!.isEmpty) {
+                            return const Text(
+                                "Não foi possível encontrar nenhum plano disponivel");
+                          }
+                          return PlanoController()
+                              .listarPlanos(snapshot.data!, context);
+                        }
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 50),
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    ),
+                  ),
           ],
         ),
       ),

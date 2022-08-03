@@ -32,7 +32,7 @@ class PagamentoService extends AbstractService {
     try {
       final int? id = await SharedPreferencesUtils.getIntVariableFromShared(EnumSharedPreferences.userId);
 
-      String managedUrl = url + "/$id/pagamento";
+      String managedUrl = url.replaceAll("{pessoaId}", id.toString());
       Response<List<dynamic>> response = await getAll(managedUrl);
 
       if (response.statusCode == 200) {
