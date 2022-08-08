@@ -50,7 +50,91 @@ class _FinanceiroScreenState extends State<FinanceiroScreen> {
               paddingRight: 12,
             ),
             _showPagamentos()
-                ? Text("Pagamentos")
+                ? Container(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 10, right: 10),
+                          decoration: const BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(7),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("Mês"),
+                              Text("|"),
+                              Text("Vencimento"),
+                              Text("|"),
+                              Container(
+                                padding: EdgeInsets.only(left: 10, right: 10),
+                                child: Text("Valor"),
+                              ),
+                              Text("|"),
+                              Text("Status"),
+                            ],
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 20),
+                            height: MediaQuery.of(context).size.height / 1.4,
+                            child: ListView.builder(
+                              itemCount: widget.pagamentos!.length,
+                              itemBuilder: (BuildContext context, index) {
+                                return Container(
+                                  decoration: const BoxDecoration(
+                                      border: Border(
+                                    top: BorderSide(
+                                        color: Colors.black26, width: 1),
+                                    right: BorderSide(
+                                        color: Colors.black26, width: 1),
+                                    left: BorderSide(
+                                        color: Colors.black26, width: 1),
+                                    bottom: BorderSide(
+                                        color: Colors.blueAccent, width: 2),
+                                  )),
+                                  margin: EdgeInsets.only(bottom: 15),
+                                  child: ListTile(
+                                    // leading: Text("DEZ"),
+                                    trailing: Text(
+                                      widget.pagamentos![index].statusPagamento,
+                                      style: const TextStyle(
+                                        color: Colors.green,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                    title: Container(
+                                      padding: EdgeInsets.all(10),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text("Dez"),
+                                          Text("|"),
+                                          Text("01/01/2021"),
+                                          Text("|"),
+                                          Text("Valor"),
+                                          Text("|"),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
                 : SingleChildScrollView(
                     child: FutureBuilder(
                       future: PlanoService().listarPlanos(),
