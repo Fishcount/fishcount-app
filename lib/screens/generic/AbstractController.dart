@@ -20,7 +20,7 @@ abstract class AbstractController {
     );
   }
 
-  Widget getNotFoundWidget(
+  Widget notFoundWidgetRedirect(
       BuildContext context, String message, String nextScreen) {
     return Container(
       padding: const EdgeInsets.only(top: 30),

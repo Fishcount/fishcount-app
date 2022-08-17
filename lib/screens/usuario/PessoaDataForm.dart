@@ -1,21 +1,10 @@
-import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
-import 'package:fishcount_app/model/EmailModel.dart';
-import 'package:fishcount_app/model/TelefoneModel.dart';
 import 'package:fishcount_app/model/PessoaModel.dart';
-import 'package:fishcount_app/repository/EmailRepository.dart';
-import 'package:fishcount_app/repository/TelefoneRepository.dart';
 import 'package:fishcount_app/repository/UsuarioRepository.dart';
-import 'package:fishcount_app/screens/email/EmailForm.dart';
-import 'package:fishcount_app/screens/telefone/TelefoneForm.dart';
+import 'package:fishcount_app/screens/lote/LoteForm.dart';
 import 'package:fishcount_app/screens/usuario/PessoaController.dart';
 import 'package:fishcount_app/service/PessoaService.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
-import 'package:fishcount_app/utils/NavigatorUtils.dart';
-import 'package:fishcount_app/widgets/DividerWidget.dart';
-import 'package:fishcount_app/widgets/ItemContainerWidget.dart';
-import 'package:fishcount_app/widgets/TextFieldWidget.dart';
-import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,7 +33,7 @@ class _PessoaDataFormState extends State<PessoaDataForm> {
     return Scaffold(
       appBar: CustomAppBar.getAppBar(),
       bottomNavigationBar:
-          CustomBottomSheet.getCustomBottomSheet(context, AppPaths.lotesPath),
+          CustomBottomSheet.getCustomBottomSheet(context, const LoteForm()),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(top: 30, left: 20, right: 20),

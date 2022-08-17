@@ -10,19 +10,17 @@ import 'package:flutter/cupertino.dart';
 class AppPaths {
   static const String loginPath = '/login';
   static const String lotesPath = '/lotes';
-  static const String tanquesPath = '/tanques';
   static const String usuarioPath = '/usuario';
   static const String cadastroUsuarioPath = '/cadastro_user';
   static const String cadastroLotePath = '/cadastro_lote';
-  static const String cadastroTanquePath = '/cadastro_tanque';
+
 
   static const Map<String, Widget> paths = {
     loginPath: LoginScreen(),
     lotesPath: LotesScreen(),
-    tanquesPath: TanquesScreen(),
     usuarioPath: PessoaDataForm(),
     cadastroUsuarioPath: PessoaForm(),
     cadastroLotePath: LoteForm(),
-    cadastroTanquePath: TanqueForm(),
+
   };
 }

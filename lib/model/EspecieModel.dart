@@ -40,7 +40,7 @@ class EspecieModel {
     unidadeTamanho = json['unidadeTamanho'];
     qtdeMediaRacao = json['qtdeMediaRacao'];
     unidadePesoRacao = json['unidadePesoRacao'];
-    // taxaCrescimento = TaxaCrescimentoModel.fromJson(json["taxaCrescimento"]);
+    taxaCrescimento = TaxaCrescimentoModel.fromJson(json["taxaCrescimento"]);
   }
 
   Map<String, dynamic> toJson() => {
@@ -49,8 +49,9 @@ class EspecieModel {
         "pesoMedio": pesoMedio,
         "unidadePesoMedio": unidadePesoMedio,
         "tamanhoMedio": tamanhoMedio,
-        "unidadetamanho": unidadeTamanho,
+        "unidadeTamanho": unidadeTamanho,
         "qtdeMediaRacao": qtdeMediaRacao,
         "unidadePesoRacao": unidadePesoRacao,
+        "taxaCrescimento": taxaCrescimento.toJson()
       };
 }

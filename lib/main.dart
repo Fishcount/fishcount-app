@@ -5,22 +5,18 @@ import 'package:fishcount_app/screens/login/LoginScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(MaterialApp( 
+  runApp(MaterialApp(
     routes: {
       AppPaths.loginPath: (context) => AppPaths.paths[AppPaths.loginPath]!,
       AppPaths.lotesPath: (context) => AppPaths.paths[AppPaths.lotesPath]!,
-      AppPaths.tanquesPath: (context) => AppPaths.paths[AppPaths.tanquesPath]!,
       AppPaths.cadastroUsuarioPath: (context) =>
           AppPaths.paths[AppPaths.cadastroUsuarioPath]!,
-      AppPaths.cadastroTanquePath: (context) =>
-          AppPaths.paths[AppPaths.cadastroTanquePath]!,
       AppPaths.cadastroLotePath: (context) =>
           AppPaths.paths[AppPaths.cadastroLotePath]!,
     },

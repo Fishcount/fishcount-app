@@ -61,11 +61,11 @@ class LotesController extends AbstractController {
       return _listaLotes(context, snapshot.data!);
     }
     if (onDoneRequestWithEmptyValue(snapshot)) {
-      return getNotFoundWidget(
+      return notFoundWidgetRedirect(
           context, ErrorMessage.usuarioSemLote, AppPaths.cadastroLotePath);
     }
     if (onError(snapshot)) {
-      return getNotFoundWidget(
+      return notFoundWidgetRedirect(
           context, ErrorMessage.usuarioSemLote, AppPaths.cadastroLotePath);
     }
     return getCircularProgressIndicator();

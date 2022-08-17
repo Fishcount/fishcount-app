@@ -6,7 +6,7 @@ import 'package:line_icons/line_icons.dart';
 
 class CustomBottomSheet {
   static Widget getCustomBottomSheet(
-      BuildContext context, String routeNewIcon) {
+      BuildContext context, Widget newFormScreen) {
     return Container(
       color: Colors.yellow,
       height: 70,
@@ -26,7 +26,9 @@ class CustomBottomSheet {
                   ),
                   onTap: () {
                     NavigatorUtils.pushReplacement(
-                        context, const LotesScreen());
+                      context,
+                      const LotesScreen(),
+                    );
                   },
                 ),
                 const Text(
@@ -67,7 +69,7 @@ class CustomBottomSheet {
                     color: Colors.blueAccent,
                   ),
                   onTap: () {
-                    Navigator.pushNamed(context, routeNewIcon);
+                    NavigatorUtils.push(context, newFormScreen);
                   },
                 ),
                 const Text(

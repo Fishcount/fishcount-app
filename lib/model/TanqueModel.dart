@@ -1,7 +1,13 @@
+import 'package:fishcount_app/model/EspecieModel.dart';
+
 class TanqueModel {
-  late int id;
+  late int? id;
 
   late String descricao;
+
+  late int qtdePeixe;
+
+  late EspecieModel especie;
 
   late String? ultimaAnalise;
 
@@ -14,6 +20,8 @@ class TanqueModel {
   TanqueModel(
     this.id,
     this.descricao,
+    this.qtdePeixe,
+    this.especie,
     this.ultimaAnalise,
     this.proximaAnalise,
     this.dataUltimaAnalise,
@@ -23,6 +31,8 @@ class TanqueModel {
   TanqueModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     descricao = json['descricao'];
+    qtdePeixe = json['qtdePeixe'];
+    especie = EspecieModel.fromJson(json['especie']);
     ultimaAnalise = json['ultimaAnalise'];
     proximaAnalise = json['proximaAnalise'];
     dataUltimaAnalise = json['dataUltimaAnalise'];
@@ -31,6 +41,7 @@ class TanqueModel {
 
   Map<String, dynamic> toLocalDatabase(int idEspecie, int idLote) => {
     "descricao": descricao,
+    "qtdePeixes": qtdePeixe,
     "ultimaAnalise": ultimaAnalise,
     "proximaAnalise": proximaAnalise,
     "dataUltimaAnalise": dataUltimaAnalise,
@@ -42,9 +53,7 @@ class TanqueModel {
   Map<String, dynamic> toJson() => {
         "id": id,
         "descricao": descricao,
-        "ultimaAnalise": ultimaAnalise,
-        "proximaAnalise": proximaAnalise,
-        "dataUltimaAnalise": dataUltimaAnalise,
-        "dataUltimoTratamento": dataUltimoTratamento,
+        "qtdePeixe": qtdePeixe,
+        "especie": especie
       };
 }

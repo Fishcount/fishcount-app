@@ -13,11 +13,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FinanceiroForm extends StatefulWidget {
-  final PessoaModel pessoaModel;
+  final PessoaModel? pessoaModel;
 
   const FinanceiroForm({
     Key? key,
-    required this.pessoaModel,
+    this.pessoaModel,
   }) : super(key: key);
 
   @override
@@ -69,9 +69,12 @@ class _FinanceiroformState extends State<FinanceiroForm> {
                 buttonColor: Colors.blue,
                 buttonText: "Salvar",
                 onPressed: () async {
-                  widget.pessoaModel.cpf = _cpfController.text;
+                  if (widget.pessoaModel == null){
+                    return Text("");
+                  }
+                  widget.pessoaModel!.cpf = _cpfController.text;
                   dynamic response = await PessoaService()
-                      .salvarOuAtualizar(widget.pessoaModel);
+                      .salvarOuAtualizar(widget.pessoaModel!);
 
                   if (response is PessoaModel) {
                     NavigatorUtils.pushReplacement(context, const FinanceiroScreen());

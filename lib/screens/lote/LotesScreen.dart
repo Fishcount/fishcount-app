@@ -2,6 +2,7 @@ import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/model/AuthUserModel.dart';
 import 'package:fishcount_app/model/LoteModel.dart';
 import 'package:fishcount_app/repository/LoteRepository.dart';
+import 'package:fishcount_app/screens/lote/LoteForm.dart';
 import 'package:fishcount_app/screens/lote/LotesController.dart';
 import 'package:fishcount_app/service/LotesService.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
@@ -39,7 +40,7 @@ class _LotesScreenState extends State<LotesScreen> {
       appBar: CustomAppBar.getAppBar(),
       drawer: const DrawerWidget(),
       bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
-          context, AppPaths.cadastroLotePath),
+          context, const LoteForm()),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
         child: Column(

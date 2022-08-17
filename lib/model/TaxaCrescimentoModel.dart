@@ -2,13 +2,11 @@ import 'package:fishcount_app/model/enums/EnumUnidadeAumento.dart';
 import 'package:fishcount_app/model/enums/EnumUnidadeIntervalo.dart';
 
 class TaxaCrescimentoModel {
-  late int id;
+  late int? id;
 
-  late int periodoAnalise;
+  late double? qtdeAumento;
 
-  late double qtdeAumento;
-
-  late int intervalo;
+  late int? intervalo;
 
   late EnumUnidadeAumento unidadeAumento;
 
@@ -16,7 +14,6 @@ class TaxaCrescimentoModel {
 
   TaxaCrescimentoModel(
     this.id,
-    this.periodoAnalise,
     this.qtdeAumento,
     this.intervalo,
     this.unidadeAumento,
@@ -26,17 +23,16 @@ class TaxaCrescimentoModel {
   TaxaCrescimentoModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     qtdeAumento = json['qtdeAumento'];
-    unidadeAumento = json['unidadeAumento'];
+    unidadeAumento = UnidadeAumentoHandler.handle(json['unidadeAumento']);
     intervalo = json['intervalo'];
-    unidadeIntervalo = json['unidadeIntervalo'];
+    unidadeIntervalo = UnidadeIntervaloHandler.handle(json['unidadeIntervalo']);
   }
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "periodoAnalise": periodoAnalise,
         "qtdeAumento": qtdeAumento,
         "intervalo": intervalo,
-        "unidadeAumento": unidadeAumento,
-        "unidadeIntervalo": unidadeIntervalo,
+        "unidadeAumento": unidadeAumento.name,
+        "unidadeIntervalo": unidadeIntervalo.name,
       };
 }

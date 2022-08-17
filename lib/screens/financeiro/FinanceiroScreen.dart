@@ -1,5 +1,6 @@
 import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/model/PagamentoModel.dart';
+import 'package:fishcount_app/screens/financeiro/FinanceiroForm.dart';
 import 'package:fishcount_app/screens/financeiro/pagamento/PagamentoScreen.dart';
 import 'package:fishcount_app/screens/financeiro/plano/PlanoScreen.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
@@ -31,7 +32,9 @@ class _FinanceiroScreenState extends State<FinanceiroScreen> {
       appBar: CustomAppBar.getAppBar(),
       drawer: const DrawerWidget(),
       bottomSheet: CustomBottomSheet.getCustomBottomSheet(
-          context, AppPaths.cadastroLotePath),
+        context,
+        const FinanceiroForm(),
+      ),
       body: Container(
         padding:
             const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 20),

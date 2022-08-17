@@ -209,11 +209,11 @@ class PessoaController extends AbstractController {
       );
     }
     if (onDoneRequestWithEmptyValue(snapshot)) {
-      return getNotFoundWidget(
+      return notFoundWidgetRedirect(
           context, ErrorMessage.usuarioSemLote, AppPaths.cadastroUsuarioPath);
     }
     if (onError(snapshot)) {
-      return getNotFoundWidget(
+      return notFoundWidgetRedirect(
           context, ErrorMessage.usuarioSemLote, AppPaths.cadastroLotePath);
     }
     return const Center(child: CircularProgressIndicator());
