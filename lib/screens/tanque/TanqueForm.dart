@@ -133,7 +133,7 @@ class _TanqueFormState extends State<TanqueForm> {
                   verticalPadding: 20,
                   textColor: Colors.white,
                   buttonColor: Colors.blue,
-                  onPressed: () async => await _saveTank(context),
+                  onPressed: () async => await _saveTank(context, widget.tanque),
                 ),
               ),
             ],
@@ -143,9 +143,13 @@ class _TanqueFormState extends State<TanqueForm> {
     );
   }
 
-  Future<void> _saveTank(BuildContext context) async {
+  Future<void> _saveTank(BuildContext context, TanqueModel? tanqueModel) async {
+    int? id;
+    if (tanqueModel != null){
+      id = tanqueModel.id;
+    }
     final TanqueModel tanque = TanqueModel(
-        null,
+        id,
         _nomeTanqueController.text,
         int.parse(_qtdePeixesController.text),
         especieModel!,

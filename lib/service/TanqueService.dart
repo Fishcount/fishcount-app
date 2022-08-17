@@ -45,7 +45,8 @@ class TanqueService extends AbstractService {
           .replaceAll("{parentId}", pessoaId.toString())
           .replaceAll("{loteId}", lote.id.toString());
       if (tanque.id != null) {
-        await put(url, tanque.toJson());
+        int tanqueId = tanque.id!;
+        await put(url + "/$tanqueId", tanque.toJson());
         return tanque;
       }
 
