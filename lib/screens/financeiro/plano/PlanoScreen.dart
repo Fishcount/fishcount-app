@@ -5,23 +5,45 @@ import 'package:fishcount_app/model/PlanoModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
 import 'package:fishcount_app/model/enums/EnumTipoPagamento.dart';
 import 'package:fishcount_app/screens/financeiro/FinanceiroScreen.dart';
-import 'package:fishcount_app/screens/generic/AbstractController.dart';
 import 'package:fishcount_app/service/PagamentoService.dart';
+import 'package:fishcount_app/service/PlanoService.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
+import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class PlanoController extends AbstractController {
-  Widget listarPlanos(List<PlanoModel> planoModel, BuildContext context) {
+class PlanoScreen {
+  static planoList(BuildContext context) {
+    return SingleChildScrollView(
+      child: FutureBuilder(
+        future: PlanoService().listarPlanos(),
+        builder: (context, AsyncSnapshot<List<PlanoModel>> snapshot) {
+          return AsyncSnapshotHandler(
+            asyncSnapshot: snapshot,
+            widgetOnError: const Text("Error"),
+            widgetOnWaiting: const CircularProgressIndicator(),
+            widgetOnEmptyResponse: _onEmptyResponse(),
+            widgetOnSuccess: _onSuccessfulRequest(context, snapshot),
+          ).handler();
+        },
+      ),
+    );
+  }
+
+  static Text _onEmptyResponse() {
+    return const Text("Não foi possível encontrar nenhum pagamento disponivel");
+  }
+
+  static SingleChildScrollView _onSuccessfulRequest(
+      BuildContext context, AsyncSnapshot<List<PlanoModel>> snapshot) {
     return SingleChildScrollView(
       child: SizedBox(
         height: MediaQuery.of(context).size.height / 1.4,
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: planoModel.length,
+          itemCount: snapshot.data != null ? snapshot.data!.length : 0,
           itemBuilder: (context, index) {
-            PlanoModel plano = planoModel[index];
+            PlanoModel plano = snapshot.data![index];
             return Container(
               margin: const EdgeInsets.only(top: 15),
               alignment: Alignment.center,
@@ -112,7 +134,7 @@ class PlanoController extends AbstractController {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              ElevatedButtonWidget(
+                              const ElevatedButtonWidget(
                                 buttonText: "Entrar em contato",
                                 buttonColor: Colors.white,
                                 radioBorder: 3,
@@ -160,19 +182,23 @@ class PlanoController extends AbstractController {
     );
   }
 
-  _assinarPlano(PlanoModel plano, BuildContext context) async {
+  static _assinarPlano(PlanoModel plano, BuildContext context) async {
     final PagamentoModel pagamentoModel = _gerarPagamentoFromPlano(plano);
 
     dynamic response = await _incluirAssinaturaPlano(pagamentoModel);
     if (response is PagamentoModel) {
-      NavigatorUtils.pushReplacement(context, FinanceiroScreen(pagamentos: [response],));
+      NavigatorUtils.pushReplacement(
+          context,
+          FinanceiroScreen(
+            pagamentos: [response],
+          ));
     }
     if (response is ErrorModel) {
       return ErrorHandler.getDefaultErrorMessage(context, response.message);
     }
   }
 
-  PagamentoModel _gerarPagamentoFromPlano(PlanoModel plano) {
+  static PagamentoModel _gerarPagamentoFromPlano(PlanoModel plano) {
     return PagamentoModel(
         null,
         plano.valorMinimo,
@@ -185,9 +211,10 @@ class PlanoController extends AbstractController {
         EnumStatusPagamento.ANALISE.name);
   }
 
-  Future<dynamic> _incluirAssinaturaPlano(PagamentoModel pagamentoModel) async {
+  static Future<dynamic> _incluirAssinaturaPlano(
+      PagamentoModel pagamentoModel) async {
     return await PagamentoService().incluirAssinaturaPlano(pagamentoModel);
   }
 
-  _enviarContato() {}
+  static _enviarContato() {}
 }

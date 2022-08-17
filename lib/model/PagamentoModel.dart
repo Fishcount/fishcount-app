@@ -38,7 +38,7 @@ class PagamentoModel {
     acrescimo = json['acrescimo'];
     desconto = json['desconto'];
     qtdeParcelas = json['qtdeParcelas'];
-    // plano = json['plano'].map((plano) => PlanoModel.fromJson(plano));
+    plano = PlanoModel.fromJson(json['plano']);
     tipoPagamento = json['tipoPagamento'];
     statusPagamento = json['statusPagamento'];
   }
