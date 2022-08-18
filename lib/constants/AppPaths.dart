@@ -1,11 +1,11 @@
-import 'package:fishcount_app/screens/login/LoginScreen.dart';
-import 'package:fishcount_app/screens/lote/LoteForm.dart';
-import 'package:fishcount_app/screens/lote/LotesScreen.dart';
-import 'package:fishcount_app/screens/tanque/TanqueForm.dart';
-import 'package:fishcount_app/screens/tanque/TanqueScreen.dart';
-import 'package:fishcount_app/screens/usuario/PessoaDataForm.dart';
-import 'package:fishcount_app/screens/usuario/PessoaForm.dart';
+
 import 'package:flutter/cupertino.dart';
+
+import '../modules/login/LoginScreen.dart';
+import '../modules/lote/LoteForm.dart';
+import '../modules/lote/LotesScreen.dart';
+import '../modules/usuario/PessoaDataForm.dart';
+import '../modules/usuario/PessoaForm.dart';
 
 class AppPaths {
   static const String loginPath = '/login';

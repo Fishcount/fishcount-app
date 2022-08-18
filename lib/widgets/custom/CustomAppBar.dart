@@ -2,7 +2,8 @@ import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar {
-  static PreferredSize getAppBar() {
+
+  static PreferredSize build() {
     return PreferredSize(
       preferredSize: const Size.fromHeight(70),
       child: AppBar(

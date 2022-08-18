@@ -1,8 +1,9 @@
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
-import 'package:fishcount_app/screens/login/LoginScreen.dart';
 import 'package:flutter/material.dart';
+
+import 'modules/login/LoginScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

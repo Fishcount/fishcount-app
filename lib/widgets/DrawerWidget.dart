@@ -2,16 +2,17 @@ import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/model/PagamentoModel.dart';
 import 'package:fishcount_app/model/PessoaModel.dart';
-import 'package:fishcount_app/screens/financeiro/FinanceiroForm.dart';
-import 'package:fishcount_app/screens/financeiro/FinanceiroScreen.dart';
-import 'package:fishcount_app/screens/lote/LotesController.dart';
-import 'package:fishcount_app/screens/usuario/PessoaDataForm.dart';
-import 'package:fishcount_app/service/PagamentoService.dart';
-import 'package:fishcount_app/service/PessoaService.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../modules/financeiro/FinanceiroForm.dart';
+import '../modules/financeiro/FinanceiroScreen.dart';
+import '../modules/financeiro/pagamento/PagamentoService.dart';
+import '../modules/lote/LotesController.dart';
+import '../modules/usuario/PessoaDataForm.dart';
+import '../modules/usuario/PessoaService.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({Key? key}) : super(key: key);

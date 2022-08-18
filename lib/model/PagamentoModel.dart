@@ -21,9 +21,9 @@ class PagamentoModel {
 
   late String dataVencimento;
 
-  late String dataFimVigencia;
+  late String dataFimVigencia = "";
 
-  late String dataInicioVigencia;
+  late String dataInicioVigencia = "";
 
   PagamentoModel(
     this.id,

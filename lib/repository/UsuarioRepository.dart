@@ -5,11 +5,13 @@ import 'package:fishcount_app/model/PessoaModel.dart';
 import 'package:fishcount_app/repository/EmailRepository.dart';
 import 'package:fishcount_app/repository/TelefoneRepository.dart';
 import 'package:fishcount_app/repository/provider/DBProvider.dart';
-import 'package:fishcount_app/screens/lote/LotesScreen.dart';
+
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
+
+import '../modules/lote/LotesScreen.dart';
 
 class UsuarioRepository {
   dynamic save(BuildContext context, PessoaModel usuarioModel) async {

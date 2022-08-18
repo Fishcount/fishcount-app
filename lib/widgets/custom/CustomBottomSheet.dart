@@ -1,8 +1,9 @@
-import 'package:fishcount_app/screens/lote/LotesScreen.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+
+import '../../modules/lote/LotesScreen.dart';
 
 class CustomBottomSheet {
   static Widget getCustomBottomSheet(
