@@ -44,7 +44,8 @@ class PagamentoParcelaController extends AbstractController {
           itemCount: snapshot.data != null ? snapshot.data!.length : 0,
           itemBuilder: (context, index) {
             final PagamentoParcelaModel parcela = snapshot.data![index];
-            String mesParcela = parcela.dataVencimento.split('/')[1];
+            final String mesParcela = parcela.dataVencimento.split('/')[1];
+            final String anoParcela = parcela.dataVencimento.split('/')[2];
 
             return GestureDetector(
               onTap: () {},
@@ -78,7 +79,7 @@ class PagamentoParcelaController extends AbstractController {
                         children: [
                           Flexible(
                             child: Text(
-                              MonthHandler(monthNumber: mesParcela).handle(),
+                              MonthHandler(monthNumber: mesParcela).handle() + " | $anoParcela",
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 color: Colors.blue,
