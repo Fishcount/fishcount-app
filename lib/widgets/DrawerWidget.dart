@@ -27,21 +27,21 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     final List<PessoaModel> pessoas = await PessoaService().buscarPessoa();
 
     if (_pessoaHasCpf(pessoas.first)) {
-      NavigatorUtils.push(context, FinanceiroForm(pessoaModel: pessoas.first));
+      final List<PagamentoModel> pagamentos =
+          await PagamentoService().buscarPagamentos();
+
+      NavigatorUtils.push(
+          context,
+          FinanceiroScreen(
+            pagamentos: pagamentos,
+          ));
       return;
     }
-    final List<PagamentoModel> pagamentos =
-        await PagamentoService().buscarPagamentos();
-
-    NavigatorUtils.push(
-        context,
-        FinanceiroScreen(
-          pagamentos: pagamentos,
-        ));
+    NavigatorUtils.push(context, FinanceiroForm(pessoaModel: pessoas.first));
   }
 
   bool _pessoaHasCpf(PessoaModel pessoa) =>
-      pessoa.cpf == null || (pessoa.cpf != null && pessoa.cpf!.isEmpty);
+      pessoa.cpf != null && pessoa.cpf!.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {

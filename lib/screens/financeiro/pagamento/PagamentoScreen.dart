@@ -25,26 +25,44 @@ class PagamentoScreen {
         ),
       ),
       child: Container(
-        padding: const EdgeInsets.only(left: 10, top: 30, right: 10),
+        padding: const EdgeInsets.only(left: 10, top: 20, right: 10),
         child: Column(
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
-                  child: Container(
-                    child: Text(
-                      pagamentos.first.plano.descricao,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
+                  child: Text(
+                    pagamentos.first.plano.descricao,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    pagamentos.first.statusPagamento,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
                     ),
                   ),
                 ),
               ],
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 5),
+              child: const Divider(
+                color: Colors.blue,
+                height: 5,
+                thickness: 2,
+              ),
             ),
             Row(
               children: [
@@ -57,7 +75,9 @@ class PagamentoScreen {
                       Container(
                         padding: const EdgeInsets.only(bottom: 5),
                         child: Text(
-                          "Preço Total: R\$ " + pagamentos.first.valor.toString() + "0",
+                          "Preço Total: R\$ " +
+                              pagamentos.first.valor.toString() +
+                              "0",
                           style: const TextStyle(fontSize: 15),
                         ),
                       ),
@@ -65,7 +85,8 @@ class PagamentoScreen {
                         padding: const EdgeInsets.only(bottom: 5),
                         child: Text(
                           "Valor a ser pago: R\$ " +
-                              pagamentos.first.saldo.toString() + "0",
+                              pagamentos.first.saldo.toString() +
+                              "0",
                           style: const TextStyle(fontSize: 15),
                         ),
                       ),
@@ -79,7 +100,8 @@ class PagamentoScreen {
                       Container(
                         padding: const EdgeInsets.only(bottom: 5),
                         child: Text(
-                          "Forma de pagamento: " + pagamentos.first.tipoPagamento,
+                          "Forma de pagamento: " +
+                              pagamentos.first.tipoPagamento,
                           style: const TextStyle(fontSize: 15),
                         ),
                       ),
@@ -93,42 +115,11 @@ class PagamentoScreen {
                       Container(
                         padding: const EdgeInsets.only(bottom: 5),
                         child: Text(
-                          "Juros a pagar: " + pagamentos.first.acrescimo.toString(),
+                          "Juros a pagar: " +
+                              pagamentos.first.acrescimo.toString(),
                           style: const TextStyle(fontSize: 15),
                         ),
                       ),
-                      // Container(
-                      //   padding: const EdgeInsets.only(left: 20),
-                      //   alignment: Alignment.center,
-                      //   child: Row(
-                      //     crossAxisAlignment: CrossAxisAlignment.center,
-                      //     mainAxisAlignment: MainAxisAlignment.center,
-                      //     children: [
-                      //       Container(
-                      //         padding: EdgeInsets.only(top: 20, right: 10),
-                      //         child: ElevatedButtonWidget(
-                      //           buttonText: "dsfaeo",
-                      //           buttonColor: Colors.white,
-                      //           radioBorder: 3,
-                      //           textSize: 17,
-                      //           textColor: Colors.grey,
-                      //           onPressed: () {},
-                      //         ),
-                      //       ),
-                      //       Container(
-                      //         padding: EdgeInsets.only(top: 20, right: 10),
-                      //         child: ElevatedButtonWidget(
-                      //           buttonText: "Asadsjá",
-                      //           buttonColor: Colors.blue,
-                      //           radioBorder: 10,
-                      //           textSize: 17,
-                      //           textColor: Colors.white,
-                      //           onPressed: () {},
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
@@ -138,85 +129,5 @@ class PagamentoScreen {
         ),
       ),
     );
-
-    // return Container(
-    //   padding: const EdgeInsets.only(top: 20),
-    //   child: Column(
-    //     children: [
-    //       Container(
-    //         padding:
-    //             const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-    //         decoration: const BoxDecoration(
-    //           color: Colors.grey,
-    //           borderRadius: BorderRadius.all(
-    //             Radius.circular(7),
-    //           ),
-    //         ),
-    //         child: Row(
-    //           mainAxisAlignment: MainAxisAlignment.spaceAround,
-    //           crossAxisAlignment: CrossAxisAlignment.center,
-    //           children: [
-    //             const Text("Mês"),
-    //             const Text("|"),
-    //             const Text("Vencimento"),
-    //             const Text("|"),
-    //             Container(
-    //               padding: const EdgeInsets.only(left: 10, right: 10),
-    //               child: const Text("Valor"),
-    //             ),
-    //             const Text("|"),
-    //             const Text("Status"),
-    //           ],
-    //         ),
-    //       ),
-    //       SingleChildScrollView(
-    //         child: Container(
-    //           padding: const EdgeInsets.only(top: 20),
-    //           height: MediaQuery.of(context).size.height / 1.4,
-    //           child: ListView.builder(
-    //             itemCount: pagamentos.length,
-    //             itemBuilder: (BuildContext context, index) {
-    //               return Container(
-    //                 decoration: const BoxDecoration(
-    //                     border: Border(
-    //                   top: BorderSide(color: Colors.black26, width: 1),
-    //                   right: BorderSide(color: Colors.black26, width: 1),
-    //                   left: BorderSide(color: Colors.black26, width: 1),
-    //                   bottom: BorderSide(color: Colors.blueAccent, width: 2),
-    //                 )),
-    //                 margin: const EdgeInsets.only(bottom: 15),
-    //                 child: ListTile(
-    //                   // leading: Text("DEZ"),
-    //                   trailing: Text(
-    //                     pagamentos[index].statusPagamento,
-    //                     style: const TextStyle(
-    //                       color: Colors.green,
-    //                       fontSize: 15,
-    //                     ),
-    //                   ),
-    //                   title: Container(
-    //                     padding: const EdgeInsets.all(10),
-    //                     child: Row(
-    //                       crossAxisAlignment: CrossAxisAlignment.center,
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: const [
-    //                         Text("Dez"),
-    //                         Text("|"),
-    //                         Text("01/01/2021"),
-    //                         Text("|"),
-    //                         Text("Valor"),
-    //                         Text("|"),
-    //                       ],
-    //                     ),
-    //                   ),
-    //                 ),
-    //               );
-    //             },
-    //           ),
-    //         ),
-    //       )
-    //     ],
-    //   ),
-    // );
   }
 }

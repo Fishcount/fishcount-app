@@ -19,6 +19,12 @@ class PagamentoModel {
 
   late String statusPagamento;
 
+  late String dataVencimento;
+
+  late String dataFimVigencia;
+
+  late String dataInicioVigencia;
+
   PagamentoModel(
     this.id,
     this.valor,
@@ -41,6 +47,9 @@ class PagamentoModel {
     plano = PlanoModel.fromJson(json['plano']);
     tipoPagamento = json['tipoPagamento'];
     statusPagamento = json['statusPagamento'];
+    dataVencimento = json['dataVencimento'];
+    dataInicioVigencia = json['dataInicioVigencia'];
+    dataFimVigencia = json['dataFimVigencia'];
   }
 
   Map<String, dynamic> toJson() => {
@@ -53,5 +62,8 @@ class PagamentoModel {
         "plano": plano,
         "tipoPagamento": tipoPagamento,
         "statusPagamento": statusPagamento,
+        "dataVencimento": dataVencimento,
+        "dataInicioVigencia": dataInicioVigencia,
+        "dataFimVigencia": dataFimVigencia,
       };
 }

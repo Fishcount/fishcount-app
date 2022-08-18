@@ -51,6 +51,8 @@ dev_dependencies:
   images_picker: ^1.2.11
   firebase_core: ^1.17.1
   firebase_storage: ^10.2.17
+  url_launcher: ^6.1.5
+  whatsapp_unilink: ^2.0.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
