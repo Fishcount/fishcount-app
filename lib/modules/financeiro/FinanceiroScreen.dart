@@ -29,8 +29,7 @@ class _FinanceiroScreenState extends State<FinanceiroScreen> {
       appBar: CustomAppBar.build(),
       drawer: const DrawerWidget(),
       body: Container(
-        padding:
-            const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 20),
+        padding: const EdgeInsets.only(top: 30, bottom: 10),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -39,10 +38,13 @@ class _FinanceiroScreenState extends State<FinanceiroScreen> {
                   _showPagamentos()
                       ? "Planos escolhidos"
                       : "Planos disponíveis",
-                  style: const TextStyle(color: Colors.blue, fontSize: 17),
+                  style: const TextStyle(
+                      color: Colors.blue,
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold),
                 ),
                 height: 1,
-                thikness: 1,
+                thikness: 2,
                 color: Colors.blue,
                 paddingLeft: 12,
                 paddingRight: 12,

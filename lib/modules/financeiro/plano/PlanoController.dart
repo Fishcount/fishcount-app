@@ -54,7 +54,7 @@ class PlanoController {
           itemBuilder: (context, index) {
             final PlanoModel plano = snapshot.data![index];
             return Container(
-              margin: const EdgeInsets.only(top: 20),
+              margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
               alignment: Alignment.center,
               height: 200,
               decoration: const BoxDecoration(
@@ -212,6 +212,7 @@ class PlanoController {
       rightButtonText: 'Confirmar',
       rightButtonFunction: _assinarPlano(plano, context),
       rightButtonColor: Colors.blue,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
     ).build(context);
   }
 
@@ -237,6 +238,7 @@ class PlanoController {
       title: 'Escolha sua preferência',
       description:
           'Selecione o meio de comunicação de sua preferência para que possamos entrar em contato.',
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       leftButtonText: 'E-mail',
       leftButtonFunction: () => Navigator.of(context).pop(),
       rightButtonText: 'Whatsapp',

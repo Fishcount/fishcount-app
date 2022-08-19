@@ -1,35 +1,40 @@
+import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AlertDialogBuilder {
-
   String title;
 
   String description;
 
-  String leftButtonText;
+  String? leftButtonText;
 
-  Function() leftButtonFunction;
+  Function()? leftButtonFunction;
 
   Color? leftButtonColor;
 
-  String rightButtonText;
+  String? rightButtonText;
 
-  Function() rightButtonFunction;
+  Function()? rightButtonFunction;
 
   Color? rightButtonColor;
 
+  Widget? bottomElement;
+
+  MainAxisAlignment mainAxisAlignment;
 
   AlertDialogBuilder({
     required this.title,
     required this.description,
-    required this.leftButtonText,
-    required this.leftButtonFunction,
+    required this.mainAxisAlignment,
+    this.leftButtonText,
+    this.leftButtonFunction,
     this.leftButtonColor,
-    required this.rightButtonText,
-    required this.rightButtonFunction,
+    this.rightButtonText,
+    this.rightButtonFunction,
     this.rightButtonColor,
+    this.bottomElement,
   });
 
   build(BuildContext context) {
@@ -48,24 +53,38 @@ class AlertDialogBuilder {
           ),
           actions: <Widget>[
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: mainAxisAlignment,
               children: [
-                ElevatedButtonWidget(
-                  buttonText: leftButtonText,
-                  buttonColor: leftButtonColor == null ? Colors.blue : leftButtonColor!,
-                  onPressed: leftButtonFunction,
-                  textSize: 15,
-                  textColor: Colors.white,
-                  radioBorder: 10,
-                ),
-                ElevatedButtonWidget(
-                  buttonText: rightButtonText,
-                  buttonColor: rightButtonColor == null ? Colors.green : rightButtonColor!,
-                  onPressed: rightButtonFunction,
-                  textSize: 15,
-                  textColor: Colors.white,
-                  radioBorder: 10,
-                ),
+                leftButtonText != null && leftButtonFunction != null
+                    ? ElevatedButtonWidget(
+                        buttonText: leftButtonText!,
+                        buttonColor: leftButtonColor == null
+                            ? Colors.blue
+                            : leftButtonColor!,
+                        onPressed: leftButtonFunction!,
+                        textSize: 15,
+                        textColor: Colors.white,
+                        radioBorder: 10,
+                      )
+                    : const Text(""),
+                rightButtonColor != null && rightButtonFunction != null
+                    ? ElevatedButtonWidget(
+                        buttonText: rightButtonText!,
+                        buttonColor: rightButtonColor == null
+                            ? Colors.green
+                            : rightButtonColor!,
+                        onPressed: rightButtonFunction!,
+                        textSize: 15,
+                        textColor: Colors.white,
+                        radioBorder: 10,
+                      )
+                    : const Text(""),
+                rightButtonFunction == null &&
+                        rightButtonFunction == null &&
+                        leftButtonFunction == null &&
+                        leftButtonFunction == null
+                    ? bottomElement ?? const Text("")
+                    : const Text(""),
               ],
             )
           ],

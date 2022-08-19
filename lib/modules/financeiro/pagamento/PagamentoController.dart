@@ -45,7 +45,7 @@ class PagamentoController {
             return GestureDetector(
               onTap: () => _toParcelasList(context, pagamento.id!, pagamento.plano),
               child: Container(
-                margin: const EdgeInsets.only(top: 15),
+                margin: const EdgeInsets.only(top: 25, left: 15, right: 15),
                 alignment: Alignment.center,
                 height: 225,
                 decoration: const BoxDecoration(
