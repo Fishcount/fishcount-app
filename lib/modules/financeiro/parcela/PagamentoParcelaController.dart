@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/PagamentoParcelaModel.dart';
 import 'package:fishcount_app/model/PixModel.dart';
@@ -9,9 +7,9 @@ import 'package:fishcount_app/modules/financeiro/pix/PixService.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/AlertDialogBuilder.dart';
-import 'package:fishcount_app/widgets/custom/CustomSnackBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../generic/AbstractController.dart';
 import 'PagamentoParcelaService.dart';
@@ -29,7 +27,7 @@ class PagamentoParcelaController extends AbstractController {
           return AsyncSnapshotHandler(
             asyncSnapshot: snapshot,
             widgetOnError: const Text("Erro"),
-            widgetOnWaiting: const CircularProgressIndicator(),
+            widgetOnWaiting: _onWaitingResponse(),
             widgetOnEmptyResponse: _onEmptyResponse(),
             widgetOnSuccess: _onSuccessfulRequest(context, snapshot),
           ).handler();
@@ -37,6 +35,14 @@ class PagamentoParcelaController extends AbstractController {
       ),
     );
   }
+
+  static _onWaitingResponse() => Container(
+    padding: const EdgeInsets.only(top: 100),
+    child: LoadingAnimationWidget.bouncingBall(
+      color: Colors.blue,
+      size: 50,
+    ),
+  );
 
   static Text _onEmptyResponse() {
     return const Text("Não foi possível encontrar nenhuma parcela para você.");
@@ -179,9 +185,8 @@ class PagamentoParcelaController extends AbstractController {
                                       radioBorder: 10,
                                       textColor: Colors.white,
                                       textSize: 15,
-                                      onPressed: () async =>
-                                          await _showQrCodePix(
-                                              context, parcela.id!),
+                                      onPressed: () =>
+                                          _showQrCodePix(context, parcela.id!),
                                     ),
                                   )
                                 : const Text(""),
@@ -201,57 +206,75 @@ class PagamentoParcelaController extends AbstractController {
 
   static Future<dynamic> _showQrCodePix(
       BuildContext context, int parcelaId) async {
-
-    PixModel pixModel = await PixService().buscarQRCodePorParcela(parcelaId);
-
-    return _dialogQrCode(pixModel, context);
-  }
-
-  static _dialogQrCode(PixModel pixModel, BuildContext context) {
-    AlertDialogBuilder(
+    return AlertDialogBuilder(
       title: "Pix copia e cola",
       description:
           "Copie o código abaixo, abra o aplicativo do seu banco, cole na opção 'pix copia e cola' e confirme o pagamento",
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       bottomElement: Container(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: 250,
-              child: TextFieldWidget(
-                controller: TextEditingController(),
-                hintText: pixModel.qrCode,
-                focusedBorderColor: Colors.purple,
-                iconColor: Colors.blue,
-                obscureText: false,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 20),
-              child: GestureDetector(
-                child: const Icon(Icons.copy),
-                onTap: () {
-                  Clipboard.setData(ClipboardData(text: pixModel.qrCode));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text("Chave copiada!"),
-                      backgroundColor: Colors.green[400],
-                      duration: const Duration(seconds: 2),
-                      action: SnackBarAction(
-                        label: "",
-                        onPressed: () {},
-                      ),
-                    ),
-                  );
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          ],
+        child: FutureBuilder(
+          future: PixService().buscarQRCodePorParcela(parcelaId),
+          builder: (BuildContext context, AsyncSnapshot<PixModel> snapshot) {
+            PixModel? pixModel = snapshot.data != null ? snapshot.data! : null;
+            return AsyncSnapshotHandler(
+                    asyncSnapshot: snapshot,
+                    widgetOnError: const Text("Erro"),
+                    widgetOnWaiting: _onWaiting(),
+                    widgetOnEmptyResponse: _onEmptyResponse(),
+                    widgetOnSuccess: _dialogQrCode(pixModel, context),
+                    )
+                .handler();
+          },
         ),
       ),
     ).build(context);
+  }
+
+  static Widget _onWaiting() {
+    return LoadingAnimationWidget.prograssiveDots(
+      color: Colors.blue,
+      size: 50
+    );
+  }
+
+  static _dialogQrCode(PixModel? pixModel, BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 250,
+          child: TextFieldWidget(
+            controller: TextEditingController(),
+            hintText: pixModel == null ? '' : pixModel.qrCode,
+            focusedBorderColor: Colors.purple,
+            iconColor: Colors.blue,
+            obscureText: false,
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.only(left: 20),
+          child: GestureDetector(
+            child: const Icon(Icons.copy),
+            onTap: () {
+              Clipboard.setData(
+                  ClipboardData(text: pixModel == null ? '' : pixModel.qrCode));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text("Chave copiada!"),
+                  backgroundColor: Colors.green[400],
+                  duration: const Duration(seconds: 2),
+                  action: SnackBarAction(
+                    label: "",
+                    onPressed: () {},
+                  ),
+                ),
+              );
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+      ],
+    );
   }
 }

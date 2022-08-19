@@ -3,6 +3,7 @@ import 'package:fishcount_app/model/PagamentoModel.dart';
 import 'package:fishcount_app/model/PlanoModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../parcela/PagamentoParcelaScreen.dart';
@@ -13,24 +14,33 @@ class PagamentoController {
 
   static pagamentoList(BuildContext context) {
     return SingleChildScrollView(
-      child: FutureBuilder(
-        future: _pagamentoService.buscarPagamentos(),
-        builder: (context, AsyncSnapshot<List<PagamentoModel>> snapshot) {
-          return AsyncSnapshotHandler(
-            asyncSnapshot: snapshot,
-            widgetOnError: const Text("Erro"),
-            widgetOnWaiting: const CircularProgressIndicator(),
-            widgetOnEmptyResponse: _onEmptyResponse(),
-            widgetOnSuccess: _onSuccessfulRequest(context, snapshot),
-          ).handler();
-        },
+      child: Center(
+        child: FutureBuilder(
+          future: _pagamentoService.buscarPagamentos(),
+          builder: (context, AsyncSnapshot<List<PagamentoModel>> snapshot) {
+            return AsyncSnapshotHandler(
+              asyncSnapshot: snapshot,
+              widgetOnError: const Text("Erro"),
+              widgetOnWaiting: _onWaitingResponse(),
+              widgetOnEmptyResponse: _onEmptyResponse(),
+              widgetOnSuccess: _onSuccessfulRequest(context, snapshot),
+            ).handler();
+          },
+        ),
       ),
     );
   }
 
-  static Text _onEmptyResponse() {
-    return const Text("Não foi possível encontrar nenhum pagamento para você.");
-  }
+  static _onEmptyResponse() =>
+      const Text("Não foi possível encontrar nenhum pagamento para você.");
+
+  static _onWaitingResponse() => Container(
+        padding: const EdgeInsets.only(top: 100),
+        child: LoadingAnimationWidget.bouncingBall(
+          color: Colors.blue,
+          size: 50,
+        ),
+      );
 
   static SingleChildScrollView _onSuccessfulRequest(
       BuildContext context, AsyncSnapshot<List<PagamentoModel>> snapshot) {
@@ -43,7 +53,8 @@ class PagamentoController {
           itemBuilder: (context, index) {
             final PagamentoModel pagamento = snapshot.data![index];
             return GestureDetector(
-              onTap: () => _toParcelasList(context, pagamento.id!, pagamento.plano),
+              onTap: () =>
+                  _toParcelasList(context, pagamento.id!, pagamento.plano),
               child: Container(
                 margin: const EdgeInsets.only(top: 25, left: 15, right: 15),
                 alignment: Alignment.center,
@@ -173,13 +184,11 @@ class PagamentoController {
     );
   }
 
-  static _toParcelasList(BuildContext context, int pagamentoId, PlanoModel plano) {
+  static _toParcelasList(
+      BuildContext context, int pagamentoId, PlanoModel plano) {
     NavigatorUtils.push(
       context,
-      PagamentoParcelaScreen(
-        pagamentId: pagamentoId,
-        plano: plano
-      ),
+      PagamentoParcelaScreen(pagamentId: pagamentoId, plano: plano),
     );
   }
 }

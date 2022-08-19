@@ -191,6 +191,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  loading_animation_widget:
+    dependency: "direct dev"
+    description:
+      name: loading_animation_widget
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0+2"
   mask_text_input_formatter:
     dependency: "direct dev"
     description:
@@ -511,13 +518,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
-  whatsapp_unilink:
-    dependency: "direct dev"
-    description:
-      name: whatsapp_unilink
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.2"
   win32:
     dependency: transitive
     description:

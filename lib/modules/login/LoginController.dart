@@ -9,7 +9,6 @@ import 'package:fishcount_app/widgets/custom/CustomSnackBar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 import '../lote/LotesScreen.dart';
 import 'LoginService.dart';
 

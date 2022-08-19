@@ -7,6 +7,7 @@ class AsyncSnapshotHandler {
   final Widget widgetOnError;
   final Widget widgetOnEmptyResponse;
   final Widget widgetOnSuccess;
+  final Function? actionOnSuccess;
 
   AsyncSnapshotHandler({
     required this.asyncSnapshot,
@@ -14,6 +15,7 @@ class AsyncSnapshotHandler {
     required this.widgetOnWaiting,
     required this.widgetOnEmptyResponse,
     required this.widgetOnSuccess,
+    this.actionOnSuccess,
   });
 
   Widget handler() {

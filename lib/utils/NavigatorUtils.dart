@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NavigatorUtils {
-  static void pushReplacement(BuildContext context, Widget nextPage) {
+  static dynamic pushReplacement(BuildContext context, Widget nextPage) {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => nextPage));
   }

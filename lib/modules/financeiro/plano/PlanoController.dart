@@ -11,7 +11,6 @@ import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/AlertDialogBuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
 import '../FinanceiroScreen.dart';
 import '../pagamento/PagamentoService.dart';
