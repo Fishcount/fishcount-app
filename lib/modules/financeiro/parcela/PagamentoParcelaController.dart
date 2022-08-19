@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/PagamentoParcelaModel.dart';
+import 'package:fishcount_app/model/PixModel.dart';
 import 'package:fishcount_app/model/enums/EnumMes.dart';
 import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
+import 'package:fishcount_app/modules/financeiro/pix/PixService.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/AlertDialogBuilder.dart';
@@ -175,7 +179,9 @@ class PagamentoParcelaController extends AbstractController {
                                       radioBorder: 10,
                                       textColor: Colors.white,
                                       textSize: 15,
-                                      onPressed: () => _showQrCodePix(context),
+                                      onPressed: () async =>
+                                          await _showQrCodePix(
+                                              context, parcela.id!),
                                     ),
                                   )
                                 : const Text(""),
@@ -193,8 +199,16 @@ class PagamentoParcelaController extends AbstractController {
     );
   }
 
-  static Future<String?> _showQrCodePix(BuildContext context) {
-    return AlertDialogBuilder(
+  static Future<dynamic> _showQrCodePix(
+      BuildContext context, int parcelaId) async {
+
+    PixModel pixModel = await PixService().buscarQRCodePorParcela(parcelaId);
+
+    return _dialogQrCode(pixModel, context);
+  }
+
+  static _dialogQrCode(PixModel pixModel, BuildContext context) {
+    AlertDialogBuilder(
       title: "Pix copia e cola",
       description:
           "Copie o código abaixo, abra o aplicativo do seu banco, cole na opção 'pix copia e cola' e confirme o pagamento",
@@ -208,7 +222,7 @@ class PagamentoParcelaController extends AbstractController {
               width: 250,
               child: TextFieldWidget(
                 controller: TextEditingController(),
-                hintText: "hintText",
+                hintText: pixModel.qrCode,
                 focusedBorderColor: Colors.purple,
                 iconColor: Colors.blue,
                 obscureText: false,
@@ -217,12 +231,12 @@ class PagamentoParcelaController extends AbstractController {
             Container(
               padding: const EdgeInsets.only(left: 20),
               child: GestureDetector(
-                child: Icon(Icons.copy),
+                child: const Icon(Icons.copy),
                 onTap: () {
-                  Clipboard.setData(new ClipboardData(text: "bfhdskfgjkadsfs"));
+                  Clipboard.setData(ClipboardData(text: pixModel.qrCode));
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text("Chave copiada!"),
+                      content: const Text("Chave copiada!"),
                       backgroundColor: Colors.green[400],
                       duration: const Duration(seconds: 2),
                       action: SnackBarAction(

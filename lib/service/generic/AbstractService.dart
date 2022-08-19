@@ -10,6 +10,10 @@ abstract class AbstractService extends CustomDio {
     return await dioGetAll(url);
   }
 
+  Future<Response<dynamic>> get(String url) async {
+    return await dioGet(url);
+  }
+
   Future<Response<void>> put(String url, Map<String, dynamic> data) async {
     return await dioPut(url, data);
   }
