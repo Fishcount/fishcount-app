@@ -1,36 +1,34 @@
-import 'package:fishcount_app/model/EmailModel.dart';
-import 'package:fishcount_app/model/enums/EnumTipoEmail.dart';
+import 'package:fishcount_app/constants/Formatters.dart';
+import 'package:fishcount_app/model/PhoneModel.dart';
+import 'package:fishcount_app/model/enums/EnumTipoTelefone.dart';
+
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'EmailController.dart';
+import 'PhoneController.dart';
 
-class EmailForm extends StatefulWidget {
-  final EmailModel? emailModel;
+class PhoneForm extends StatefulWidget {
+  final PhoneModel? telefoneModel;
 
-  const EmailForm({
+  const PhoneForm({
     Key? key,
-    this.emailModel,
+    this.telefoneModel,
   }) : super(key: key);
 
   @override
-  State<EmailForm> createState() => _EmailFormState();
+  State<PhoneForm> createState() => _PhoneFormState();
 }
 
+class _PhoneFormState extends State<PhoneForm> {
+  final TextEditingController _telefoneController = TextEditingController();
 
-class _EmailFormState extends State<EmailForm> {
-  final TextEditingController _emailController = TextEditingController();
-  EnumTipoEmail mainEnum = EnumTipoEmail.ADICIONAL;
+  EnumTipoTelefone mainEnum = EnumTipoTelefone.ADICIONAL;
   bool hasChanged = false;
 
   @override
   Widget build(BuildContext context) {
-    _emailController.text =
-        widget.emailModel != null ? widget.emailModel!.email : _emailController.text;
-
     return Scaffold(
       appBar: CustomAppBar.build(),
       body: Container(
@@ -41,26 +39,27 @@ class _EmailFormState extends State<EmailForm> {
             Container(
               padding: const EdgeInsets.only(top: 30),
               child: const Text(
-                "Email",
+                "Telefone",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
             Container(
               padding: const EdgeInsets.only(top: 50),
               child: TextFieldWidget(
-                labelText: "Email",
-                controller: _emailController,
-                hintText: "Digite seu email",
+                controller: _telefoneController,
+                hintText: "Telefone",
+                labelText: widget.telefoneModel != null ? widget.telefoneModel!.phoneNumber : "",
                 prefixIcon: const Icon(Icons.account_balance_wallet_sharp),
                 focusedBorderColor: Colors.blueGrey,
                 iconColor: Colors.blueGrey,
                 obscureText: false,
+                inputMask: Formatters.phoneMask,
               ),
             ),
             Container(
               padding: const EdgeInsets.only(left: 5, top: 20),
               alignment: Alignment.centerLeft,
-              child: const Text("Tipo do Email:"),
+              child: const Text("Tipo do Telefone:"),
             ),
             Container(
               padding: const EdgeInsets.only(left: 5),
@@ -75,17 +74,8 @@ class _EmailFormState extends State<EmailForm> {
                   verticalPadding: 10,
                   textColor: Colors.white,
                   buttonColor: Colors.blue,
-                  buttonText:
-                      widget.emailModel != null ? "Atualizar" : "Salvar",
-                  onPressed: () {
-                    EmailModel email = EmailModel(
-                        widget.emailModel != null
-                            ? widget.emailModel!.id
-                            : null,
-                        _emailController.text,
-                        mainEnum.name);
-                    EmailController().salvarEmail(context, email);
-                  }),
+                  buttonText: _resolverSaveOrUpdate(),
+                  onPressed: () => _saveTelefone(context)),
             ),
           ],
         ),
@@ -93,12 +83,25 @@ class _EmailFormState extends State<EmailForm> {
     );
   }
 
-  DropdownButton<EnumTipoEmail> getSelectTipoEmail(BuildContext context) {
-    mainEnum = widget.emailModel != null && !hasChanged
-        ? EnumTipoEmailHelper().getEnum(widget.emailModel!.emailType)
+  String _resolverSaveOrUpdate() =>
+      widget.telefoneModel != null ? "Atualizar" : "Salvar";
+
+  void _saveTelefone(BuildContext context) {
+    PhoneModel telefone = PhoneModel(
+      widget.telefoneModel != null ? widget.telefoneModel!.id : null,
+      _telefoneController.text,
+      mainEnum.name,
+    );
+
+    PhoneController().salvarTelefone(context, telefone);
+  }
+
+  DropdownButton<EnumTipoTelefone> getSelectTipoEmail(BuildContext context) {
+    mainEnum = widget.telefoneModel != null && !hasChanged
+        ? EnumTipoTelefoneHelper().getEnum(widget.telefoneModel!.phoneType)
         : mainEnum;
 
-    return DropdownButton<EnumTipoEmail>(
+    return DropdownButton<EnumTipoTelefone>(
       isExpanded: true,
       alignment: Alignment.centerLeft,
       value: mainEnum,
@@ -107,9 +110,9 @@ class _EmailFormState extends State<EmailForm> {
         height: 2,
         color: Colors.blueAccent,
       ),
-      items: EnumTipoEmail.values
-          .map<DropdownMenuItem<EnumTipoEmail>>((tipoEmail) {
-        return DropdownMenuItem<EnumTipoEmail>(
+      items: EnumTipoTelefone.values
+          .map<DropdownMenuItem<EnumTipoTelefone>>((tipoEmail) {
+        return DropdownMenuItem<EnumTipoTelefone>(
           value: tipoEmail,
           child: Container(
             alignment: Alignment.centerLeft,
@@ -131,7 +134,7 @@ class _EmailFormState extends State<EmailForm> {
           ),
         );
       }).toList(),
-      onChanged: (EnumTipoEmail? newValue) {
+      onChanged: (EnumTipoTelefone? newValue) {
         setState(() {
           mainEnum = newValue!;
           hasChanged = true;

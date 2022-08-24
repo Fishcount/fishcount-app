@@ -1,17 +1,17 @@
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
-import 'package:fishcount_app/model/LoteModel.dart';
+import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/repository/provider/DBProvider.dart';
 
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../modules/lote/LotesScreen.dart';
+import '../modules/batch/BatchScreen.dart';
 
 class LoteRepository {
-  dynamic save(BuildContext context, LoteModel loteModel) async {
+  dynamic save(BuildContext context, BatchModel loteModel) async {
     try {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
@@ -26,14 +26,14 @@ class LoteRepository {
         return ErrorHandler.getDefaultErrorMessage(
             context, ErrorMessage.serverError);
       }
-      NavigatorUtils.pushReplacement(context, const LotesScreen());
+      NavigatorUtils.pushReplacement(context, const BatchScreen());
     } on Exception catch (e) {
       return ErrorHandler.getDefaultErrorMessage(
           context, ErrorMessage.serverError);
     }
   }
 
-  dynamic update(BuildContext context, LoteModel loteModel) async {
+  dynamic update(BuildContext context, BatchModel loteModel) async {
     try {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
@@ -53,14 +53,14 @@ class LoteRepository {
         return ErrorHandler.getDefaultErrorMessage(
             context, ErrorMessage.serverError);
       }
-      NavigatorUtils.pushReplacement(context, const LotesScreen());
+      NavigatorUtils.pushReplacement(context, const BatchScreen());
     } on Exception catch (e) {
       return ErrorHandler.getDefaultErrorMessage(
           context, ErrorMessage.serverError);
     }
   }
 
-  Future<List<LoteModel>> listarLotesUsuario(BuildContext context) async {
+  Future<List<BatchModel>> listarLotesUsuario(BuildContext context) async {
     try {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
@@ -83,7 +83,7 @@ class LoteRepository {
       }
 
       return List.generate(maps.length, (index) {
-        return LoteModel.fromJson(maps[index]);
+        return BatchModel.fromJson(maps[index]);
       });
     } on Exception catch (e) {
       ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);

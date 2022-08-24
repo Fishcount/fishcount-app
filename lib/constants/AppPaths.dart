@@ -2,10 +2,10 @@
 import 'package:flutter/cupertino.dart';
 
 import '../modules/login/LoginScreen.dart';
-import '../modules/lote/LoteForm.dart';
-import '../modules/lote/LotesScreen.dart';
-import '../modules/usuario/PessoaDataForm.dart';
-import '../modules/usuario/PessoaForm.dart';
+import '../modules/batch/BatchForm.dart';
+import '../modules/batch/BatchScreen.dart';
+import '../modules/person/PessoaDataForm.dart';
+import '../modules/person/PessoaForm.dart';
 
 class AppPaths {
   static const String loginPath = '/login';
@@ -17,10 +17,10 @@ class AppPaths {
 
   static const Map<String, Widget> paths = {
     loginPath: LoginScreen(),
-    lotesPath: LotesScreen(),
+    lotesPath: BatchScreen(),
     usuarioPath: PessoaDataForm(),
     cadastroUsuarioPath: PessoaForm(),
-    cadastroLotePath: LoteForm(),
+    cadastroLotePath: BatchForm(),
 
   };
 }

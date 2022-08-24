@@ -13,18 +13,18 @@ class TextFieldWidget extends StatefulWidget {
   final MaskTextInputFormatter? inputMask;
   final String? labelText;
 
-  const TextFieldWidget({
-    Key? key,
-    required this.controller,
-    required this.hintText,
-    required this.focusedBorderColor,
-    required this.iconColor,
-    required this.obscureText,
-    this.prefixIcon,
-    this.keyBoardType,
-    this.inputMask,
-    this.labelText
-  }) : super(key: key);
+  const TextFieldWidget(
+      {Key? key,
+      required this.controller,
+      required this.hintText,
+      required this.focusedBorderColor,
+      required this.iconColor,
+      required this.obscureText,
+      this.prefixIcon,
+      this.keyBoardType,
+      this.inputMask,
+      this.labelText})
+      : super(key: key);
 
   @override
   State<TextFieldWidget> createState() => _TextFieldWidgetState();
@@ -34,7 +34,11 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      inputFormatters: [widget.inputMask != null ? widget.inputMask! :  FilteringTextInputFormatter.singleLineFormatter],
+      inputFormatters: [
+        widget.inputMask != null
+            ? widget.inputMask!
+            : FilteringTextInputFormatter.singleLineFormatter
+      ],
       controller: widget.controller,
       obscureText: widget.obscureText,
       keyboardType: widget.keyBoardType,

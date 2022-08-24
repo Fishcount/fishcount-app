@@ -1,14 +1,14 @@
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
-import 'package:fishcount_app/model/TelefoneModel.dart';
+import 'package:fishcount_app/model/PhoneModel.dart';
 import 'package:fishcount_app/repository/provider/DBProvider.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:flutter/cupertino.dart';
 
 class TelefoneRepository {
   dynamic save(
-      BuildContext context, TelefoneModel telefoneModel, int idUsuario) async {
+      BuildContext context, PhoneModel telefoneModel, int idUsuario) async {
     try {
       final db = await DBProvider().init();
       int idTelefone =
@@ -22,7 +22,7 @@ class TelefoneRepository {
     }
   }
 
-  Future<List<TelefoneModel>> listarTelefones(BuildContext context) async {
+  Future<List<PhoneModel>> listarTelefones(BuildContext context) async {
     try {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
@@ -41,7 +41,7 @@ class TelefoneRepository {
         return [];
       }
       return List.generate(maps.length, (index) {
-        return TelefoneModel.fromJson(maps[index]);
+        return PhoneModel.fromJson(maps[index]);
       });
     } on Exception catch (e) {
       ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
@@ -49,7 +49,7 @@ class TelefoneRepository {
     }
   }
 
-  dynamic update(context, TelefoneModel telefoneModel, int userId) async {
+  dynamic update(context, PhoneModel telefoneModel, int userId) async {
     try {
       final db = await DBProvider().init();
       int idTelefone = await db.update(

@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 
 
 import '../generic/AbstractController.dart';
-import '../usuario/PessoaDataForm.dart';
+import '../person/PessoaDataForm.dart';
 import 'EmailForm.dart';
 import 'EmailService.dart';
 
@@ -57,8 +57,8 @@ class EmailController extends AbstractController {
         scrollDirection: Axis.vertical,
         itemBuilder: (BuildContext context, int index) {
           return ItemContainerWidget(
-            titles: emails[index].descricao,
-            subTitles: emails[index].tipoEmail,
+            titles: emails[index].email,
+            subTitles: emails[index].emailType,
             prefixIcon: const Icon(Icons.email),
             onChange: () => NavigatorUtils.push(
               context,
@@ -68,7 +68,7 @@ class EmailController extends AbstractController {
             ),
             onDelete: () {
               bool excluir =
-                  emails[index].tipoEmail != EnumTipoEmail.PRINCIPAL.name;
+                  emails[index].emailType != EnumTipoEmail.PRINCIPAL.name;
               return showDialog<String>(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
@@ -152,7 +152,7 @@ class EmailController extends AbstractController {
       return ErrorHandler.getDefaultErrorMessage(
           context, ErrorMessage.serverError);
     }
-    dynamic response = await EmailService().excluirEmail(emailId, userId);
+    dynamic response = await EmailService().deleteEmail(emailId, userId);
     if (response == emailId) {
       NavigatorUtils.pushReplacement(context, const PessoaDataForm());
     }
@@ -169,8 +169,8 @@ class EmailController extends AbstractController {
   Future<dynamic> _resolverSaveOrUpdate(
       EmailModel emailModel, int userId) async {
     if (emailModel.id == null) {
-      return EmailService().salvarEmail(emailModel, userId);
+      return EmailService().save(emailModel, userId);
     }
-    return EmailService().atualizarEmail(emailModel, userId);
+    return EmailService().update(emailModel, userId);
   }
 }

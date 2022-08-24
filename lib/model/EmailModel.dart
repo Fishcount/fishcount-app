@@ -1,28 +1,31 @@
 class EmailModel {
   late int? id;
 
-  late String descricao;
+  late String email;
 
-  late String tipoEmail;
+  late String emailType;
 
   EmailModel(
     this.id,
-    this.descricao,
-    this.tipoEmail,
+    this.email,
+    this.emailType,
   );
 
-  Map<String, dynamic> toLocalDatabase(int idUsuario) =>
-      {"descricao": descricao, "tipoEmail": tipoEmail, "id_usuario": idUsuario};
+  Map<String, dynamic> toLocalDatabase(int userId) => {
+        "descricao": email,
+        "tipoEmail": emailType,
+        "id_usuario": userId,
+      };
 
   EmailModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    descricao = json['descricao'];
-    tipoEmail = json['tipoEmail'];
+    email = json['descricao'];
+    emailType = json['tipoEmail'];
   }
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "descricao": descricao,
-        "tipoEmail": tipoEmail,
+        "descricao": email,
+        "tipoEmail": emailType,
       };
 }

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
-import '../../modules/lote/LotesScreen.dart';
+import '../../modules/batch/BatchScreen.dart';
 
 class CustomBottomSheet {
   static Widget getCustomBottomSheet(
@@ -28,7 +28,7 @@ class CustomBottomSheet {
                   onTap: () {
                     NavigatorUtils.pushReplacement(
                       context,
-                      const LotesScreen(),
+                      const BatchScreen(),
                     );
                   },
                 ),

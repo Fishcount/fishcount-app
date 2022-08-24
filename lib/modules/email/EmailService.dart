@@ -3,48 +3,57 @@ import 'package:fishcount_app/constants/api/ApiEmail.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/EmailModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
+import 'package:fishcount_app/utils/RequestBuilder.dart';
 
 class EmailService extends AbstractService {
-  String url = ApiEmail.baseUrl;
-
-  // @toDo Adicionar if de statusCode do retorno da API
-  dynamic salvarEmail(EmailModel email, int userId) async {
+  dynamic save(EmailModel email, int personId) async {
     try {
-      url = url.replaceAll("{parentId}", userId.toString());
-
-      Response<dynamic> response = await post(url, email.toJson());
+      Response<dynamic> response = await RequestBuilder(url: '/pessoa')
+          .addPathParam('$personId')
+          .addPathParam('/email')
+          .buildUrl()
+          .setBody(email.toJson())
+          .post();
 
       return EmailModel.fromJson(response.data);
     } on DioError catch (e) {
-      return ErrorHandler.verifyDioError(e);
+      return customDioError(e);
     }
   }
 
-  dynamic atualizarEmail(EmailModel email, int userId) async {
+  dynamic update(EmailModel email, int personId) async {
     try {
       int? emailId = email.id;
-      url = url.replaceAll("{parentId}", userId.toString()) + "/$emailId";
 
-      Response<void> response = await put(url, email.toJson());
+      Response<void> response = await RequestBuilder(url: '/pessoa')
+          .addPathParam('$personId')
+          .addPathParam('email')
+          .addPathParam('$emailId')
+          .buildUrl()
+          .setBody(email.toJson())
+          .put();
       if (response.statusCode == 200) {
         return email;
       }
     } on DioError catch (e) {
-      return ErrorHandler.verifyDioError(e);
+      return customDioError(e);
     }
   }
 
-  dynamic excluirEmail(int emailId, int userId) async {
+  dynamic deleteEmail(int emailId, int userId) async {
     try {
-      url = url.replaceAll("{parentId}", userId.toString()) + "/$emailId";
+      Response<void> response = await RequestBuilder(url: '/pessoa')
+          .addPathParam('$userId')
+          .addPathParam('email')
+          .addPathParam('$emailId')
+          .buildUrl()
+          .delete();
 
-      Response<void> response = await delete(url);
-      if (response.statusCode == 204){
+      if (response.statusCode == 204) {
         return emailId;
       }
-
     } on DioError catch (e) {
-      return ErrorHandler.verifyDioError(e);
+      return customDioError(e);
     }
   }
 }

@@ -1,13 +1,13 @@
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
-import 'package:fishcount_app/model/TanqueModel.dart';
+import 'package:fishcount_app/model/TankModel.dart';
 import 'package:fishcount_app/repository/provider/DBProvider.dart';
 import 'package:flutter/cupertino.dart';
 
 class TanqueRepository{
 
 
-  Future<List<TanqueModel>> listarTanques(BuildContext context, int loteId) async {
+  Future<List<TankModel>> listarTanques(BuildContext context, int loteId) async {
     try {
       final db = await DBProvider().init();
 
@@ -23,7 +23,7 @@ class TanqueRepository{
       }
 
       return List.generate(maps.length, (index) {
-        return TanqueModel.fromJson(maps[index]);
+        return TankModel.fromJson(maps[index]);
       });
     } on Exception catch (e){
       ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);

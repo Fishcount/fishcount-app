@@ -1,18 +1,18 @@
 import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/model/PagamentoModel.dart';
-import 'package:fishcount_app/model/PessoaModel.dart';
+import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../modules/financeiro/FinanceiroForm.dart';
-import '../modules/financeiro/FinanceiroScreen.dart';
-import '../modules/financeiro/pagamento/PagamentoService.dart';
-import '../modules/lote/LotesController.dart';
-import '../modules/usuario/PessoaDataForm.dart';
-import '../modules/usuario/PessoaService.dart';
+import '../modules/financial/FinancialForm.dart';
+import '../modules/financial/FinancialScreen.dart';
+import '../modules/financial/payment/PaymentService.dart';
+import '../modules/batch/BatchController.dart';
+import '../modules/person/PessoaDataForm.dart';
+import '../modules/person/PessoaService.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({Key? key}) : super(key: key);
@@ -25,7 +25,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   final TextEditingController _cpfController = TextEditingController();
 
   Future<void> _resolverPermissoes() async {
-    final List<PessoaModel> pessoas = await PessoaService().buscarPessoa();
+    final List<PersonModel> pessoas = await PessoaService().findById();
 
     if (_pessoaHasCpf(pessoas.first)) {
       final List<PagamentoModel> pagamentos =
@@ -33,15 +33,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
       NavigatorUtils.push(
           context,
-          FinanceiroScreen(
+          FinancialScreen(
             pagamentos: pagamentos,
           ));
       return;
     }
-    NavigatorUtils.push(context, FinanceiroForm(pessoaModel: pessoas.first));
+    NavigatorUtils.push(context, FinancialForm(pessoaModel: pessoas.first));
   }
 
-  bool _pessoaHasCpf(PessoaModel pessoa) =>
+  bool _pessoaHasCpf(PersonModel pessoa) =>
       pessoa.cpf != null && pessoa.cpf!.isNotEmpty;
 
   @override
@@ -73,7 +73,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           Container(
             alignment: Alignment.center,
             child: SizedBox(
-              child: LotesController().getUserEmail(),
+              child: BatchController().getUserEmail(),
               height: 20,
             ),
           ),
