@@ -7,18 +7,18 @@ import 'package:fishcount_app/utils/RequestBuilder.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 
 class BatchService extends AbstractService {
-
-
   Future<List<BatchModel>> fetchBatches() async {
     try {
-      final int? pessoaId = await SharedPreferencesUtils.getIntVariableFromShared(
-          EnumSharedPreferences.userId);
+      final int? pessoaId =
+          await SharedPreferencesUtils.getIntVariableFromShared(
+              EnumSharedPreferences.userId);
 
-      final Response<List<dynamic>> response = await RequestBuilder(url: '/pessoa')
-          .addPathParam('$pessoaId')
-          .addPathParam('lote')
-          .buildUrl()
-          .getAll();
+      final Response<List<dynamic>> response =
+          await RequestBuilder(url: '/pessoa')
+              .addPathParam('$pessoaId')
+              .addPathParam('lote')
+              .buildUrl()
+              .getAll();
 
       if (response.statusCode == 200) {
         List<BatchModel> batches = [];
@@ -63,5 +63,23 @@ class BatchService extends AbstractService {
     }
   }
 
+  dynamic deleteBath(int batchId) async {
+    try {
+      int? personId = await SharedPreferencesUtils.getIntVariableFromShared(
+          EnumSharedPreferences.userId);
 
+      Response<void> response = await RequestBuilder(url: '/pessoa')
+          .addPathParam('$personId')
+          .addPathParam('lote')
+          .addPathParam('$batchId')
+          .buildUrl()
+          .delete();
+
+      if (response.statusCode == 204) {
+        return batchId;
+      }
+    } on DioError catch (e) {
+      return customDioError(e);
+    }
+  }
 }

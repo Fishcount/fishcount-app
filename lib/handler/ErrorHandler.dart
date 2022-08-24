@@ -3,6 +3,7 @@ import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/widgets/custom/CustomSnackBar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ErrorHandler {
   static ErrorModel verifyDioError(DioError error) {
@@ -13,6 +14,6 @@ class ErrorHandler {
   }
 
   static Widget getDefaultErrorMessage(BuildContext context, dynamic response) {
-    return CustomSnackBar.getCustomSnackBar(context, response);
+    return CustomSnackBar.getCustomSnackBar(context, response, Colors.red[400]);
   }
 }
