@@ -1,4 +1,4 @@
-import 'package:fishcount_app/model/PlanoModel.dart';
+import 'package:fishcount_app/model/PlanModel.dart';
 import 'package:fishcount_app/modules/financial/installment/PaymentInstallmentController.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class PaymentInstallmentScreen extends StatefulWidget {
   final int pagamentId;
-  final PlanoModel plano;
+  final PlanModel plano;
 
   const PaymentInstallmentScreen(
       {Key? key, required this.pagamentId, required this.plano})

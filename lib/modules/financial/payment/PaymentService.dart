@@ -3,7 +3,7 @@ import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/constants/api/ApiUsuario.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
-import 'package:fishcount_app/model/PagamentoModel.dart';
+import 'package:fishcount_app/model/PaymentModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
 import 'package:fishcount_app/utils/RequestBuilder.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
@@ -11,7 +11,7 @@ import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 class PagamentoService extends AbstractService {
   static String url = ApiPessoa.baseUrl + "/{pessoaId}/pagamento";
 
-  Future<dynamic> incluirAssinaturaPlano(PagamentoModel pagamentoModel) async {
+  Future<dynamic> incluirAssinaturaPlano(PaymentModel pagamentoModel) async {
     try {
       final int? pessoaId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
@@ -24,8 +24,8 @@ class PagamentoService extends AbstractService {
           .post();
 
       if (response.statusCode == 201) {
-        PagamentoModel pagamentoResponse =
-            PagamentoModel.fromJson(response.data);
+        PaymentModel pagamentoResponse =
+            PaymentModel.fromJson(response.data);
         return pagamentoResponse;
       }
       return ErrorModel.fromJson(response.data);
@@ -34,7 +34,7 @@ class PagamentoService extends AbstractService {
     }
   }
 
-  Future<List<PagamentoModel>> buscarPagamentos() async {
+  Future<List<PaymentModel>> buscarPagamentos() async {
     try {
       final int? pessoaId =
           await SharedPreferencesUtils.getIntVariableFromShared(
@@ -47,13 +47,13 @@ class PagamentoService extends AbstractService {
           .getAll();
 
       if (response.statusCode == 200) {
-        List<PagamentoModel> pagamentos = [];
+        List<PaymentModel> pagamentos = [];
         if (response.data != null) {
           if (response.data!.isEmpty) {
             return [];
           }
           for (var lote in response.data!) {
-            pagamentos.add(PagamentoModel.fromJson(lote));
+            pagamentos.add(PaymentModel.fromJson(lote));
           }
         }
         return pagamentos;

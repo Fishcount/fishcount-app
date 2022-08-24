@@ -1,5 +1,5 @@
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
-import 'package:fishcount_app/model/PagamentoParcelaModel.dart';
+import 'package:fishcount_app/model/InstallmentPaymentModel.dart';
 import 'package:fishcount_app/model/PixModel.dart';
 import 'package:fishcount_app/model/enums/EnumMes.dart';
 import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
@@ -23,7 +23,7 @@ class PaymentInstallmentController extends AbstractController {
       child: FutureBuilder(
         future: pagamentoParcelaService.buscarPagamentosParcela(pagamentoId),
         builder:
-            (context, AsyncSnapshot<List<PagamentoParcelaModel>> snapshot) {
+            (context, AsyncSnapshot<List<InstallmentPaymentModel>> snapshot) {
           return AsyncSnapshotHandler(
             asyncSnapshot: snapshot,
             widgetOnError: const Text("Erro"),
@@ -49,7 +49,7 @@ class PaymentInstallmentController extends AbstractController {
   }
 
   static SingleChildScrollView _onSuccessfulRequest(BuildContext context,
-      AsyncSnapshot<List<PagamentoParcelaModel>> snapshot) {
+      AsyncSnapshot<List<InstallmentPaymentModel>> snapshot) {
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.only(top: 10),
@@ -59,9 +59,9 @@ class PaymentInstallmentController extends AbstractController {
             shrinkWrap: true,
             itemCount: snapshot.data != null ? snapshot.data!.length : 0,
             itemBuilder: (context, index) {
-              final PagamentoParcelaModel parcela = snapshot.data![index];
-              final String mesParcela = parcela.dataVencimento.split('/')[1];
-              final String anoParcela = parcela.dataVencimento.split('/')[2];
+              final InstallmentPaymentModel parcela = snapshot.data![index];
+              final String mesParcela = parcela.dueDate.split('/')[1];
+              final String anoParcela = parcela.dueDate.split('/')[2];
 
               return GestureDetector(
                 onTap: () {},
@@ -108,12 +108,12 @@ class PaymentInstallmentController extends AbstractController {
                             ),
                             Flexible(
                               child: Text(
-                                parcela.statusPagamento,
+                                parcela.paymentStatus,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   color: EnumStatusPagamentoHandler
                                       .getColorByStatus(
-                                          parcela.statusPagamento),
+                                          parcela.paymentStatus),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
                                 ),
@@ -142,7 +142,7 @@ class PaymentInstallmentController extends AbstractController {
                                     padding: const EdgeInsets.only(bottom: 10),
                                     child: Text(
                                       'Multa por atraso: R\$ ' +
-                                          parcela.acrescimo.toString() +
+                                          parcela.increase.toString() +
                                           '0',
                                       style: const TextStyle(fontSize: 15),
                                     ),
@@ -151,7 +151,7 @@ class PaymentInstallmentController extends AbstractController {
                                     padding: const EdgeInsets.only(bottom: 10),
                                     child: Text(
                                       'Desconto: R\$ ' +
-                                          parcela.desconto.toString() +
+                                          parcela.discount.toString() +
                                           '0',
                                       style: const TextStyle(fontSize: 15),
                                     ),
@@ -160,7 +160,7 @@ class PaymentInstallmentController extends AbstractController {
                                     padding: const EdgeInsets.only(bottom: 10),
                                     child: Text(
                                       'Data Vencimento: ' +
-                                          parcela.dataVencimento,
+                                          parcela.dueDate,
                                       style: const TextStyle(fontSize: 15),
                                     ),
                                   ),
@@ -168,7 +168,7 @@ class PaymentInstallmentController extends AbstractController {
                                     padding: const EdgeInsets.only(bottom: 10),
                                     child: Text(
                                       'Valor total: R\$ ' +
-                                          parcela.valor.toString() +
+                                          parcela.value.toString() +
                                           '0',
                                       style: const TextStyle(fontSize: 15),
                                     ),
@@ -176,7 +176,7 @@ class PaymentInstallmentController extends AbstractController {
                                 ],
                               ),
                             ),
-                            parcela.statusPagamento != "FINALIZADO"
+                            parcela.paymentStatus != "FINALIZADO"
                                 ? Container(
                                     padding: const EdgeInsets.only(top: 90),
                                     child: ElevatedButtonWidget(

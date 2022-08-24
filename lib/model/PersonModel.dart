@@ -1,5 +1,5 @@
 import 'package:fishcount_app/model/EmailModel.dart';
-import 'package:fishcount_app/model/EnderecoModel.dart';
+import 'package:fishcount_app/model/AddressModel.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/model/PhoneModel.dart';
 
@@ -20,7 +20,7 @@ class PersonModel {
 
   late List<BatchModel> batches;
 
-  late List<EnderecoModel> adresses;
+  late List<AddressModel> adresses;
 
   PersonModel(
     this.id,
@@ -84,9 +84,9 @@ class PersonModel {
             const []);
   }
 
-  List<EnderecoModel> _convertAdressesList(Map<String, dynamic> json) {
-    return List<EnderecoModel>.from(
-        json['enderecos'].map((endereco) => EnderecoModel.fromJson(endereco)) ??
+  List<AddressModel> _convertAdressesList(Map<String, dynamic> json) {
+    return List<AddressModel>.from(
+        json['enderecos'].map((endereco) => AddressModel.fromJson(endereco)) ??
             const []);
   }
 }

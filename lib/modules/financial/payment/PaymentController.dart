@@ -1,6 +1,6 @@
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
-import 'package:fishcount_app/model/PagamentoModel.dart';
-import 'package:fishcount_app/model/PlanoModel.dart';
+import 'package:fishcount_app/model/PaymentModel.dart';
+import 'package:fishcount_app/model/PlanModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -17,7 +17,7 @@ class PagamentoController {
       child: Center(
         child: FutureBuilder(
           future: _pagamentoService.buscarPagamentos(),
-          builder: (context, AsyncSnapshot<List<PagamentoModel>> snapshot) {
+          builder: (context, AsyncSnapshot<List<PaymentModel>> snapshot) {
             return AsyncSnapshotHandler(
               asyncSnapshot: snapshot,
               widgetOnError: const Text("Erro"),
@@ -43,7 +43,7 @@ class PagamentoController {
       );
 
   static SingleChildScrollView _onSuccessfulRequest(
-      BuildContext context, AsyncSnapshot<List<PagamentoModel>> snapshot) {
+      BuildContext context, AsyncSnapshot<List<PaymentModel>> snapshot) {
     return SingleChildScrollView(
       child: SizedBox(
         height: MediaQuery.of(context).size.height / 1.3,
@@ -51,10 +51,10 @@ class PagamentoController {
           shrinkWrap: true,
           itemCount: snapshot.data != null ? snapshot.data!.length : 0,
           itemBuilder: (context, index) {
-            final PagamentoModel pagamento = snapshot.data![index];
+            final PaymentModel pagamento = snapshot.data![index];
             return GestureDetector(
               onTap: () =>
-                  _toParcelasList(context, pagamento.id!, pagamento.plano),
+                  _toParcelasList(context, pagamento.id!, pagamento.plan),
               child: Container(
                 margin: const EdgeInsets.only(top: 25, left: 15, right: 15),
                 alignment: Alignment.center,
@@ -86,7 +86,7 @@ class PagamentoController {
                         children: [
                           Flexible(
                             child: Text(
-                              pagamento.plano.descricao,
+                              pagamento.plan.descricao,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 color: Colors.blue,
@@ -97,12 +97,12 @@ class PagamentoController {
                           ),
                           Flexible(
                             child: Text(
-                              pagamento.statusPagamento,
+                              pagamento.paymentStatus,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color:
                                     EnumStatusPagamentoHandler.getColorByStatus(
-                                        pagamento.statusPagamento),
+                                        pagamento.paymentStatus),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
                               ),
@@ -130,7 +130,7 @@ class PagamentoController {
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Text(
                                     'Inicio da vigência: ' +
-                                        pagamento.dataInicioVigencia,
+                                        pagamento.startValidityDate,
                                     style: const TextStyle(fontSize: 15),
                                   ),
                                 ),
@@ -138,7 +138,7 @@ class PagamentoController {
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Text(
                                     "Fim da vigência: " +
-                                        pagamento.dataFimVigencia,
+                                        pagamento.endValidityDate,
                                     style: const TextStyle(fontSize: 15),
                                   ),
                                 ),
@@ -146,7 +146,7 @@ class PagamentoController {
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Text(
                                     'Multa por atraso: R\$ ' +
-                                        pagamento.acrescimo.toString() +
+                                        pagamento.increase.toString() +
                                         '0',
                                     style: const TextStyle(fontSize: 15),
                                   ),
@@ -155,7 +155,7 @@ class PagamentoController {
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Text(
                                     'Desconto: R\$ ' +
-                                        pagamento.desconto.toString() +
+                                        pagamento.discount.toString() +
                                         '0',
                                     style: const TextStyle(fontSize: 15),
                                   ),
@@ -164,7 +164,7 @@ class PagamentoController {
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Text(
                                     'Valor Total: R\$ ' +
-                                        pagamento.valor.toString() +
+                                        pagamento.value.toString() +
                                         '0',
                                     style: const TextStyle(fontSize: 15),
                                   ),
@@ -186,7 +186,7 @@ class PagamentoController {
   }
 
   static _toParcelasList(
-      BuildContext context, int pagamentoId, PlanoModel plano) {
+      BuildContext context, int pagamentoId, PlanModel plano) {
     NavigatorUtils.push(
       context,
       PaymentInstallmentScreen(pagamentId: pagamentoId, plano: plano),

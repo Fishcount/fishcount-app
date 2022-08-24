@@ -4,11 +4,11 @@ import 'package:fishcount_app/utils/RequestBuilder.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 
 import '../../../constants/EnumSharedPreferences.dart';
-import '../../../model/PagamentoParcelaModel.dart';
+import '../../../model/InstallmentPaymentModel.dart';
 
 class PaymentInstallmentService extends AbstractService {
 
-  Future<List<PagamentoParcelaModel>> buscarPagamentosParcela(
+  Future<List<InstallmentPaymentModel>> buscarPagamentosParcela(
       int pagamentoId) async {
     try {
       int? pessoaId = await SharedPreferencesUtils.getIntVariableFromShared(
@@ -23,13 +23,13 @@ class PaymentInstallmentService extends AbstractService {
           .getAll();
 
       if (response.statusCode == 200) {
-        List<PagamentoParcelaModel> parcelas = [];
+        List<InstallmentPaymentModel> parcelas = [];
         if (response.data != null) {
           if (response.data!.isEmpty) {
             return [];
           }
           for (var lote in response.data!) {
-            parcelas.add(PagamentoParcelaModel.fromJson(lote));
+            parcelas.add(InstallmentPaymentModel.fromJson(lote));
           }
         }
         return parcelas;

@@ -1,4 +1,4 @@
-import 'package:fishcount_app/model/TaxaCrescimentoModel.dart';
+import 'package:fishcount_app/model/GrowthRateModel.dart';
 
 class SpeciesModel {
   late int id;
@@ -17,7 +17,7 @@ class SpeciesModel {
 
   late String unidadePesoRacao;
 
-  late TaxaCrescimentoModel taxaCrescimento;
+  late GrowthRateModel taxaCrescimento;
 
   SpeciesModel(
     this.id,
@@ -40,7 +40,7 @@ class SpeciesModel {
     unidadeTamanho = json['unidadeTamanho'];
     qtdeMediaRacao = json['qtdeMediaRacao'];
     unidadePesoRacao = json['unidadePesoRacao'];
-    taxaCrescimento = TaxaCrescimentoModel.fromJson(json["taxaCrescimento"]);
+    taxaCrescimento = GrowthRateModel.fromJson(json["taxaCrescimento"]);
   }
 
   Map<String, dynamic> toJson() => {

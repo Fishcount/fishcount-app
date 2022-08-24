@@ -15,7 +15,7 @@ class SharedPreferencesUtils {
   static Future<void> addSharedPreferences(AuthUserModel auth) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(EnumSharedPreferences.accessToken.name, auth.token);
-    prefs.setInt(EnumSharedPreferences.userId.name, auth.pessoaId);
+    prefs.setInt(EnumSharedPreferences.userId.name, auth.personId);
     prefs.setString(EnumSharedPreferences.userEmail.name, auth.username);
   }
 

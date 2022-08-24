@@ -3,7 +3,7 @@ class AuthUserModel {
   late String username;
   late String password;
   late String token;
-  late int pessoaId;
+  late int personId;
 
   AuthUserModel(
     this.username,
@@ -15,7 +15,7 @@ class AuthUserModel {
     username = json['username'];
     password = json['password'];
     token = json['token'];
-    pessoaId = json['pessoaId'];
+    personId = json['pessoaId'];
   }
 
   Map<String, dynamic> toJson() => {

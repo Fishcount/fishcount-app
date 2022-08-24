@@ -1,8 +1,8 @@
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
-import 'package:fishcount_app/model/PagamentoModel.dart';
-import 'package:fishcount_app/model/PlanoModel.dart';
+import 'package:fishcount_app/model/PaymentModel.dart';
+import 'package:fishcount_app/model/PlanModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
 import 'package:fishcount_app/model/enums/EnumTipoPagamento.dart';
 
@@ -25,7 +25,7 @@ class PlanController {
     return SingleChildScrollView(
       child: FutureBuilder(
         future: _planoService.listarPlanos(),
-        builder: (context, AsyncSnapshot<List<PlanoModel>> snapshot) {
+        builder: (context, AsyncSnapshot<List<PlanModel>> snapshot) {
           return AsyncSnapshotHandler(
             asyncSnapshot: snapshot,
             widgetOnError: const Text("Error"),
@@ -43,7 +43,7 @@ class PlanController {
   }
 
   static SingleChildScrollView _onSuccessfulRequest(
-      BuildContext context, AsyncSnapshot<List<PlanoModel>> snapshot) {
+      BuildContext context, AsyncSnapshot<List<PlanModel>> snapshot) {
     return SingleChildScrollView(
       child: SizedBox(
         height: MediaQuery.of(context).size.height / 1.3,
@@ -51,7 +51,7 @@ class PlanController {
           shrinkWrap: true,
           itemCount: snapshot.data != null ? snapshot.data!.length : 0,
           itemBuilder: (context, index) {
-            final PlanoModel plano = snapshot.data![index];
+            final PlanModel plano = snapshot.data![index];
             return Container(
               margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
               alignment: Alignment.center,
@@ -193,7 +193,7 @@ class PlanController {
   }
 
   static Future<String?> _confirmarAssinatura(
-      BuildContext context, PlanoModel plano) async {
+      BuildContext context, PlanModel plano) async {
     final String descricaoPlano = plano.descricao;
     final String qtdeParcela = plano.qtdeParcela.toString();
     final String precoMax = plano.valorMaximo.toString();
@@ -216,12 +216,12 @@ class PlanController {
     ).build(context);
   }
 
-  static _assinarPlano(PlanoModel plano, BuildContext context) async {
-    final PagamentoModel pagamentoModel = _gerarPagamentoFromPlano(plano);
+  static _assinarPlano(PlanModel plano, BuildContext context) async {
+    final PaymentModel pagamentoModel = _gerarPagamentoFromPlano(plano);
 
     dynamic response =
         await _pagamentoService.incluirAssinaturaPlano(pagamentoModel);
-    if (response is PagamentoModel) {
+    if (response is PaymentModel) {
       NavigatorUtils.pushReplacement(
           context,
           FinancialScreen(
@@ -246,8 +246,8 @@ class PlanController {
     ).build(context);
   }
 
-  static PagamentoModel _gerarPagamentoFromPlano(PlanoModel plano) {
-    return PagamentoModel(
+  static PaymentModel _gerarPagamentoFromPlano(PlanModel plano) {
+    return PaymentModel(
       null,
       plano.valorMinimo,
       plano.valorMinimo,

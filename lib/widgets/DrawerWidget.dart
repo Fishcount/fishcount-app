@@ -1,6 +1,6 @@
 import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
-import 'package:fishcount_app/model/PagamentoModel.dart';
+import 'package:fishcount_app/model/PaymentModel.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
@@ -28,7 +28,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     final List<PersonModel> pessoas = await PessoaService().findById();
 
     if (_pessoaHasCpf(pessoas.first)) {
-      final List<PagamentoModel> pagamentos =
+      final List<PaymentModel> pagamentos =
           await PagamentoService().buscarPagamentos();
 
       NavigatorUtils.push(

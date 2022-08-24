@@ -1,9 +1,9 @@
-class EnderecoModel {
+class AddressModel {
   late int? id;
 
-  EnderecoModel(this.id);
+  AddressModel(this.id);
 
-  EnderecoModel.fromJson(Map<String, dynamic> json) {
+  AddressModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
   }
 

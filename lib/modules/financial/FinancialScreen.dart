@@ -1,4 +1,4 @@
-import 'package:fishcount_app/model/PagamentoModel.dart';
+import 'package:fishcount_app/model/PaymentModel.dart';
 import 'package:fishcount_app/modules/financial/payment/PaymentController.dart';
 import 'package:fishcount_app/modules/financial/plan/PlanController.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
@@ -7,7 +7,7 @@ import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 
 class FinancialScreen extends StatefulWidget {
-  final List<PagamentoModel>? pagamentos;
+  final List<PaymentModel>? pagamentos;
 
   const FinancialScreen({
     Key? key,

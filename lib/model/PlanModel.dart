@@ -1,4 +1,4 @@
-class PlanoModel {
+class PlanModel {
   late int id;
 
   late String descricao;
@@ -13,7 +13,7 @@ class PlanoModel {
 
   late int qtdeParcela;
 
-  PlanoModel(
+  PlanModel(
     this.id,
     this.descricao,
     this.valorMinimo,
@@ -23,7 +23,7 @@ class PlanoModel {
     this.qtdeParcela,
   );
 
-  PlanoModel.fromJson(Map<String, dynamic> json) {
+  PlanModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     descricao = json['descricao'];
     valorMinimo = json['valorMinimo'];
