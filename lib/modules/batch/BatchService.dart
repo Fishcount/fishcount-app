@@ -43,7 +43,7 @@ class BatchService extends AbstractService {
           EnumSharedPreferences.userId);
       int batchId = batch.id!;
 
-      Response<dynamic> response = await RequestBuilder(url: '/pessoa')
+       await RequestBuilder(url: '/pessoa')
           .addPathParam('$personId')
           .addPathParam('lote')
           .addPathParam('$batchId')
@@ -51,7 +51,7 @@ class BatchService extends AbstractService {
           .setBody(batch.toJson())
           .put();
 
-      return BatchModel.fromJson(response.data);
+      return batch;
     } on DioError catch (e) {
       return customDioError(e);
     }

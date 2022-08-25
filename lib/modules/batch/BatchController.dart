@@ -1,8 +1,12 @@
+import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
+import 'package:fishcount_app/modules/batch/BatchScreen.dart';
 import 'package:fishcount_app/repository/LoteRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/material.dart';
 
+import '../../handler/ErrorHandler.dart';
 import '../../widgets/TextFieldWidget.dart';
 import '../../widgets/buttons/ElevatedButtonWidget.dart';
 import '../generic/AbstractController.dart';
@@ -17,7 +21,7 @@ class BatchController extends AbstractController {
     final isConnected = await _connectionUtils.isConnected();
     BatchModel batchModel = _createBatchModel(nomeLote);
     if (isConnected) {
-      return APIsave(context, batchModel);
+      return apiSave(context, batchModel);
     }
     return localSave(batchModel, context);
   }
@@ -35,13 +39,27 @@ class BatchController extends AbstractController {
     return _loteRepository.save(context, batchModel);
   }
 
-  Future<dynamic> APIsave(BuildContext context, BatchModel managedLote) async {
-    return await _batchService.save(managedLote);
+  Future<dynamic> apiSave(BuildContext context, BatchModel managedLote) async {
+    dynamic response = await _batchService.save(managedLote);
+
+    return validateResponse(context, response);
+  }
+
+  dynamic validateResponse(BuildContext context, dynamic response) {
+    if (response is BatchModel) {
+      NavigatorUtils.pushReplacement(context, const BatchScreen());
+    }
+    if (response is ErrorModel) {
+      Navigator.pop(context);
+      return ErrorHandler.getDefaultErrorMessage(context, response.message);
+    }
   }
 
   Future<dynamic> APIUpdate(
       BuildContext context, BatchModel managedLote) async {
-    return await _batchService.update(managedLote);
+    dynamic response = await _batchService.update(managedLote);
+
+    return validateResponse(context, response);
   }
 
   BatchModel _createBatchModel(String nomeLote) {
@@ -109,9 +127,14 @@ class BatchController extends AbstractController {
                   child: ElevatedButtonWidget(
                     buttonText: "Confirmar",
                     buttonColor: Colors.green,
-                    onPressed: () => _isUpdate
-                        ? updateBatch(context, batchModel)
-                        : saveBatch(context, _batchNameController.text),
+                    onPressed: () {
+                      if (_isUpdate) {
+                        batchModel.descricao = _batchNameController.text;
+                        updateBatch(context, batchModel);
+                        return;
+                      }
+                      saveBatch(context, _batchNameController.text);
+                    },
                     textSize: 15,
                     textColor: Colors.white,
                     radioBorder: 10,
