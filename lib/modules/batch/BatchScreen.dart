@@ -34,6 +34,8 @@ class _BatchScreenState extends State<BatchScreen>
   final List<BatchModel> lotes = [];
   late AnimationController _animationController;
 
+  String _orderBy = 'none';
+
   @override
   initState() {
     super.initState();
@@ -50,7 +52,11 @@ class _BatchScreenState extends State<BatchScreen>
   Future<List<BatchModel>>? fecthBatches(BuildContext context) async {
     bool isConnected = await ConnectionUtils().isConnected();
     if (isConnected) {
-      return _batchService.fetchBatches();
+      if (_orderBy != 'none') {
+        print(_orderBy);
+        return _batchService.fetchBatches(_orderBy);
+      }
+      return _batchService.fetchBatches(null);
     }
     return LoteRepository().listarLotesUsuario(context);
   }
@@ -79,6 +85,87 @@ class _BatchScreenState extends State<BatchScreen>
                 color: Colors.grey.shade400,
                 textColor: Colors.black,
                 isBold: true,
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 5, bottom: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _orderBy = 'dataInclusao';
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: const Border(
+                            right: BorderSide(
+                              color: Colors.black26,
+                            ),
+                            left: BorderSide(
+                              color: Colors.black26,
+                            ),
+                            top: BorderSide(
+                              color: Colors.black26,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.black26,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            const Text("Data inclusão"),
+                            Container(
+                              padding: const EdgeInsets.only(left: 5),
+                              child: const Icon(Icons.date_range),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _orderBy = 'descricao';
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: const Border(
+                            right: BorderSide(
+                              color: Colors.black26,
+                            ),
+                            left: BorderSide(
+                              color: Colors.black26,
+                            ),
+                            top: BorderSide(
+                              color: Colors.black26,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.black26,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            const Text("Ordem alfábética"),
+                            Container(
+                              padding: const EdgeInsets.only(left: 5),
+                              child: const Icon(LineIcons.sortAlphabeticalDown),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               FutureBuilder(
                 future: fecthBatches(context),
@@ -112,7 +199,7 @@ class _BatchScreenState extends State<BatchScreen>
     final Color? backGroundColor = Colors.grey[200];
     return SingleChildScrollView(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height / 1.4,
+        height: MediaQuery.of(context).size.height / 1.5,
         child: ListView.builder(
           shrinkWrap: true,
           itemCount: batches.length,
@@ -181,22 +268,14 @@ class _BatchScreenState extends State<BatchScreen>
                           ),
                           onTap: () => _showInfoSnackBar(context),
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.7,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  NavigatorUtils.pushReplacement(
-                                    context,
-                                    TankScreen(
-                                      lote: batch,
-                                    ),
-                                  );
-                                },
-                                child: Container(
+                        GestureDetector(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.7,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
                                   padding: const EdgeInsets.only(top: 10),
                                   child: Text(
                                     batch.descricao.toUpperCase(),
@@ -207,27 +286,35 @@ class _BatchScreenState extends State<BatchScreen>
                                     ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Text(
-                                  _resolverQtdeTanques(batch),
-                                  style: const TextStyle(
-                                    fontSize: 12,
+                                Container(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Text(
+                                    _resolverQtdeTanques(batch),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: const Text(
-                                  'Data de inclusão: 10/10/2021',
-                                  style: TextStyle(
-                                    fontSize: 12,
+                                Container(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: const Text(
+                                    'Data de inclusão: 10/10/2021',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
+                          onTap: () {
+                            NavigatorUtils.pushReplacement(
+                              context,
+                              TankScreen(
+                                lote: batch,
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),

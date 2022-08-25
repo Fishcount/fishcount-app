@@ -6,18 +6,22 @@ import 'package:fishcount_app/utils/RequestBuilder.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 
 class BatchService extends AbstractService {
-  Future<List<BatchModel>> fetchBatches() async {
+  Future<List<BatchModel>> fetchBatches(String? orderBy) async {
     try {
       final int? pessoaId =
           await SharedPreferencesUtils.getIntVariableFromShared(
               EnumSharedPreferences.userId);
 
+      final RequestBuilder requestBuilder = RequestBuilder(url: '/pessoa')
+          .addPathParam('$pessoaId')
+          .addPathParam('lote');
+
+      if (orderBy != null) {
+        requestBuilder.addQueryParam('orderBy', orderBy);
+      }
+
       final Response<List<dynamic>> response =
-          await RequestBuilder(url: '/pessoa')
-              .addPathParam('$pessoaId')
-              .addPathParam('lote')
-              .buildUrl()
-              .getAll();
+          await requestBuilder.buildUrl().getAll();
 
       if (response.statusCode == 200) {
         List<BatchModel> batches = [];
@@ -43,7 +47,7 @@ class BatchService extends AbstractService {
           EnumSharedPreferences.userId);
       int batchId = batch.id!;
 
-       await RequestBuilder(url: '/pessoa')
+      await RequestBuilder(url: '/pessoa')
           .addPathParam('$personId')
           .addPathParam('lote')
           .addPathParam('$batchId')
