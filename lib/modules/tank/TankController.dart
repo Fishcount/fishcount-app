@@ -1,11 +1,10 @@
 import 'package:fishcount_app/constants/AppImages.dart';
-import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
-import 'package:fishcount_app/model/SpeciesModel.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
+import 'package:fishcount_app/model/SpeciesModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
 import 'package:fishcount_app/repository/EspecieRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
@@ -14,8 +13,8 @@ import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/material.dart';
 
-import '../species/SpecieService.dart';
 import '../generic/AbstractController.dart';
+import '../species/SpecieService.dart';
 import 'TankForm.dart';
 import 'TankScreen.dart';
 import 'TankService.dart';
@@ -38,8 +37,8 @@ class TankController extends AbstractController {
     }
   }
 
-  Widget resolverDadosEspecie(
-      AsyncSnapshot<SpeciesModel> snapshot, BatchModel lote, BuildContext context) {
+  Widget resolveSpecieData(
+      AsyncSnapshot<SpeciesModel> snapshot, BatchModel batch, BuildContext context) {
     _pesoMedioController.text = _resolverPesoMedio(snapshot);
     _tamanhoMedioController.text = _resolverTamanhoMedio(snapshot);
     _qtdeMediaRacaoController.text = _resolverQtdeMediaRacao(snapshot);
@@ -70,7 +69,7 @@ class TankController extends AbstractController {
                 textColor: Colors.white,
                 buttonColor: Colors.blue,
                 onPressed: () {
-                  NavigatorUtils.push(context, TankForm(lote: lote));
+                  NavigatorUtils.push(context, TankForm(lote: batch));
                 },
               ),
             ),

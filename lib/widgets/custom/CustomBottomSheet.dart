@@ -7,7 +7,7 @@ import '../../modules/batch/BatchScreen.dart';
 
 class CustomBottomSheet {
   static Widget getCustomBottomSheet(
-      BuildContext context, Widget newFormScreen) {
+      BuildContext context, Function() newFunction) {
     return Container(
       color: Colors.yellow,
       height: 70,
@@ -69,9 +69,7 @@ class CustomBottomSheet {
                     size: 35,
                     color: Colors.blueAccent,
                   ),
-                  onTap: () {
-                    NavigatorUtils.push(context, newFormScreen);
-                  },
+                  onTap: newFunction,
                 ),
                 const Text(
                   "Novo",

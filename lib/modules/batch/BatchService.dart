@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
-import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
 import 'package:fishcount_app/utils/RequestBuilder.dart';
@@ -38,26 +37,39 @@ class BatchService extends AbstractService {
     }
   }
 
-  dynamic saveOrUpdate(BatchModel batch) async {
+  dynamic update(BatchModel batch) async {
+    try {
+      int? personId = await SharedPreferencesUtils.getIntVariableFromShared(
+          EnumSharedPreferences.userId);
+      int batchId = batch.id!;
+
+      Response<dynamic> response = await RequestBuilder(url: '/pessoa')
+          .addPathParam('$personId')
+          .addPathParam('lote')
+          .addPathParam('$batchId')
+          .buildUrl()
+          .setBody(batch.toJson())
+          .put();
+
+      return BatchModel.fromJson(response.data);
+    } on DioError catch (e) {
+      return customDioError(e);
+    }
+  }
+
+  dynamic save(BatchModel batch) async {
     try {
       int? personId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
 
-      RequestBuilder requestOptions = RequestBuilder(url: '/pessoa')
+      Response<dynamic> response = await RequestBuilder(url: '/pessoa')
           .addPathParam('$personId')
           .addPathParam('lote')
           .buildUrl()
-          .setBody(batch.toJson());
+          .setBody(batch.toJson())
+          .post();
 
-      if (batch.id != null) {
-        await requestOptions.put();
-        return batch;
-      }
-      Response<dynamic> response = await requestOptions.post();
-      if (response.statusCode == 201) {
-        return BatchModel.fromJson(response.data);
-      }
-      return ErrorModel.fromJson(response.data);
+      return BatchModel.fromJson(response.data);
     } on DioError catch (e) {
       return customDioError(e);
     }

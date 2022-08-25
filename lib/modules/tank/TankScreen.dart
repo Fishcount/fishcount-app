@@ -1,4 +1,3 @@
-import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
@@ -12,9 +11,9 @@ import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 
 import 'TankForm.dart';
 import 'TankService.dart';
@@ -44,12 +43,8 @@ class _TankScreenState extends State<TankScreen> {
     return Scaffold(
       appBar: CustomAppBar.build(),
       drawer: const DrawerWidget(),
-      bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
-        context,
-        TankForm(
-          lote: widget.lote,
-        ),
-      ),
+      bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(context,
+          () => NavigatorUtils.push(context, TankForm(lote: widget.lote))),
       body: Center(
         child: Container(
           padding: const EdgeInsets.only(top: 20, left: 30, right: 30),

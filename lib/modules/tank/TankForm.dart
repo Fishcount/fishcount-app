@@ -105,7 +105,7 @@ class _TankFormState extends State<TankForm> {
                       future: SpeciesService().findFirst(),
                       builder: (context, AsyncSnapshot<SpeciesModel> snapshot) {
                         especieModel = snapshot.data;
-                        return TankController().resolverDadosEspecie(
+                        return TankController().resolveSpecieData(
                             snapshot, widget.lote, context);
                       },
                     )
@@ -114,7 +114,7 @@ class _TankFormState extends State<TankForm> {
                           SpeciesService().findByDescricao(descricaoEspecie),
                       builder: (context, AsyncSnapshot<SpeciesModel> snapshot) {
                         especieModel = snapshot.data;
-                        return TankController().resolverDadosEspecie(
+                        return TankController().resolveSpecieData(
                             snapshot, widget.lote, context);
                       },
                     ),

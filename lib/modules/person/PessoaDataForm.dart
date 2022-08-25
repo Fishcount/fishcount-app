@@ -1,14 +1,13 @@
-import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/repository/UsuarioRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../batch/BatchForm.dart';
-
 import 'PessoaController.dart';
 import 'PessoaService.dart';
 
@@ -35,7 +34,7 @@ class _PessoaDataFormState extends State<PessoaDataForm> {
     return Scaffold(
       appBar: CustomAppBar.build(),
       bottomNavigationBar:
-          CustomBottomSheet.getCustomBottomSheet(context, const BatchForm()),
+          CustomBottomSheet.getCustomBottomSheet(context, () => NavigatorUtils.push(context, BatchForm())),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(top: 30, left: 20, right: 20),

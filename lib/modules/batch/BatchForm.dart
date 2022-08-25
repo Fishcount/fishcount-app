@@ -18,6 +18,7 @@ class BatchForm extends StatefulWidget {
 
 class _BatchFormState extends State<BatchForm> {
   final TextEditingController _nomeLoteController = TextEditingController();
+  final BatchController _batchController = BatchController();
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +61,8 @@ class _BatchFormState extends State<BatchForm> {
                 textColor: Colors.white,
                 buttonColor: Colors.blue,
                 buttonText: widget.lote != null ? "Atualizar" : "Salvar",
-                onPressed: () => {
-                  BatchController().salvarLote(
-                      context, widget.lote, _nomeLoteController.text)
-                },
+                onPressed: () => _batchController.saveBatch(
+                    context, _nomeLoteController.text),
               ),
             ),
           ],

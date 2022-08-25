@@ -5,20 +5,16 @@ import 'package:fishcount_app/repository/LoteRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
-import 'package:fishcount_app/widgets/TextFieldWidget.dart';
-import 'package:fishcount_app/widgets/custom/AlertDialogBuilder.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
-import 'package:fishcount_app/widgets/custom/CustomSnackBar.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 
 import '../../constants/AppPaths.dart';
 import '../../constants/exceptions/ErrorMessage.dart';
 import '../../utils/NavigatorUtils.dart';
 import '../../widgets/buttons/ElevatedButtonWidget.dart';
 import '../tank/TankScreen.dart';
-import 'BatchForm.dart';
 import 'BatchController.dart';
 import 'BatchService.dart';
 
@@ -31,59 +27,73 @@ class BatchScreen extends StatefulWidget {
   State<BatchScreen> createState() => _BatchScreenState();
 }
 
-class _BatchScreenState extends State<BatchScreen> {
-  BatchService batchService = BatchService();
+class _BatchScreenState extends State<BatchScreen>
+    with TickerProviderStateMixin {
+  final BatchService _batchService = BatchService();
+  final BatchController _batchController = BatchController();
+  final List<BatchModel> lotes = [];
+  late AnimationController _animationController;
 
-  final TextEditingController _pesquisaController = TextEditingController();
+  @override
+  initState() {
+    super.initState();
+    _animationController = BottomSheet.createAnimationController(this);
+    _animationController.duration = const Duration(seconds: 1);
+  }
 
-  List<BatchModel> lotes = [];
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
-  Future<List<BatchModel>>? listarLotes(BuildContext context) async {
+  Future<List<BatchModel>>? fecthBatches(BuildContext context) async {
     bool isConnected = await ConnectionUtils().isConnected();
     if (isConnected) {
-      return batchService.fetchBatches();
+      return _batchService.fetchBatches();
     }
     return LoteRepository().listarLotesUsuario(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController _newBatchController = TextEditingController();
     return Scaffold(
       appBar: CustomAppBar.build(),
       drawer: const DrawerWidget(),
-      bottomNavigationBar:
-          CustomBottomSheet.getCustomBottomSheet(context, const BatchForm()),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-        child: Column(
-          children: [
-            const DividerWidget(
-              textBetween: "LOTES",
-              height: 40,
-              thikness: 2.5,
-              paddingLeft: 10,
-              paddingRight: 10,
-              color: Colors.blue,
-              textColor: Colors.black,
-              isBold: true,
-            ),
-            Column(
-              children: [
-                FutureBuilder(
-                  future: listarLotes(context),
-                  builder: (context, AsyncSnapshot<List<BatchModel>> snapshot) {
-                    return AsyncSnapshotHandler(
-                      asyncSnapshot: snapshot,
-                      widgetOnError: _notFoundWidget(context),
-                      widgetOnWaiting: const CircularProgressIndicator(),
-                      widgetOnEmptyResponse: _notFoundWidget(context),
-                      widgetOnSuccess: _listaLotes(context, snapshot.data),
-                    ).handler();
-                  },
-                ),
-              ],
-            ),
-          ],
+      bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
+          context,
+          () => _batchController.openBatchRegisterModal(
+              context, _newBatchController, _animationController, null)),
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+          child: Column(
+            children: [
+              DividerWidget(
+                textBetween: "LOTES",
+                height: 40,
+                thikness: 2.5,
+                paddingLeft: 10,
+                paddingRight: 10,
+                color: Colors.grey.shade400,
+                textColor: Colors.black,
+                isBold: true,
+              ),
+              FutureBuilder(
+                future: fecthBatches(context),
+                builder: (context, AsyncSnapshot<List<BatchModel>> snapshot) {
+                  return AsyncSnapshotHandler(
+                    asyncSnapshot: snapshot,
+                    widgetOnError: _notFoundWidget(context),
+                    widgetOnWaiting: const CircularProgressIndicator(),
+                    widgetOnEmptyResponse: _notFoundWidget(context),
+                    widgetOnSuccess: _listaLotes(context, snapshot.data),
+                  ).handler();
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -96,125 +106,131 @@ class _BatchScreenState extends State<BatchScreen> {
 
   Widget _listaLotes(BuildContext context, List<BatchModel>? lotes) {
     List<BatchModel> batches = lotes ?? [];
+    TextEditingController _editBatchNameController = TextEditingController();
 
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: batches.length,
-      itemBuilder: (context, index) {
-        BatchModel batch = batches[index];
-        return Dismissible(
-          key: Key(batch.id!.toString()),
-          onDismissed: (direction) =>
-              _showAlertDialog(context, direction, batches, index),
-          background: Container(
-            width: 200,
-            color: Colors.red[400],
-            margin: const EdgeInsets.only(top: 15, right: 10),
-            child: Container(
-              alignment: const Alignment(-0.9, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 15),
-                    child: const Icon(Icons.delete, color: Colors.white),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(right: 15),
-                    child: const Icon(Icons.delete, color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          child: Container(
-            margin: const EdgeInsets.only(top: 15),
-            alignment: Alignment.center,
-            height: 90,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: const Border(
-                right: BorderSide(
-                  color: Colors.blue,
+    const Color borderColor = Colors.black26;
+    final Color? backGroundColor = Colors.grey[200];
+    return SingleChildScrollView(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height / 1.4,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: batches.length,
+          itemBuilder: (context, index) {
+            BatchModel batch = batches[index];
+            return Dismissible(
+              key: Key(batch.id!.toString()),
+              onDismissed: (direction) =>
+                  _showAlertDialog(context, direction, batches, index),
+              background: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.red[400],
                 ),
-                left: BorderSide(
-                  color: Colors.blue,
-                ),
-                top: BorderSide(
-                  color: Colors.blue,
-                ),
-                bottom: BorderSide(
-                  color: Colors.blue,
-                ),
-              ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: GestureDetector(
-                    child: const Icon(
-                      Icons.drag_indicator_rounded,
-                      size: 25,
-                      color: Colors.red,
-                    ),
-                    onDoubleTap: () => _showInfoSnackBar(context),
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 1.7,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                margin: const EdgeInsets.only(top: 15, right: 10),
+                child: Container(
+                  alignment: const Alignment(-0.9, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          NavigatorUtils.pushReplacement(
-                            context,
-                            TankScreen(
-                              lote: batch,
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text(
-                            batch.descricao.toUpperCase(),
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
                       Container(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Text(
-                          _resolverQtdeTanques(batch),
-                          style: const TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: const Text(
-                          'Data de inclusão: 10/10/2021',
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
+                        padding: const EdgeInsets.only(left: 15),
+                        child: const Icon(Icons.delete, color: Colors.white),
                       ),
                     ],
                   ),
                 ),
-                Row(
+              ),
+              child: Container(
+                margin: const EdgeInsets.only(top: 15),
+                alignment: Alignment.center,
+                height: 90,
+                decoration: BoxDecoration(
+                  color: backGroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                  border: const Border(
+                    right: BorderSide(
+                      color: borderColor,
+                    ),
+                    left: BorderSide(
+                      color: borderColor,
+                    ),
+                    top: BorderSide(
+                      color: borderColor,
+                    ),
+                    bottom: BorderSide(
+                      color: borderColor,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            child: const Icon(
+                              Icons.drag_indicator,
+                              size: 30,
+                              // color: Colors.red,
+                            ),
+                          ),
+                          onTap: () => _showInfoSnackBar(context),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.7,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  NavigatorUtils.pushReplacement(
+                                    context,
+                                    TankScreen(
+                                      lote: batch,
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Text(
+                                    batch.descricao.toUpperCase(),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Text(
+                                  _resolverQtdeTanques(batch),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: const Text(
+                                  'Data de inclusão: 10/10/2021',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                     Container(
                       margin: const EdgeInsets.only(
                         right: 20,
@@ -224,28 +240,28 @@ class _BatchScreenState extends State<BatchScreen> {
                       width: 30,
                       alignment: Alignment.center,
                       child: GestureDetector(
-                        child: const Icon(
-                          LineIcons.edit,
-                          color: Colors.black,
-                          size: 25,
-                        ),
-                        onTap: () {
-                          NavigatorUtils.push(
-                            context,
-                            BatchForm(
-                              lote: batch,
-                            ),
-                          );
-                        },
-                      ),
+                          child: const Icon(
+                            LineIcons.edit,
+                            color: Colors.black,
+                            size: 25,
+                          ),
+                          onTap: () => {
+                                _editBatchNameController.text = batch.descricao,
+                                _batchController.openBatchRegisterModal(
+                                  context,
+                                  _editBatchNameController,
+                                  _animationController,
+                                  batch,
+                                )
+                              }),
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-        );
-      },
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -253,7 +269,6 @@ class _BatchScreenState extends State<BatchScreen> {
       DismissDirection direction, List<BatchModel> batches, int index) {
     return showDialog<String>(
       context: context,
-      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Confirmação"),
@@ -298,7 +313,7 @@ class _BatchScreenState extends State<BatchScreen> {
   }
 
   _deleteBatch(List<BatchModel> batches, int index) {
-    batchService.deleteBath(batches[index].id!);
+    _batchService.deleteBath(batches[index].id!);
     Navigator.pop(context);
   }
 
