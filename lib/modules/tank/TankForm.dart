@@ -13,13 +13,13 @@ import '../species/SpecieService.dart';
 import 'TankController.dart';
 
 class TankForm extends StatefulWidget {
-  final TankModel? tanque;
-  final BatchModel lote;
+  final TankModel? tank;
+  final BatchModel batch;
 
   const TankForm({
     Key? key,
-    this.tanque,
-    required this.lote,
+    this.tank,
+    required this.batch,
   }) : super(key: key);
 
   @override
@@ -36,12 +36,12 @@ class _TankFormState extends State<TankForm> {
 
   @override
   Widget build(BuildContext context) {
-    _nomeTanqueController.text = widget.tanque != null
-        ? widget.tanque!.description
+    _nomeTanqueController.text = widget.tank != null
+        ? widget.tank!.description
         : _nomeTanqueController.text;
 
-    _qtdePeixesController.text = widget.tanque != null
-        ? widget.tanque!.fishAmount.toString()
+    _qtdePeixesController.text = widget.tank != null
+        ? widget.tank!.fishAmount.toString()
         : _qtdePeixesController.text;
     return Scaffold(
       appBar: CustomAppBar.build(),
@@ -55,8 +55,8 @@ class _TankFormState extends State<TankForm> {
                   top: 10,
                 ),
                 child: Text(
-                  widget.tanque != null
-                      ? widget.tanque!.description
+                  widget.tank != null
+                      ? widget.tank!.description
                       : "Novo Tanque",
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.bold),
@@ -106,7 +106,7 @@ class _TankFormState extends State<TankForm> {
                       builder: (context, AsyncSnapshot<SpeciesModel> snapshot) {
                         especieModel = snapshot.data;
                         return TankController().resolveSpecieData(
-                            snapshot, widget.lote, context);
+                            snapshot, widget.batch, context);
                       },
                     )
                   : FutureBuilder(
@@ -115,7 +115,7 @@ class _TankFormState extends State<TankForm> {
                       builder: (context, AsyncSnapshot<SpeciesModel> snapshot) {
                         especieModel = snapshot.data;
                         return TankController().resolveSpecieData(
-                            snapshot, widget.lote, context);
+                            snapshot, widget.batch, context);
                       },
                     ),
               Container(
@@ -128,7 +128,7 @@ class _TankFormState extends State<TankForm> {
                   verticalPadding: 20,
                   textColor: Colors.white,
                   buttonColor: Colors.blue,
-                  onPressed: () async => await _saveTank(context, widget.tanque),
+                  onPressed: () async => await _saveTank(context, widget.tank),
                 ),
               ),
             ],
@@ -153,7 +153,7 @@ class _TankFormState extends State<TankForm> {
         null,
         null);
 
-    await TankController().saveTanque(context, tanque, widget.lote);
+    await TankController().saveTanque(context, tanque, widget.batch);
   }
 
   Widget _onEmptyResponse(BuildContext context) {
@@ -180,7 +180,7 @@ class _TankFormState extends State<TankForm> {
               textColor: Colors.white,
               buttonColor: Colors.blue,
               onPressed: () {
-                NavigatorUtils.push(context, TankForm(lote: widget.lote));
+                NavigatorUtils.push(context, TankForm(batch: widget.batch));
               },
             ),
           ),

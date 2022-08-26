@@ -1,6 +1,6 @@
-import 'package:fishcount_app/model/EmailModel.dart';
 import 'package:fishcount_app/model/AddressModel.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
+import 'package:fishcount_app/model/EmailModel.dart';
 import 'package:fishcount_app/model/PhoneModel.dart';
 
 class PersonModel {

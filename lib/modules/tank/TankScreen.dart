@@ -2,12 +2,12 @@ import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
+import 'package:fishcount_app/modules/tank/TankController.dart';
 import 'package:fishcount_app/repository/TanqueRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
-import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
@@ -15,77 +15,115 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
+import '../../widgets/FilterOptionWidget.dart';
 import 'TankForm.dart';
 import 'TankService.dart';
 
 class TankScreen extends StatefulWidget {
-  final BatchModel lote;
+  final BatchModel batch;
 
-  const TankScreen({Key? key, required this.lote}) : super(key: key);
+  const TankScreen({
+    Key? key,
+    required this.batch,
+  }) : super(key: key);
 
   @override
   State<TankScreen> createState() => _TankScreenState();
 }
 
-class _TankScreenState extends State<TankScreen> {
-  final TextEditingController _pesquisaController = TextEditingController();
+class _TankScreenState extends State<TankScreen>
+    with TickerProviderStateMixin{ 
+  final TankService _tankService = TankService();
+  final TankController _tankController = TankController();
+  final ConnectionUtils _connectionUtils = ConnectionUtils();
+  final TanqueRepository _tanqueRepository = TanqueRepository();
+  late AnimationController _animationController;
 
-  Future<List<TankModel>> listTanks() async {
-    bool isConnected = await ConnectionUtils().isConnected();
+  String _orderBy = 'none';
+
+  @override
+  initState() {
+    super.initState();
+    _animationController = BottomSheet.createAnimationController(this);
+    _animationController.duration = const Duration(seconds: 1);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  Future<List<TankModel>> fetchTanks() async {
+    bool isConnected = await _connectionUtils.isConnected();
     if (isConnected) {
-      return TankService().listarTanquesFromLote(widget.lote);
+      if (_orderBy != 'none') {
+        return _tankService.fetchTanks(batch: widget.batch, orderBy: _orderBy);
+      }
+      return _tankService.fetchTanks(batch: widget.batch, orderBy: null);
     }
-    return TanqueRepository().listarTanques(context, widget.lote.id!);
+    return _tanqueRepository.listarTanques(context, widget.batch.id!);
   }
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController _newTankController = TextEditingController();
     return Scaffold(
       appBar: CustomAppBar.build(),
       drawer: const DrawerWidget(),
-      bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(context,
-          () => NavigatorUtils.push(context, TankForm(lote: widget.lote))),
+      bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
+        context,
+        () => _tankController.openBatchRegisterModal(context, _newTankController, _animationController, null),
+      ),
       body: Center(
         child: Container(
-          padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
+          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
           child: Column(
             children: [
-              TextFieldWidget(
-                controller: _pesquisaController,
-                focusedBorderColor: Colors.white30,
-                iconColor: Colors.blueGrey,
-                prefixIcon: const Icon(Icons.search),
-                hintText: "Pesquisar",
-                obscureText: false,
-              ),
-              const DividerWidget(
+              DividerWidget(
                 textBetween: "TANQUES",
                 height: 40,
                 thikness: 2.5,
                 paddingLeft: 10,
                 paddingRight: 10,
-                color: Colors.blue,
+                color: Colors.grey.shade400,
                 textColor: Colors.black,
                 isBold: true,
               ),
-              Column(
-                children: [
-                  FutureBuilder(
-                    future: listTanks(),
-                    builder:
-                        (context, AsyncSnapshot<List<TankModel>> snapshot) {
-                      return AsyncSnapshotHandler(
-                        asyncSnapshot: snapshot,
-                        widgetOnError: const Text(""),
-                        widgetOnWaiting: const CircularProgressIndicator(),
-                        widgetOnEmptyResponse: _notFoundWidget(context),
-                        widgetOnSuccess:
-                            _tankList(context, snapshot.data, widget.lote),
-                      ).handler();
-                    },
-                  ),
-                ],
-              )
+              Container(
+                padding: const EdgeInsets.only(top: 5, bottom: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      child: FilterOptionWidget(
+                        onTap: () => setState(() => _orderBy = 'dataInclusao'),
+                        text: 'Data Inclusão',
+                        icon: const Icon(Icons.date_range),
+                      ),
+                    ),
+                    FilterOptionWidget(
+                      onTap: () => setState(() => _orderBy = 'descricao'),
+                      text: 'Ordem alfabética',
+                      icon: const Icon(LineIcons.sortAlphabeticalDown),
+                    ),
+                  ],
+                ),
+              ),
+              FutureBuilder(
+                future: fetchTanks(),
+                builder: (context, AsyncSnapshot<List<TankModel>> snapshot) {
+                  return AsyncSnapshotHandler(
+                    asyncSnapshot: snapshot,
+                    widgetOnError: const Text(""),
+                    widgetOnWaiting: const CircularProgressIndicator(),
+                    widgetOnEmptyResponse: _notFoundWidget(context),
+                    widgetOnSuccess:
+                        _tankList(context, snapshot.data, widget.batch),
+                  ).handler();
+                },
+              ),
             ],
           ),
         ),
@@ -120,7 +158,7 @@ class _TankScreenState extends State<TankScreen> {
                 NavigatorUtils.push(
                   context,
                   TankForm(
-                    lote: widget.lote,
+                    batch: widget.batch,
                   ),
                 );
               },
@@ -131,133 +169,205 @@ class _TankScreenState extends State<TankScreen> {
     );
   }
 
+  Future<String?> _showAlertDialog(BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirmação"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text("Deseja realmente excluir esse tanque? "),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButtonWidget(
+                  buttonText: "Cancelar",
+                  buttonColor: Colors.blue,
+                  onPressed: () => {
+                    Navigator.pop(context),
+                    setState(() {
+                      // batches.removeAt(index);
+                    }),
+                  },
+                  textSize: 15,
+                  textColor: Colors.white,
+                  radioBorder: 10,
+                ),
+                ElevatedButtonWidget(
+                  buttonText: "Confirmar",
+                  buttonColor: Colors.green,
+                  onPressed: () => {},
+                  textSize: 15,
+                  textColor: Colors.white,
+                  radioBorder: 10,
+                ),
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
+
   Widget _tankList(
-      BuildContext context, List<TankModel>? tanques, BatchModel lote) {
-    if (tanques == null) {
-      return _notFoundWidget(context);
-    }
+      BuildContext context, List<TankModel>? tanksModel, BatchModel batch) {
+    final List<TankModel> tanks = tanksModel ?? [];
+    const Color borderColor = Colors.black26;
+    final Color? backGroundColor = Colors.grey[200];
     return SingleChildScrollView(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height / 1.7,
+        height: MediaQuery.of(context).size.height / 1.5,
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: tanques.length,
+          itemCount: tanks.length,
           itemBuilder: (context, index) {
-            TankModel tanque = tanques[index];
-            return Container(
-              margin: const EdgeInsets.only(top: 15),
-              alignment: Alignment.center,
-              height: 70,
-              decoration: const BoxDecoration(
-                //  borderRadius: BorderRadius.circular(10),
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.blue,
-                    width: 2,
-                  ),
-                  left: BorderSide(
-                    color: Colors.black26,
-                  ),
-                  right: BorderSide(
-                    color: Colors.black26,
-                  ),
-                  top: BorderSide(
-                    color: Colors.black26,
-                  ),
+            TankModel tankModel = tanks[index];
+            return Dismissible(
+              key: Key(tankModel.id!.toString()),
+              onDismissed: (direction) => _showAlertDialog(context),
+              background: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.red[400],
                 ),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 1.7,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            NavigatorUtils.push(
-                              context,
-                              TankForm(
-                                tanque: tanque,
-                                lote: lote,
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.only(left: 10, top: 10),
-                            child: Text(
-                              tanque.description.toUpperCase(),
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
+                margin: const EdgeInsets.only(top: 15, right: 10),
+                child: Container(
+                  alignment: const Alignment(-0.9, 0),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(
-                          right: 7,
-                          top: 12,
-                          bottom: 12,
-                        ),
-                        width: 30,
-                        decoration: const BoxDecoration(
-                          //color: Colors.blue,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        alignment: Alignment.center,
-                        child: GestureDetector(
-                          child: const Icon(
-                            LineIcons.edit,
-                            color: Colors.black,
-                            size: 25,
-                          ),
-                          onTap: () {
-                            NavigatorUtils.push(
-                              context,
-                              TankForm(
-                                tanque: tanque,
-                                lote: lote,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(
-                          right: 6,
-                          top: 12,
-                          bottom: 12,
-                        ),
-                        width: 30,
-                        decoration: const BoxDecoration(
-                          //color: Colors.red,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        alignment: Alignment.center,
-                        child: GestureDetector(
-                          child: const Icon(
-                            LineIcons.trash,
-                            color: Colors.red,
-                            size: 25,
-                          ),
-                          onTap: () {},
-                        ),
+                        padding: const EdgeInsets.only(left: 15),
+                        child: const Icon(Icons.delete, color: Colors.white),
                       ),
                     ],
                   ),
-                ],
+                ),
+              ),
+              child: Container(
+                margin: const EdgeInsets.only(top: 15),
+                alignment: Alignment.center,
+                height: 90,
+                decoration: BoxDecoration(
+                  color: backGroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                  border: const Border(
+                    right: BorderSide(
+                      color: borderColor,
+                    ),
+                    left: BorderSide(
+                      color: borderColor,
+                    ),
+                    top: BorderSide(
+                      color: borderColor,
+                    ),
+                    bottom: BorderSide(
+                      color: borderColor,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            child: const Icon(
+                              Icons.drag_indicator,
+                              size: 30,
+                              // color: Colors.red,
+                            ),
+                          ),
+                          onTap: () => {},
+                          // onTap: () => _showInfoSnackBar(context),
+                        ),
+                        GestureDetector(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.7,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Text(
+                                    tankModel.description,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Text(
+                                    tankModel.fishAmount.toString() + ' Peixes',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: const Text(
+                                    'Data de inclusão: 10/10/2021',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            // NavigatorUtils.pushReplacement(
+                            //   context,
+                            //   TankScreen(
+                            //     lote: tankModel,
+                            //   ),
+                            // );
+                          },
+                        ),
+                      ],
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(
+                        right: 20,
+                        top: 12,
+                        bottom: 12,
+                      ),
+                      width: 30,
+                      alignment: Alignment.center,
+                      child: GestureDetector(
+                          child: const Icon(
+                            LineIcons.edit,
+                            color: Colors.black,
+                            size: 30,
+                          ),
+                          onTap: () => {
+                                // _editBatchNameController.text =
+                                //     tankModel.descricao,
+                                // _batchController.openBatchRegisterModal(
+                                //   context,
+                                //   _editBatchNameController,
+                                //   _animationController,
+                                //   tankModel,
+                                // )
+                              }),
+                    ),
+                  ],
+                ),
               ),
             );
           },

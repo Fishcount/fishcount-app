@@ -5,7 +5,6 @@ import 'package:fishcount_app/model/PaymentModel.dart';
 import 'package:fishcount_app/model/PlanModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
 import 'package:fishcount_app/model/enums/EnumTipoPagamento.dart';
-
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/AlertDialogBuilder.dart';

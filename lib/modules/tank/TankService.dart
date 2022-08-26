@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
-import 'package:fishcount_app/constants/Responses.dart';
 import 'package:fishcount_app/constants/api/ApiLote.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
@@ -13,20 +12,28 @@ import '../../exceptionHandler/ErrorModel.dart';
 class TankService extends AbstractService {
   String url = ApiLote.baseUrl + "/{loteId}/tanque";
 
-  Future<List<TankModel>> listarTanquesFromLote(BatchModel batch) async {
+  Future<List<TankModel>> fetchTanks(
+      {batch = TankModel, orderBy = String}) async {
     try {
       final int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
       final int? batchId = batch.id;
 
-      final Response<List<dynamic>> response =
-          await RequestBuilder(url: '/pessoa')
-              .addPathParam('$userId')
-              .addPathParam('lote')
-              .addPathParam('$batchId')
-              .addPathParam('tanque')
-              .buildUrl()
-              .getAll();
+      RequestBuilder requestBuilder = RequestBuilder(url: '/pessoa')
+          .addPathParam('$userId')
+          .addPathParam('lote')
+          .addPathParam('$batchId')
+          .addPathParam('tanque');
+
+      Response<List<dynamic>> response;
+      if (orderBy != null) {
+        response = await requestBuilder
+            .addQueryParam('orderBy', orderBy)
+            .buildUrl()
+            .getAll();
+      } else {
+        response = await requestBuilder.buildUrl().getAll();
+      }
 
       if (response.statusCode == 200) {
         List<TankModel> tanques = [];

@@ -3,7 +3,6 @@ import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/repository/provider/DBProvider.dart';
-
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:flutter/cupertino.dart';

@@ -3,8 +3,8 @@ import 'package:fishcount_app/model/PaymentModel.dart';
 import 'package:fishcount_app/model/PlanModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../installment/PaymentInstallmentScreen.dart';
 import 'PaymentService.dart';

@@ -5,6 +5,7 @@ import 'package:fishcount_app/repository/LoteRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
+import 'package:fishcount_app/widgets/FilterOptionWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +62,7 @@ class _BatchScreenState extends State<BatchScreen>
     return LoteRepository().listarLotesUsuario(context);
   }
 
+
   @override
   Widget build(BuildContext context) {
     TextEditingController _newBatchController = TextEditingController();
@@ -91,78 +93,18 @@ class _BatchScreenState extends State<BatchScreen>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _orderBy = 'dataInclusao';
-                        });
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: const Border(
-                            right: BorderSide(
-                              color: Colors.black26,
-                            ),
-                            left: BorderSide(
-                              color: Colors.black26,
-                            ),
-                            top: BorderSide(
-                              color: Colors.black26,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.black26,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            const Text("Data inclusão"),
-                            Container(
-                              padding: const EdgeInsets.only(left: 5),
-                              child: const Icon(Icons.date_range),
-                            ),
-                          ],
-                        ),
+                    Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      child: FilterOptionWidget(
+                        onTap: () => setState(() => _orderBy = 'dataInclusao'),
+                        text: 'Data Inclusão',
+                        icon: const Icon(Icons.date_range),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _orderBy = 'descricao';
-                        });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: const Border(
-                            right: BorderSide(
-                              color: Colors.black26,
-                            ),
-                            left: BorderSide(
-                              color: Colors.black26,
-                            ),
-                            top: BorderSide(
-                              color: Colors.black26,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.black26,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            const Text("Ordem alfábética"),
-                            Container(
-                              padding: const EdgeInsets.only(left: 5),
-                              child: const Icon(LineIcons.sortAlphabeticalDown),
-                            ),
-                          ],
-                        ),
-                      ),
+                    FilterOptionWidget(
+                      onTap: () => setState(() => _orderBy = 'descricao'),
+                      text: 'Ordem alfabética',
+                      icon: const Icon(LineIcons.sortAlphabeticalDown),
                     ),
                   ],
                 ),
@@ -191,9 +133,10 @@ class _BatchScreenState extends State<BatchScreen>
         context, ErrorMessage.usuarioSemLote, AppPaths.cadastroLotePath);
   }
 
-  Widget _listaLotes(BuildContext context, List<BatchModel>? lotes) {
-    List<BatchModel> batches = lotes ?? [];
-    TextEditingController _editBatchNameController = TextEditingController();
+  Widget _listaLotes(BuildContext context, List<BatchModel>? batchesModel) {
+    final List<BatchModel> batches = batchesModel ?? [];
+    final TextEditingController _editBatchNameController =
+        TextEditingController();
 
     const Color borderColor = Colors.black26;
     final Color? backGroundColor = Colors.grey[200];
@@ -286,7 +229,7 @@ class _BatchScreenState extends State<BatchScreen>
                                     ),
                                   ),
                                 ),
-                                Container(
+                                 Container(
                                   padding: const EdgeInsets.only(top: 10),
                                   child: Text(
                                     _resolverQtdeTanques(batch),
@@ -311,7 +254,7 @@ class _BatchScreenState extends State<BatchScreen>
                             NavigatorUtils.pushReplacement(
                               context,
                               TankScreen(
-                                lote: batch,
+                                batch: batch,
                               ),
                             );
                           },
@@ -330,7 +273,7 @@ class _BatchScreenState extends State<BatchScreen>
                           child: const Icon(
                             LineIcons.edit,
                             color: Colors.black,
-                            size: 25,
+                            size: 30,
                           ),
                           onTap: () => {
                                 _editBatchNameController.text = batch.descricao,

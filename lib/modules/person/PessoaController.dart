@@ -4,8 +4,8 @@ import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/EmailModel.dart';
-import 'package:fishcount_app/model/PhoneModel.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
+import 'package:fishcount_app/model/PhoneModel.dart';
 import 'package:fishcount_app/model/enums/EnumTipoEmail.dart';
 import 'package:fishcount_app/model/enums/EnumTipoTelefone.dart';
 import 'package:fishcount_app/repository/UsuarioRepository.dart';
@@ -21,7 +21,6 @@ import '../batch/BatchScreen.dart';
 import '../email/EmailController.dart';
 import '../email/EmailForm.dart';
 import '../generic/AbstractController.dart';
-
 import '../phone/PhoneController.dart';
 import '../phone/PhoneForm.dart';
 import 'PessoaService.dart';

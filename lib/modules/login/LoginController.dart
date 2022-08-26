@@ -2,13 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/AuthUserModel.dart';
-import 'package:fishcount_app/modules/login/LoginScreen.dart';
 import 'package:fishcount_app/repository/UsuarioRepository.dart';
-
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
-
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

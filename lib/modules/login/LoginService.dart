@@ -1,8 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:fishcount_app/constants/Responses.dart';
-import 'package:fishcount_app/constants/api/Autenticacao.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
-import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/AuthUserModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';

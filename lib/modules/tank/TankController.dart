@@ -26,19 +26,19 @@ class TankController extends AbstractController {
       TextEditingController();
 
   Future<dynamic> saveTanque(
-      BuildContext context, TankModel tanque, BatchModel lote) async {
-    dynamic response = await TankService().saveOrUpdateTank(tanque, lote);
+      BuildContext context, TankModel tank, BatchModel batch) async {
+    dynamic response = await TankService().saveOrUpdateTank(tank, batch);
 
     if (response is TankModel) {
-      NavigatorUtils.pushReplacement(context, TankScreen(lote: lote));
+      NavigatorUtils.pushReplacement(context, TankScreen(batch: batch));
     }
     if (response is ErrorModel) {
       return ErrorHandler.getDefaultErrorMessage(context, response);
     }
   }
 
-  Widget resolveSpecieData(
-      AsyncSnapshot<SpeciesModel> snapshot, BatchModel batch, BuildContext context) {
+  Widget resolveSpecieData(AsyncSnapshot<SpeciesModel> snapshot,
+      BatchModel batch, BuildContext context) {
     _pesoMedioController.text = _resolverPesoMedio(snapshot);
     _tamanhoMedioController.text = _resolverTamanhoMedio(snapshot);
     _qtdeMediaRacaoController.text = _resolverQtdeMediaRacao(snapshot);
@@ -69,7 +69,7 @@ class TankController extends AbstractController {
                 textColor: Colors.white,
                 buttonColor: Colors.blue,
                 onPressed: () {
-                  NavigatorUtils.push(context, TankForm(lote: batch));
+                  NavigatorUtils.push(context, TankForm(batch: batch));
                 },
               ),
             ),
@@ -182,5 +182,89 @@ class TankController extends AbstractController {
     return isConnected
         ? SpeciesService().listarEspecies(context)
         : EspecieRepository().listar(context);
+  }
+
+  openBatchRegisterModal(
+      BuildContext context,
+      TextEditingController _tankNameController,
+      AnimationController _animationController,
+      TankModel? tankModel) {
+    final bool _isUpdate = tankModel != null;
+
+    return showModalBottomSheet<void>(
+      context: context,
+      transitionAnimationController: _animationController,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(top: 30, bottom: 20),
+              child: Text(
+                _isUpdate ? "Atualizar Lote" : "Cadastrar novo lote",
+                style: const TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: TextFieldWidget(
+                controller: _tankNameController,
+                hintText: 'Nome do lote',
+                focusedBorderColor: Colors.blueGrey,
+                iconColor: Colors.blueGrey,
+                obscureText: false,
+                labelText: 'Nome do lote',
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: ElevatedButtonWidget(
+                    buttonText: "Cancelar",
+                    buttonColor: Colors.blue,
+                    onPressed: () => Navigator.pop(context),
+                    textSize: 15,
+                    textColor: Colors.white,
+                    radioBorder: 10,
+                    horizontalPadding: 20,
+                    verticalPadding: 10,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: ElevatedButtonWidget(
+                    buttonText: "Confirmar",
+                    buttonColor: Colors.green,
+                    onPressed: () {
+                      // if (_isUpdate) {
+                      //   batchModel.descricao = _batchNameController.text;
+                      //   updateBatch(context, batchModel);
+                      //   return;
+                      // }
+                      // saveBatch(context, _batchNameController.text);
+                    },
+                    textSize: 15,
+                    textColor: Colors.white,
+                    radioBorder: 10,
+                    horizontalPadding: 20,
+                    verticalPadding: 10,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 }

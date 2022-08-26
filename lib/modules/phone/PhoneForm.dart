@@ -1,7 +1,6 @@
 import 'package:fishcount_app/constants/Formatters.dart';
 import 'package:fishcount_app/model/PhoneModel.dart';
 import 'package:fishcount_app/model/enums/EnumTipoTelefone.dart';
-
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
