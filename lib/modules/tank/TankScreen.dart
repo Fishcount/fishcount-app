@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
 import '../../widgets/FilterOptionWidget.dart';
+import '../../widgets/SnackBarBuilder.dart';
 import 'TankForm.dart';
 import 'TankService.dart';
 
@@ -31,8 +32,7 @@ class TankScreen extends StatefulWidget {
   State<TankScreen> createState() => _TankScreenState();
 }
 
-class _TankScreenState extends State<TankScreen>
-    with TickerProviderStateMixin{ 
+class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
   final TankService _tankService = TankService();
   final TankController _tankController = TankController();
   final ConnectionUtils _connectionUtils = ConnectionUtils();
@@ -73,7 +73,8 @@ class _TankScreenState extends State<TankScreen>
       drawer: const DrawerWidget(),
       bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
         context,
-        () => _tankController.openBatchRegisterModal(context, _newTankController, _animationController, null),
+        () => _tankController.openBatchRegisterModal(
+            context, _newTankController, _animationController, null),
       ),
       body: Center(
         child: Container(
@@ -169,7 +170,7 @@ class _TankScreenState extends State<TankScreen>
     );
   }
 
-  Future<String?> _showAlertDialog(BuildContext context) {
+  Future<String?> _showAlertDialog(BuildContext context, int batchId, List<TankModel> tanks, int index) {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) {
@@ -192,7 +193,7 @@ class _TankScreenState extends State<TankScreen>
                   onPressed: () => {
                     Navigator.pop(context),
                     setState(() {
-                      // batches.removeAt(index);
+                      tanks.removeAt(index);
                     }),
                   },
                   textSize: 15,
@@ -202,7 +203,7 @@ class _TankScreenState extends State<TankScreen>
                 ElevatedButtonWidget(
                   buttonText: "Confirmar",
                   buttonColor: Colors.green,
-                  onPressed: () => {},
+                  onPressed: () => _deleteTank(batchId, tanks, index),
                   textSize: 15,
                   textColor: Colors.white,
                   radioBorder: 10,
@@ -230,7 +231,7 @@ class _TankScreenState extends State<TankScreen>
             TankModel tankModel = tanks[index];
             return Dismissible(
               key: Key(tankModel.id!.toString()),
-              onDismissed: (direction) => _showAlertDialog(context),
+              onDismissed: (direction) => _showAlertDialog(context, batch.id!, tanks, index),
               background: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -288,8 +289,9 @@ class _TankScreenState extends State<TankScreen>
                               // color: Colors.red,
                             ),
                           ),
-                          onTap: () => {},
-                          // onTap: () => _showInfoSnackBar(context),
+                          onTap: () => SnackBarBuilder.info(
+                              'Arraste para o lado para excluir!')
+                              .buildInfo(context),
                         ),
                         GestureDetector(
                           child: SizedBox(
@@ -331,6 +333,7 @@ class _TankScreenState extends State<TankScreen>
                             ),
                           ),
                           onTap: () {
+                            // TODO abrir a tela de análises
                             // NavigatorUtils.pushReplacement(
                             //   context,
                             //   TankScreen(
@@ -356,6 +359,7 @@ class _TankScreenState extends State<TankScreen>
                             size: 30,
                           ),
                           onTap: () => {
+                            // Todo Editar dados do tanque
                                 // _editBatchNameController.text =
                                 //     tankModel.descricao,
                                 // _batchController.openBatchRegisterModal(
@@ -374,5 +378,10 @@ class _TankScreenState extends State<TankScreen>
         ),
       ),
     );
+  }
+
+  _deleteTank(int batchId, List<TankModel> tanks, int index) {
+    _tankService.deleteTank(batchId, tanks[index].id!);
+    Navigator.pop(context);
   }
 }

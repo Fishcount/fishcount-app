@@ -6,6 +6,7 @@ import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/FilterOptionWidget.dart';
+import 'package:fishcount_app/widgets/SnackBarBuilder.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,6 @@ class _BatchScreenState extends State<BatchScreen>
     return LoteRepository().listarLotesUsuario(context);
   }
 
-
   @override
   Widget build(BuildContext context) {
     TextEditingController _newBatchController = TextEditingController();
@@ -117,7 +117,7 @@ class _BatchScreenState extends State<BatchScreen>
                     widgetOnError: _notFoundWidget(context),
                     widgetOnWaiting: const CircularProgressIndicator(),
                     widgetOnEmptyResponse: _notFoundWidget(context),
-                    widgetOnSuccess: _listaLotes(context, snapshot.data),
+                    widgetOnSuccess: _batchList(context, snapshot.data),
                   ).handler();
                 },
               ),
@@ -133,7 +133,7 @@ class _BatchScreenState extends State<BatchScreen>
         context, ErrorMessage.usuarioSemLote, AppPaths.cadastroLotePath);
   }
 
-  Widget _listaLotes(BuildContext context, List<BatchModel>? batchesModel) {
+  Widget _batchList(BuildContext context, List<BatchModel>? batchesModel) {
     final List<BatchModel> batches = batchesModel ?? [];
     final TextEditingController _editBatchNameController =
         TextEditingController();
@@ -209,7 +209,9 @@ class _BatchScreenState extends State<BatchScreen>
                               // color: Colors.red,
                             ),
                           ),
-                          onTap: () => _showInfoSnackBar(context),
+                          onTap: () => SnackBarBuilder.info(
+                                  'Arraste para o lado para excluir!')
+                              .buildInfo(context),
                         ),
                         GestureDetector(
                           child: SizedBox(
@@ -229,7 +231,7 @@ class _BatchScreenState extends State<BatchScreen>
                                     ),
                                   ),
                                 ),
-                                 Container(
+                                Container(
                                   padding: const EdgeInsets.only(top: 10),
                                   child: Text(
                                     _resolverQtdeTanques(batch),
@@ -335,7 +337,7 @@ class _BatchScreenState extends State<BatchScreen>
                   radioBorder: 10,
                 ),
               ],
-            )
+            ),
           ],
         );
       },
@@ -347,40 +349,14 @@ class _BatchScreenState extends State<BatchScreen>
     Navigator.pop(context);
   }
 
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _showInfoSnackBar(
-      BuildContext context) {
-    return ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            Icon(
-              Icons.info_outline,
-              color: Colors.white,
-              size: 30,
-            ),
-            Text("Arraste para o lado para excluir !"),
-          ],
-        ),
-        backgroundColor: Colors.blue,
-        duration: const Duration(seconds: 2),
-        action: SnackBarAction(
-          label: "",
-          onPressed: () {},
-        ),
-      ),
-    );
-  }
-}
-
-String _resolverQtdeTanques(BatchModel lote) {
-  if (lote.tanques != null) {
-    String qtde = lote.tanques!.length.toString();
-    if (lote.tanques!.isEmpty) {
-      return 'Nenhum lote cadastrado';
+  String _resolverQtdeTanques(BatchModel lote) {
+    if (lote.tanques != null) {
+      String qtde = lote.tanques!.length.toString();
+      if (lote.tanques!.isEmpty) {
+        return 'Nenhum lote cadastrado';
+      }
+      return qtde + (lote.tanques!.length > 1 ? " Tanques" : " Tanque");
     }
-    return qtde + (lote.tanques!.length > 1 ? " Tanques" : " Tanque");
+    return "0 tanques";
   }
-  return "0 tanques";
 }

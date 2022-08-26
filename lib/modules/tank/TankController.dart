@@ -33,7 +33,7 @@ class TankController extends AbstractController {
       NavigatorUtils.pushReplacement(context, TankScreen(batch: batch));
     }
     if (response is ErrorModel) {
-      return ErrorHandler.getDefaultErrorMessage(context, response);
+      return ErrorHandler.getDefaultErrorMessage(context, response.message);
     }
   }
 
