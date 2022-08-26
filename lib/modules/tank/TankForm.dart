@@ -95,7 +95,7 @@ class _TankFormState extends State<TankForm> {
                       widgetOnError: const Text("Erro"),
                       widgetOnWaiting: const CircularProgressIndicator(),
                       widgetOnEmptyResponse: _onEmptyResponse(context),
-                      widgetOnSuccess: _speciesList(context, snapshot),
+                      widgetOnSuccess: speciesList(context, snapshot),
                     ).handler();
                   },
                 ),
@@ -189,7 +189,7 @@ class _TankFormState extends State<TankForm> {
     );
   }
 
-  Widget _speciesList(
+  Widget speciesList(
       BuildContext context, AsyncSnapshot<List<SpeciesModel>> snapshot) {
     if (snapshot.data == null) {
       return Text("");

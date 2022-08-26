@@ -19,7 +19,7 @@ import 'TankForm.dart';
 import 'TankScreen.dart';
 import 'TankService.dart';
 
-class TankController extends AbstractController {
+class TankController extends State<TankScreen> {
   final TextEditingController _pesoMedioController = TextEditingController();
   final TextEditingController _tamanhoMedioController = TextEditingController();
   final TextEditingController _qtdeMediaRacaoController =
@@ -184,87 +184,48 @@ class TankController extends AbstractController {
         : EspecieRepository().listar(context);
   }
 
-  openBatchRegisterModal(
-      BuildContext context,
-      TextEditingController _tankNameController,
-      AnimationController _animationController,
-      TankModel? tankModel) {
-    final bool _isUpdate = tankModel != null;
 
-    return showModalBottomSheet<void>(
-      context: context,
-      transitionAnimationController: _animationController,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
+
+  Widget speciesList(
+      BuildContext context,
+      AsyncSnapshot<List<SpeciesModel>> snapshot,
+      String firstValue,
+      dynamic Function(String?)? function) {
+    if (snapshot.data == null) {
+      return Text("");
+    }
+
+    return Container(
+      height: 60,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+        color: Color.fromARGB(232, 232, 232, 232),
+        borderRadius: BorderRadius.all(
+          Radius.circular(10),
         ),
       ),
-      builder: (BuildContext context) {
-        return Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 30, bottom: 20),
-              child: Text(
-                _isUpdate ? "Atualizar Lote" : "Cadastrar novo lote",
-                style: const TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+      width: MediaQuery.of(context).size.width,
+      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      child: DropdownButton<String>(
+        value: firstValue,
+        isExpanded: true,
+        items: snapshot.data!
+            .map(
+              (especie) => DropdownMenuItem(
+                value: especie.descricao,
+                child: Text(especie.descricao),
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: TextFieldWidget(
-                controller: _tankNameController,
-                hintText: 'Nome do lote',
-                focusedBorderColor: Colors.blueGrey,
-                iconColor: Colors.blueGrey,
-                obscureText: false,
-                labelText: 'Nome do lote',
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: ElevatedButtonWidget(
-                    buttonText: "Cancelar",
-                    buttonColor: Colors.blue,
-                    onPressed: () => Navigator.pop(context),
-                    textSize: 15,
-                    textColor: Colors.white,
-                    radioBorder: 10,
-                    horizontalPadding: 20,
-                    verticalPadding: 10,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: ElevatedButtonWidget(
-                    buttonText: "Confirmar",
-                    buttonColor: Colors.green,
-                    onPressed: () {
-                      // if (_isUpdate) {
-                      //   batchModel.descricao = _batchNameController.text;
-                      //   updateBatch(context, batchModel);
-                      //   return;
-                      // }
-                      // saveBatch(context, _batchNameController.text);
-                    },
-                    textSize: 15,
-                    textColor: Colors.white,
-                    radioBorder: 10,
-                    horizontalPadding: 20,
-                    verticalPadding: 10,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
+            )
+            .toList(),
+        onChanged: function,
+      ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }

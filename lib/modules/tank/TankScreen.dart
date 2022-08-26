@@ -15,8 +15,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
+import '../../model/SpeciesModel.dart';
 import '../../widgets/FilterOptionWidget.dart';
 import '../../widgets/SnackBarBuilder.dart';
+import '../../widgets/TextFieldWidget.dart';
 import 'TankForm.dart';
 import 'TankService.dart';
 
@@ -45,7 +47,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
   initState() {
     super.initState();
     _animationController = BottomSheet.createAnimationController(this);
-    _animationController.duration = const Duration(seconds: 1);
+    _animationController.duration = const Duration(milliseconds: 300);
   }
 
   @override
@@ -67,14 +69,16 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _newTankController = TextEditingController();
+    final TextEditingController _tankNomeController = TextEditingController();
+    final TextEditingController _fishAmountTankController =
+        TextEditingController();
     return Scaffold(
       appBar: CustomAppBar.build(),
       drawer: const DrawerWidget(),
       bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
         context,
-        () => _tankController.openBatchRegisterModal(
-            context, _newTankController, _animationController, null),
+        () => openTankRegisterModal(context, _tankNomeController,
+            _fishAmountTankController, _animationController, null),
       ),
       body: Center(
         child: Container(
@@ -170,7 +174,8 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
     );
   }
 
-  Future<String?> _showAlertDialog(BuildContext context, int batchId, List<TankModel> tanks, int index) {
+  Future<String?> _showAlertDialog(
+      BuildContext context, int batchId, List<TankModel> tanks, int index) {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) {
@@ -221,6 +226,12 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
     final List<TankModel> tanks = tanksModel ?? [];
     const Color borderColor = Colors.black26;
     final Color? backGroundColor = Colors.grey[200];
+    final TextEditingController _editTankNameController =
+        TextEditingController();
+
+    final TextEditingController _editAmountFishController =
+        TextEditingController();
+
     return SingleChildScrollView(
       child: SizedBox(
         height: MediaQuery.of(context).size.height / 1.5,
@@ -231,7 +242,8 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
             TankModel tankModel = tanks[index];
             return Dismissible(
               key: Key(tankModel.id!.toString()),
-              onDismissed: (direction) => _showAlertDialog(context, batch.id!, tanks, index),
+              onDismissed: (direction) =>
+                  _showAlertDialog(context, batch.id!, tanks, index),
               background: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -286,11 +298,10 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                             child: const Icon(
                               Icons.drag_indicator,
                               size: 30,
-                              // color: Colors.red,
                             ),
                           ),
                           onTap: () => SnackBarBuilder.info(
-                              'Arraste para o lado para excluir!')
+                                  'Arraste para o lado para excluir!')
                               .buildInfo(context),
                         ),
                         GestureDetector(
@@ -358,17 +369,16 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                             color: Colors.black,
                             size: 30,
                           ),
-                          onTap: () => {
-                            // Todo Editar dados do tanque
-                                // _editBatchNameController.text =
-                                //     tankModel.descricao,
-                                // _batchController.openBatchRegisterModal(
-                                //   context,
-                                //   _editBatchNameController,
-                                //   _animationController,
-                                //   tankModel,
-                                // )
-                              }),
+                          onTap: () {
+                            _editTankNameController.text =
+                                tankModel.description;
+                            openTankRegisterModal(
+                                context,
+                                _editTankNameController,
+                                _editAmountFishController,
+                                _animationController,
+                                tankModel);
+                          }),
                     ),
                   ],
                 ),
@@ -377,6 +387,138 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
           },
         ),
       ),
+    );
+  }
+
+  openTankRegisterModal(
+      BuildContext context,
+      TextEditingController _tankNameController,
+      TextEditingController _fishAmounController,
+      AnimationController _animationController,
+      TankModel? tankModel) async {
+    final bool _isUpdate = tankModel != null;
+    final List<SpeciesModel> species =
+        await _tankController.resolverListaEspecie(context);
+    String descricaoEspecie = "";
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      transitionAnimationController: _animationController,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(top: 100, bottom: 20),
+                child: Text(
+                  _isUpdate ? "Atualizar Tanque" : "Cadastrar novo Tanque",
+                  style: const TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: TextFieldWidget(
+                  controller: _tankNameController,
+                  hintText: 'Nome do lote',
+                  focusedBorderColor: Colors.blueGrey,
+                  iconColor: Colors.blueGrey,
+                  obscureText: false,
+                  labelText: 'Nome do lote',
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                child: TextFieldWidget(
+                  controller: _fishAmounController,
+                  hintText: 'Quantidade de peixes',
+                  focusedBorderColor: Colors.blueGrey,
+                  iconColor: Colors.blueGrey,
+                  obscureText: false,
+                  labelText: 'Quantidade inicial de peixes',
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                height: 60,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(232, 232, 232, 232),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                child: DropdownButton<String>(
+                    value: descricaoEspecie != ""
+                        ? descricaoEspecie
+                        : species.first.descricao,
+                    isExpanded: true,
+                    items: species
+                        .map(
+                          (especie) => DropdownMenuItem(
+                            value: especie.descricao,
+                            child: Text(especie.descricao),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        descricaoEspecie = newValue ?? "";
+                      });
+                    }),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: ElevatedButtonWidget(
+                      buttonText: "Cancelar",
+                      buttonColor: Colors.blue,
+                      onPressed: () => Navigator.pop(context),
+                      textSize: 15,
+                      textColor: Colors.white,
+                      radioBorder: 10,
+                      horizontalPadding: 20,
+                      verticalPadding: 10,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: ElevatedButtonWidget(
+                      buttonText: "Confirmar",
+                      buttonColor: Colors.green,
+                      onPressed: () {
+                        // if (_isUpdate) {
+                        //   batchModel.descricao = _batchNameController.text;
+                        //   updateBatch(context, batchModel);
+                        //   return;
+                        // }
+                        // saveBatch(context, _batchNameController.text);
+                      },
+                      textSize: 15,
+                      textColor: Colors.white,
+                      radioBorder: 10,
+                      horizontalPadding: 20,
+                      verticalPadding: 10,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
+      },
     );
   }
 
