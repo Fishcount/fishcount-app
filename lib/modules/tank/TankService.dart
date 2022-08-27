@@ -50,11 +50,57 @@ class TankService extends AbstractService {
     }
   }
 
-  dynamic saveOrUpdateTank(TankModel tank, BatchModel batch) async {
+  dynamic saveTank(TankModel tank, int batchId) async {
+    try {
+      final int? personId =
+          await SharedPreferencesUtils.getIntVariableFromShared(
+              EnumSharedPreferences.userId);
+
+      final Response<dynamic> response = await RequestBuilder(url: '/pessoa')
+          .addPathParam('$personId')
+          .addPathParam('lote')
+          .addPathParam('$batchId')
+          .addPathParam('tanque')
+          .buildUrl()
+          .post();
+      if (response.statusCode == 201){
+        return TankModel.fromJson(response.data);
+      }
+      return ErrorModel.fromJson(response.data);
+    } on DioError catch (e) {
+      return customDioError(e);
+    }
+  }
+
+  dynamic updateTank(TankModel tank, int tankId, int batchId) async {
     try {
       final int? personId =
       await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
+
+      final Response<dynamic> response = await RequestBuilder(url: '/pessoa')
+          .addPathParam('$personId')
+          .addPathParam('lote')
+          .addPathParam('$batchId')
+          .addPathParam('tanque')
+          .addPathParam('$tankId')
+          .buildUrl()
+          .put();
+
+      if (response.statusCode == 200){
+        return TankModel.fromJson(response.data);
+      }
+      return ErrorModel.fromJson(response.data);
+    } on DioError catch (e) {
+      return customDioError(e);
+    }
+  }
+
+  dynamic saveOrUpdateTank(TankModel tank, BatchModel batch) async {
+    try {
+      final int? personId =
+          await SharedPreferencesUtils.getIntVariableFromShared(
+              EnumSharedPreferences.userId);
       final int? batchId = batch.id;
 
       RequestBuilder requestBuilder = RequestBuilder(url: '/pessoa')
@@ -74,7 +120,7 @@ class TankService extends AbstractService {
       }
 
       final Response<dynamic> response =
-      await requestBuilder.buildUrl().setBody(tank.toJson()).post();
+          await requestBuilder.buildUrl().setBody(tank.toJson()).post();
 
       if (response.statusCode == 201) {
         return TankModel.fromJson(response.data);
@@ -88,8 +134,8 @@ class TankService extends AbstractService {
   dynamic deleteTank(int batchId, int tankId) async {
     try {
       final int? personId =
-      await SharedPreferencesUtils.getIntVariableFromShared(
-          EnumSharedPreferences.userId);
+          await SharedPreferencesUtils.getIntVariableFromShared(
+              EnumSharedPreferences.userId);
 
       Response<void> response = await RequestBuilder(url: '/pessoa')
           .addPathParam('$personId')
@@ -99,7 +145,7 @@ class TankService extends AbstractService {
           .addPathParam('$tankId')
           .buildUrl()
           .delete();
-      if (response.statusCode == 204){
+      if (response.statusCode == 204) {
         return tankId;
       }
     } on DioError catch (e) {

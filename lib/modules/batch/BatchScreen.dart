@@ -65,14 +65,13 @@ class _BatchScreenState extends State<BatchScreen>
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _newBatchController = TextEditingController();
     return Scaffold(
       appBar: CustomAppBar.build(),
       drawer: const DrawerWidget(),
       bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
           context,
           () => _batchController.openBatchRegisterModal(
-              context, _newBatchController, _animationController, null)),
+              context, TextEditingController(), _animationController, null)),
       body: Center(
         child: Container(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),

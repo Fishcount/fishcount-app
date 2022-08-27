@@ -30,7 +30,7 @@ class BatchController extends AbstractController {
       BuildContext context, BatchModel managedLote) async {
     bool isConnected = await _connectionUtils.isConnected();
     if (isConnected) {
-      return APIUpdate(context, managedLote);
+      return apiUpdate(context, managedLote);
     }
     return localSave(managedLote, context);
   }
@@ -42,24 +42,22 @@ class BatchController extends AbstractController {
   Future<dynamic> apiSave(BuildContext context, BatchModel managedLote) async {
     dynamic response = await _batchService.save(managedLote);
 
-    return validateResponse(context, response);
+    return validateResponse(
+      context: context,
+      response: response,
+      redirect: const BatchScreen(),
+    );
   }
 
-  dynamic validateResponse(BuildContext context, dynamic response) {
-    if (response is BatchModel) {
-      NavigatorUtils.pushReplacement(context, const BatchScreen());
-    }
-    if (response is ErrorModel) {
-      Navigator.pop(context);
-      return ErrorHandler.getDefaultErrorMessage(context, response.message);
-    }
-  }
-
-  Future<dynamic> APIUpdate(
+  Future<dynamic> apiUpdate(
       BuildContext context, BatchModel managedLote) async {
     dynamic response = await _batchService.update(managedLote);
 
-    return validateResponse(context, response);
+    return validateResponse(
+      context: context,
+      response: response,
+      redirect: const BatchScreen(),
+    );
   }
 
   BatchModel _createBatchModel(String nomeLote) {

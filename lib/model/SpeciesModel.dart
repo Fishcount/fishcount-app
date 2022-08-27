@@ -3,9 +3,9 @@ import 'package:fishcount_app/model/GrowthRateModel.dart';
 class SpeciesModel {
   late int id;
 
-  late String descricao;
+  late String description;
 
-  late double pesoMedio;
+  late double averageWeight;
 
   late String unidadePesoMedio;
 
@@ -21,8 +21,8 @@ class SpeciesModel {
 
   SpeciesModel(
     this.id,
-    this.descricao,
-    this.pesoMedio,
+    this.description,
+    this.averageWeight,
     this.unidadePesoMedio,
     this.tamanhoMedio,
     this.unidadeTamanho,
@@ -33,8 +33,8 @@ class SpeciesModel {
 
   SpeciesModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    descricao = json['descricao'];
-    pesoMedio = json['pesoMedio'];
+    description = json['descricao'];
+    averageWeight = json['pesoMedio'];
     unidadePesoMedio = json['unidadePesoMedio'];
     tamanhoMedio = json['tamanhoMedio'];
     unidadeTamanho = json['unidadeTamanho'];
@@ -45,8 +45,8 @@ class SpeciesModel {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "descricao": descricao,
-        "pesoMedio": pesoMedio,
+        "descricao": description,
+        "pesoMedio": averageWeight,
         "unidadePesoMedio": unidadePesoMedio,
         "tamanhoMedio": tamanhoMedio,
         "unidadeTamanho": unidadeTamanho,

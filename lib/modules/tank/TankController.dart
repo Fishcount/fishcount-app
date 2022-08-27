@@ -19,22 +19,33 @@ import 'TankForm.dart';
 import 'TankScreen.dart';
 import 'TankService.dart';
 
-class TankController extends State<TankScreen> {
+class TankController extends AbstractController {
   final TextEditingController _pesoMedioController = TextEditingController();
   final TextEditingController _tamanhoMedioController = TextEditingController();
   final TextEditingController _qtdeMediaRacaoController =
       TextEditingController();
 
-  Future<dynamic> saveTanque(
+  Future<dynamic> saveTank(
       BuildContext context, TankModel tank, BatchModel batch) async {
-    dynamic response = await TankService().saveOrUpdateTank(tank, batch);
+    dynamic response = await TankService().saveTank(tank, batch.id!);
 
-    if (response is TankModel) {
-      NavigatorUtils.pushReplacement(context, TankScreen(batch: batch));
-    }
-    if (response is ErrorModel) {
-      return ErrorHandler.getDefaultErrorMessage(context, response.message);
-    }
+    return validateResponse(
+      context: context,
+      response: response,
+      redirect: TankScreen(batch: batch),
+    );
+  }
+
+  Future<dynamic> updateTank(
+      BuildContext context, TankModel tank, BatchModel batch) async {
+    dynamic response =
+        await TankService().updateTank(tank, tank.id!, batch.id!);
+
+    return validateResponse(
+      context: context,
+      response: response,
+      redirect: TankScreen(batch: batch),
+    );
   }
 
   Widget resolveSpecieData(AsyncSnapshot<SpeciesModel> snapshot,
@@ -171,7 +182,7 @@ class TankController extends State<TankScreen> {
     if (snapshot.data == null) {
       return "";
     }
-    return snapshot.data!.pesoMedio.toString() +
+    return snapshot.data!.averageWeight.toString() +
         " " +
         snapshot.data!.unidadePesoMedio.toString().toLowerCase() +
         "s";
@@ -183,8 +194,6 @@ class TankController extends State<TankScreen> {
         ? SpeciesService().listarEspecies(context)
         : EspecieRepository().listar(context);
   }
-
-
 
   Widget speciesList(
       BuildContext context,
@@ -213,8 +222,8 @@ class TankController extends State<TankScreen> {
         items: snapshot.data!
             .map(
               (especie) => DropdownMenuItem(
-                value: especie.descricao,
-                child: Text(especie.descricao),
+                value: especie.description,
+                child: Text(especie.description),
               ),
             )
             .toList(),

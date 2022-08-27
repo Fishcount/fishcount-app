@@ -153,7 +153,7 @@ class _TankFormState extends State<TankForm> {
         null,
         null);
 
-    await TankController().saveTanque(context, tanque, widget.batch);
+    await TankController().saveTank(context, tanque, widget.batch);
   }
 
   Widget _onEmptyResponse(BuildContext context) {
@@ -213,8 +213,8 @@ class _TankFormState extends State<TankForm> {
           items: snapshot.data!
               .map(
                 (especie) => DropdownMenuItem(
-                  value: especie.descricao,
-                  child: Text(especie.descricao),
+                  value: especie.description,
+                  child: Text(especie.description),
                 ),
               )
               .toList(),
@@ -230,7 +230,7 @@ class _TankFormState extends State<TankForm> {
     return descricaoEspecie != ""
         ? descricaoEspecie
         : snapshot.data != null
-            ? snapshot.data!.first.descricao
+            ? snapshot.data!.first.description
             : "";
   }
 }
