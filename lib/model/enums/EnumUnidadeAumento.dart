@@ -21,4 +21,20 @@ class UnidadeAumentoHandler {
         return EnumUnidadeAumento.CENTIMETROS;
     }
   }
+
+  static String getLowerCase(String value) {
+    switch (value) {
+      case 'CENTIMETROS':
+        return 'CM';
+
+      case 'MILIMETROS':
+        return 'MM';
+
+      case 'METROS':
+        return 'M';
+
+      default:
+        return 'CM';
+    }
+  }
 }

@@ -25,20 +25,31 @@ class TankController extends AbstractController {
   final TextEditingController _qtdeMediaRacaoController =
       TextEditingController();
 
-  Future<dynamic> saveTanque(
-      BuildContext context, TankModel tanque, BatchModel lote) async {
-    dynamic response = await TankService().saveOrUpdateTank(tanque, lote);
+  Future<dynamic> saveTank(
+      BuildContext context, TankModel tank, BatchModel batch) async {
+    dynamic response = await TankService().saveTank(tank, batch.id!);
 
-    if (response is TankModel) {
-      NavigatorUtils.pushReplacement(context, TankScreen(lote: lote));
-    }
-    if (response is ErrorModel) {
-      return ErrorHandler.getDefaultErrorMessage(context, response);
-    }
+    return validateResponse(
+      context: context,
+      response: response,
+      redirect: TankScreen(batch: batch),
+    );
   }
 
-  Widget resolveSpecieData(
-      AsyncSnapshot<SpeciesModel> snapshot, BatchModel batch, BuildContext context) {
+  Future<dynamic> updateTank(
+      BuildContext context, TankModel tank, BatchModel batch) async {
+    dynamic response =
+        await TankService().updateTank(tank, tank.id!, batch.id!);
+
+    return validateResponse(
+      context: context,
+      response: response,
+      redirect: TankScreen(batch: batch),
+    );
+  }
+
+  Widget resolveSpecieData(AsyncSnapshot<SpeciesModel> snapshot,
+      BatchModel batch, BuildContext context) {
     _pesoMedioController.text = _resolverPesoMedio(snapshot);
     _tamanhoMedioController.text = _resolverTamanhoMedio(snapshot);
     _qtdeMediaRacaoController.text = _resolverQtdeMediaRacao(snapshot);
@@ -69,7 +80,7 @@ class TankController extends AbstractController {
                 textColor: Colors.white,
                 buttonColor: Colors.blue,
                 onPressed: () {
-                  NavigatorUtils.push(context, TankForm(lote: batch));
+                  NavigatorUtils.push(context, TankForm(batch: batch));
                 },
               ),
             ),
@@ -171,7 +182,7 @@ class TankController extends AbstractController {
     if (snapshot.data == null) {
       return "";
     }
-    return snapshot.data!.pesoMedio.toString() +
+    return snapshot.data!.averageWeight.toString() +
         " " +
         snapshot.data!.unidadePesoMedio.toString().toLowerCase() +
         "s";
@@ -182,5 +193,48 @@ class TankController extends AbstractController {
     return isConnected
         ? SpeciesService().listarEspecies(context)
         : EspecieRepository().listar(context);
+  }
+
+  Widget speciesList(
+      BuildContext context,
+      AsyncSnapshot<List<SpeciesModel>> snapshot,
+      String firstValue,
+      dynamic Function(String?)? function) {
+    if (snapshot.data == null) {
+      return Text("");
+    }
+
+    return Container(
+      height: 60,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+        color: Color.fromARGB(232, 232, 232, 232),
+        borderRadius: BorderRadius.all(
+          Radius.circular(10),
+        ),
+      ),
+      width: MediaQuery.of(context).size.width,
+      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      child: DropdownButton<String>(
+        value: firstValue,
+        isExpanded: true,
+        items: snapshot.data!
+            .map(
+              (especie) => DropdownMenuItem(
+                value: especie.description,
+                child: Text(especie.description),
+              ),
+            )
+            .toList(),
+        onChanged: function,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }

@@ -5,14 +5,11 @@ import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/EmailModel.dart';
 import 'package:fishcount_app/model/enums/EnumTipoEmail.dart';
 import 'package:fishcount_app/repository/EmailRepository.dart';
-
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:fishcount_app/widgets/ItemContainerWidget.dart';
 import 'package:flutter/material.dart';
-
-
 
 import '../generic/AbstractController.dart';
 import '../person/PessoaDataForm.dart';

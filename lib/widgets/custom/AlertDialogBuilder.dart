@@ -1,4 +1,3 @@
-import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

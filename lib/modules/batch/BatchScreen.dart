@@ -5,6 +5,8 @@ import 'package:fishcount_app/repository/LoteRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
+import 'package:fishcount_app/widgets/FilterOptionWidget.dart';
+import 'package:fishcount_app/widgets/SnackBarBuilder.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,15 @@ class _BatchScreenState extends State<BatchScreen>
 
   String _orderBy = 'none';
 
+  final Map<String, bool> _filters = {
+    'dataInclusao': false,
+    'descricao': false,
+  };
+  final List<String> _filterFields = [
+    'dataInclusao',
+    'descricao',
+  ];
+
   @override
   initState() {
     super.initState();
@@ -63,124 +74,91 @@ class _BatchScreenState extends State<BatchScreen>
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _newBatchController = TextEditingController();
     return Scaffold(
       appBar: CustomAppBar.build(),
       drawer: const DrawerWidget(),
       bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
-          context,
-          () => _batchController.openBatchRegisterModal(
-              context, _newBatchController, _animationController, null)),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-          child: Column(
-            children: [
-              DividerWidget(
-                textBetween: "LOTES",
-                height: 40,
-                thikness: 2.5,
-                paddingLeft: 10,
-                paddingRight: 10,
-                color: Colors.grey.shade400,
-                textColor: Colors.black,
-                isBold: true,
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 5, bottom: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _orderBy = 'dataInclusao';
-                        });
-                      },
-                      child: Container(
+        context,
+        () => _batchController.openBatchRegisterModal(
+            context, TextEditingController(), _animationController, null),
+      ),
+      body: Container(
+        padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+        child: Column(
+          children: [
+            DividerWidget(
+              textBetween: "LOTES",
+              height: 40,
+              thikness: 2.5,
+              paddingLeft: 10,
+              paddingRight: 10,
+              color: Colors.grey.shade400,
+              textColor: Colors.black,
+              isBold: true,
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 5, bottom: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MediaQuery.of(context).orientation != Orientation.portrait
+                      ? Row(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(right: 10),
+                              child: FilterOptionWidget(
+                                onTap: () =>
+                                    _batchController.openBatchRegisterModal(
+                                        context,
+                                        TextEditingController(),
+                                        _animationController,
+                                        null),
+                                text: 'Novo Lote',
+                                icon: const Icon(Icons.add),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container(),
+                  Row(
+                    children: [
+                      Container(
                         margin: const EdgeInsets.only(right: 10),
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: const Border(
-                            right: BorderSide(
-                              color: Colors.black26,
-                            ),
-                            left: BorderSide(
-                              color: Colors.black26,
-                            ),
-                            top: BorderSide(
-                              color: Colors.black26,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.black26,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            const Text("Data inclusão"),
-                            Container(
-                              padding: const EdgeInsets.only(left: 5),
-                              child: const Icon(Icons.date_range),
-                            ),
-                          ],
+                        child: FilterOptionWidget(
+                          backgroundColor: _filters[_filterFields[0]] == true
+                              ? Colors.grey[300]
+                              : Colors.white,
+                          onTap: () => _setOrderBy(_filterFields[0]),
+                          text: 'Data Inclusão',
+                          icon: const Icon(Icons.date_range),
                         ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _orderBy = 'descricao';
-                        });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: const Border(
-                            right: BorderSide(
-                              color: Colors.black26,
-                            ),
-                            left: BorderSide(
-                              color: Colors.black26,
-                            ),
-                            top: BorderSide(
-                              color: Colors.black26,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.black26,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            const Text("Ordem alfábética"),
-                            Container(
-                              padding: const EdgeInsets.only(left: 5),
-                              child: const Icon(LineIcons.sortAlphabeticalDown),
-                            ),
-                          ],
-                        ),
+                      FilterOptionWidget(
+                        backgroundColor: _filters[_filterFields[1]] == true
+                            ? Colors.grey[300]
+                            : Colors.white,
+                        onTap: () => _setOrderBy(_filterFields[1]),
+                        text: 'Ordem alfabética',
+                        icon: const Icon(LineIcons.sortAlphabeticalDown),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
-              FutureBuilder(
-                future: fecthBatches(context),
-                builder: (context, AsyncSnapshot<List<BatchModel>> snapshot) {
-                  return AsyncSnapshotHandler(
-                    asyncSnapshot: snapshot,
-                    widgetOnError: _notFoundWidget(context),
-                    widgetOnWaiting: const CircularProgressIndicator(),
-                    widgetOnEmptyResponse: _notFoundWidget(context),
-                    widgetOnSuccess: _listaLotes(context, snapshot.data),
-                  ).handler();
-                },
-              ),
-            ],
-          ),
+            ),
+            FutureBuilder(
+              future: fecthBatches(context),
+              builder: (context, AsyncSnapshot<List<BatchModel>> snapshot) {
+                return AsyncSnapshotHandler(
+                  asyncSnapshot: snapshot,
+                  widgetOnError: _notFoundWidget(context),
+                  widgetOnWaiting: const CircularProgressIndicator(),
+                  widgetOnEmptyResponse: _notFoundWidget(context),
+                  widgetOnSuccess: _batchList(context, snapshot.data),
+                ).handler();
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -191,15 +169,18 @@ class _BatchScreenState extends State<BatchScreen>
         context, ErrorMessage.usuarioSemLote, AppPaths.cadastroLotePath);
   }
 
-  Widget _listaLotes(BuildContext context, List<BatchModel>? lotes) {
-    List<BatchModel> batches = lotes ?? [];
-    TextEditingController _editBatchNameController = TextEditingController();
+  Widget _batchList(BuildContext context, List<BatchModel>? batchesModel) {
+    final List<BatchModel> batches = batchesModel ?? [];
+    final TextEditingController _editBatchNameController =
+        TextEditingController();
 
     const Color borderColor = Colors.black26;
     final Color? backGroundColor = Colors.grey[200];
     return SingleChildScrollView(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height / 1.5,
+        height: MediaQuery.of(context).orientation == Orientation.portrait
+            ? MediaQuery.of(context).size.height / 1.5
+            : MediaQuery.of(context).size.height / 2,
         child: ListView.builder(
           shrinkWrap: true,
           itemCount: batches.length,
@@ -266,7 +247,9 @@ class _BatchScreenState extends State<BatchScreen>
                               // color: Colors.red,
                             ),
                           ),
-                          onTap: () => _showInfoSnackBar(context),
+                          onTap: () => SnackBarBuilder.info(
+                                  'Arraste para o lado para excluir!')
+                              .buildInfo(context),
                         ),
                         GestureDetector(
                           child: SizedBox(
@@ -311,7 +294,7 @@ class _BatchScreenState extends State<BatchScreen>
                             NavigatorUtils.pushReplacement(
                               context,
                               TankScreen(
-                                lote: batch,
+                                batch: batch,
                               ),
                             );
                           },
@@ -330,7 +313,7 @@ class _BatchScreenState extends State<BatchScreen>
                           child: const Icon(
                             LineIcons.edit,
                             color: Colors.black,
-                            size: 25,
+                            size: 30,
                           ),
                           onTap: () => {
                                 _editBatchNameController.text = batch.descricao,
@@ -350,6 +333,23 @@ class _BatchScreenState extends State<BatchScreen>
         ),
       ),
     );
+  }
+
+  _setOrderBy(String selectedField) {
+    if (_orderBy != selectedField) {
+      setState(() => _orderBy = selectedField);
+      _filters.update(_orderBy, (state) => true);
+
+      _alternateFilterState();
+    }
+  }
+
+  _alternateFilterState() {
+    for (String field in _filterFields) {
+      if (_orderBy != field) {
+        _filters.update(field, (state) => false);
+      }
+    }
   }
 
   Future<String?> _showAlertDialog(BuildContext context,
@@ -392,7 +392,7 @@ class _BatchScreenState extends State<BatchScreen>
                   radioBorder: 10,
                 ),
               ],
-            )
+            ),
           ],
         );
       },
@@ -404,40 +404,14 @@ class _BatchScreenState extends State<BatchScreen>
     Navigator.pop(context);
   }
 
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _showInfoSnackBar(
-      BuildContext context) {
-    return ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            Icon(
-              Icons.info_outline,
-              color: Colors.white,
-              size: 30,
-            ),
-            Text("Arraste para o lado para excluir !"),
-          ],
-        ),
-        backgroundColor: Colors.blue,
-        duration: const Duration(seconds: 2),
-        action: SnackBarAction(
-          label: "",
-          onPressed: () {},
-        ),
-      ),
-    );
-  }
-}
-
-String _resolverQtdeTanques(BatchModel lote) {
-  if (lote.tanques != null) {
-    String qtde = lote.tanques!.length.toString();
-    if (lote.tanques!.isEmpty) {
-      return 'Nenhum lote cadastrado';
+  String _resolverQtdeTanques(BatchModel lote) {
+    if (lote.tanques != null) {
+      String qtde = lote.tanques!.length.toString();
+      if (lote.tanques!.isEmpty) {
+        return 'Nenhum lote cadastrado';
+      }
+      return qtde + (lote.tanques!.length > 1 ? " Tanques" : " Tanque");
     }
-    return qtde + (lote.tanques!.length > 1 ? " Tanques" : " Tanque");
+    return "0 tanques";
   }
-  return "0 tanques";
 }

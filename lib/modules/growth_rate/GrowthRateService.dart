@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/api/dio/CustomDio.dart';
 import 'package:fishcount_app/constants/api/ApiEspecie.dart';
-import 'package:fishcount_app/model/SpeciesModel.dart';
 import 'package:fishcount_app/model/GrowthRateModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
 

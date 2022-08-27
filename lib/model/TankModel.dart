@@ -17,6 +17,10 @@ class TankModel {
 
   late String? lastAnalysisDate;
 
+  TankModel.empty(
+      this.id
+      );
+
   TankModel(
     this.id,
     this.description,

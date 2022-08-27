@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../exceptionHandler/ErrorModel.dart';
+
 abstract class AbstractController {
   Container getCircularProgressIndicator() {
     return Container(
@@ -18,6 +20,26 @@ abstract class AbstractController {
         ),
       ),
     );
+  }
+
+  dynamic _responseIsErrorModel(BuildContext context, dynamic response) {
+    if (response is ErrorModel) {
+      Navigator.pop(context);
+      return ErrorHandler.getDefaultErrorMessage(context, response.message);
+    }
+    return true;
+  }
+
+  dynamic validateResponse({
+    context = BuildContext,
+    response = dynamic,
+    redirect = Widget,
+  }) {
+    dynamic validationResult = _responseIsErrorModel(context, response);
+    if (validationResult) {
+      NavigatorUtils.pushReplacement(context, redirect);
+    }
+    return validationResult;
   }
 
   Widget notFoundWidgetRedirect(
@@ -145,7 +167,8 @@ abstract class AbstractController {
   }
 
   bool onHasValue(AsyncSnapshot<dynamic> snapshot) {
-      return snapshot.connectionState == ConnectionState.done && (snapshot.hasData);
+    return snapshot.connectionState == ConnectionState.done &&
+        (snapshot.hasData);
   }
 
   bool onDoneRequestWithEmptyValue(AsyncSnapshot<dynamic> snapshot) {

@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
-import 'package:fishcount_app/constants/Responses.dart';
 import 'package:fishcount_app/constants/api/ApiLote.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
@@ -13,20 +12,28 @@ import '../../exceptionHandler/ErrorModel.dart';
 class TankService extends AbstractService {
   String url = ApiLote.baseUrl + "/{loteId}/tanque";
 
-  Future<List<TankModel>> listarTanquesFromLote(BatchModel batch) async {
+  Future<List<TankModel>> fetchTanks(
+      {batch = TankModel, orderBy = String}) async {
     try {
       final int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
       final int? batchId = batch.id;
 
-      final Response<List<dynamic>> response =
-          await RequestBuilder(url: '/pessoa')
-              .addPathParam('$userId')
-              .addPathParam('lote')
-              .addPathParam('$batchId')
-              .addPathParam('tanque')
-              .buildUrl()
-              .getAll();
+      RequestBuilder requestBuilder = RequestBuilder(url: '/pessoa')
+          .addPathParam('$userId')
+          .addPathParam('lote')
+          .addPathParam('$batchId')
+          .addPathParam('tanque');
+
+      Response<List<dynamic>> response;
+      if (orderBy != null) {
+        response = await requestBuilder
+            .addQueryParam('orderBy', orderBy)
+            .buildUrl()
+            .getAll();
+      } else {
+        response = await requestBuilder.buildUrl().getAll();
+      }
 
       if (response.statusCode == 200) {
         List<TankModel> tanques = [];
@@ -39,7 +46,52 @@ class TankService extends AbstractService {
       }
       return [];
     } on DioError catch (e) {
-      rethrow;
+      return customDioError(e);
+    }
+  }
+
+  dynamic saveTank(TankModel tank, int batchId) async {
+    try {
+      final int? personId =
+          await SharedPreferencesUtils.getIntVariableFromShared(
+              EnumSharedPreferences.userId);
+
+      final Response<dynamic> response = await RequestBuilder(url: '/pessoa')
+          .addPathParam('$personId')
+          .addPathParam('lote')
+          .addPathParam('$batchId')
+          .addPathParam('tanque')
+          .buildUrl()
+          .setBody(tank.toJson())
+          .post();
+      if (response.statusCode == 201) {
+        return TankModel.fromJson(response.data);
+      }
+      return ErrorModel.fromJson(response.data);
+    } on DioError catch (e) {
+      return customDioError(e);
+    }
+  }
+
+  dynamic updateTank(TankModel tank, int tankId, int batchId) async {
+    try {
+      final int? personId =
+          await SharedPreferencesUtils.getIntVariableFromShared(
+              EnumSharedPreferences.userId);
+
+      await RequestBuilder(url: '/pessoa')
+          .addPathParam('$personId')
+          .addPathParam('lote')
+          .addPathParam('$batchId')
+          .addPathParam('tanque')
+          .addPathParam('$tankId')
+          .buildUrl()
+          .setBody(tank.toJson())
+          .put();
+
+      return tank;
+    } on DioError catch (e) {
+      return customDioError(e);
     }
   }
 
@@ -74,7 +126,29 @@ class TankService extends AbstractService {
       }
       return ErrorModel.fromJson(response.data);
     } on DioError catch (e) {
-      rethrow;
+      return customDioError(e);
+    }
+  }
+
+  dynamic deleteTank(int batchId, int tankId) async {
+    try {
+      final int? personId =
+          await SharedPreferencesUtils.getIntVariableFromShared(
+              EnumSharedPreferences.userId);
+
+      Response<void> response = await RequestBuilder(url: '/pessoa')
+          .addPathParam('$personId')
+          .addPathParam('lote')
+          .addPathParam('$batchId')
+          .addPathParam('tanque')
+          .addPathParam('$tankId')
+          .buildUrl()
+          .delete();
+      if (response.statusCode == 204) {
+        return tankId;
+      }
+    } on DioError catch (e) {
+      return customDioError(e);
     }
   }
 }

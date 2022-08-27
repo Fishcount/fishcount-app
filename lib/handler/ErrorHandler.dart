@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
-import 'package:fishcount_app/widgets/custom/CustomSnackBar.dart';
+import 'package:fishcount_app/widgets/SnackBarBuilder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +13,8 @@ class ErrorHandler {
     return ErrorModel(ErrorMessage.serverError, null, null, null);
   }
 
-  static Widget getDefaultErrorMessage(BuildContext context, dynamic response) {
-    return CustomSnackBar.getCustomSnackBar(context, response, Colors.red[400]);
+  static Widget getDefaultErrorMessage(BuildContext context, String? message) {
+    message ??= ErrorMessage.serverError;
+    return SnackBarBuilder.error(message, Colors.red[400]).buildError(context);
   }
 }

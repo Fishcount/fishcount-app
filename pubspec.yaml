@@ -54,6 +54,7 @@ dev_dependencies:
   url_launcher: ^6.1.5
   loading_animation_widget: ^1.2.0+2
   page_transition: "^2.0.4"
+  bootstrap_flutter: ^1.0.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
