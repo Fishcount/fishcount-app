@@ -38,6 +38,15 @@ class _BatchScreenState extends State<BatchScreen>
 
   String _orderBy = 'none';
 
+  final Map<String, bool> _filters = {
+    'dataInclusao': false,
+    'descricao': false,
+  };
+  final List<String> _filterFields = [
+    'dataInclusao',
+    'descricao',
+  ];
+
   @override
   initState() {
     super.initState();
@@ -69,59 +78,87 @@ class _BatchScreenState extends State<BatchScreen>
       appBar: CustomAppBar.build(),
       drawer: const DrawerWidget(),
       bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
-          context,
-          () => _batchController.openBatchRegisterModal(
-              context, TextEditingController(), _animationController, null)),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-          child: Column(
-            children: [
-              DividerWidget(
-                textBetween: "LOTES",
-                height: 40,
-                thikness: 2.5,
-                paddingLeft: 10,
-                paddingRight: 10,
-                color: Colors.grey.shade400,
-                textColor: Colors.black,
-                isBold: true,
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 5, bottom: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      child: FilterOptionWidget(
-                        onTap: () => setState(() => _orderBy = 'dataInclusao'),
-                        text: 'Data Inclusão',
-                        icon: const Icon(Icons.date_range),
+        context,
+        () => _batchController.openBatchRegisterModal(
+            context, TextEditingController(), _animationController, null),
+      ),
+      body: Container(
+        padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+        child: Column(
+          children: [
+            DividerWidget(
+              textBetween: "LOTES",
+              height: 40,
+              thikness: 2.5,
+              paddingLeft: 10,
+              paddingRight: 10,
+              color: Colors.grey.shade400,
+              textColor: Colors.black,
+              isBold: true,
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 5, bottom: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MediaQuery.of(context).orientation != Orientation.portrait
+                      ? Row(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(right: 10),
+                              child: FilterOptionWidget(
+                                onTap: () =>
+                                    _batchController.openBatchRegisterModal(
+                                        context,
+                                        TextEditingController(),
+                                        _animationController,
+                                        null),
+                                text: 'Novo Lote',
+                                icon: const Icon(Icons.add),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container(),
+                  Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        child: FilterOptionWidget(
+                          backgroundColor: _filters[_filterFields[0]] == true
+                              ? Colors.grey[300]
+                              : Colors.white,
+                          onTap: () => _setOrderBy(_filterFields[0]),
+                          text: 'Data Inclusão',
+                          icon: const Icon(Icons.date_range),
+                        ),
                       ),
-                    ),
-                    FilterOptionWidget(
-                      onTap: () => setState(() => _orderBy = 'descricao'),
-                      text: 'Ordem alfabética',
-                      icon: const Icon(LineIcons.sortAlphabeticalDown),
-                    ),
-                  ],
-                ),
+                      FilterOptionWidget(
+                        backgroundColor: _filters[_filterFields[1]] == true
+                            ? Colors.grey[300]
+                            : Colors.white,
+                        onTap: () => _setOrderBy(_filterFields[1]),
+                        text: 'Ordem alfabética',
+                        icon: const Icon(LineIcons.sortAlphabeticalDown),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              FutureBuilder(
-                future: fecthBatches(context),
-                builder: (context, AsyncSnapshot<List<BatchModel>> snapshot) {
-                  return AsyncSnapshotHandler(
-                    asyncSnapshot: snapshot,
-                    widgetOnError: _notFoundWidget(context),
-                    widgetOnWaiting: const CircularProgressIndicator(),
-                    widgetOnEmptyResponse: _notFoundWidget(context),
-                    widgetOnSuccess: _batchList(context, snapshot.data),
-                  ).handler();
-                },
-              ),
-            ],
-          ),
+            ),
+            FutureBuilder(
+              future: fecthBatches(context),
+              builder: (context, AsyncSnapshot<List<BatchModel>> snapshot) {
+                return AsyncSnapshotHandler(
+                  asyncSnapshot: snapshot,
+                  widgetOnError: _notFoundWidget(context),
+                  widgetOnWaiting: const CircularProgressIndicator(),
+                  widgetOnEmptyResponse: _notFoundWidget(context),
+                  widgetOnSuccess: _batchList(context, snapshot.data),
+                ).handler();
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -141,7 +178,9 @@ class _BatchScreenState extends State<BatchScreen>
     final Color? backGroundColor = Colors.grey[200];
     return SingleChildScrollView(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height / 1.5,
+        height: MediaQuery.of(context).orientation == Orientation.portrait
+            ? MediaQuery.of(context).size.height / 1.5
+            : MediaQuery.of(context).size.height / 2,
         child: ListView.builder(
           shrinkWrap: true,
           itemCount: batches.length,
@@ -294,6 +333,23 @@ class _BatchScreenState extends State<BatchScreen>
         ),
       ),
     );
+  }
+
+  _setOrderBy(String selectedField) {
+    if (_orderBy != selectedField) {
+      setState(() => _orderBy = selectedField);
+      _filters.update(_orderBy, (state) => true);
+
+      _alternateFilterState();
+    }
+  }
+
+  _alternateFilterState() {
+    for (String field in _filterFields) {
+      if (_orderBy != field) {
+        _filters.update(field, (state) => false);
+      }
+    }
   }
 
   Future<String?> _showAlertDialog(BuildContext context,

@@ -4,10 +4,15 @@ class FilterOptionWidget extends StatefulWidget {
   final Function() onTap;
   final String text;
   final Icon icon;
+  final Color? backgroundColor;
 
-  const FilterOptionWidget({Key? key, required this.onTap, required this.text,
-    required this.icon,})
-      : super(key: key);
+  const FilterOptionWidget({
+    Key? key,
+    required this.onTap,
+    required this.text,
+    required this.icon,
+    this.backgroundColor,
+  }) : super(key: key);
 
   @override
   State<FilterOptionWidget> createState() => _FilterOptionWidgetState();
@@ -21,6 +26,7 @@ class _FilterOptionWidgetState extends State<FilterOptionWidget> {
       child: Container(
         padding: const EdgeInsets.only(left: 10, right: 10),
         decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
           borderRadius: BorderRadius.circular(10),
           border: const Border(
             right: BorderSide(

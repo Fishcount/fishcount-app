@@ -1,7 +1,9 @@
+import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
+import 'package:fishcount_app/model/enums/EnumUnidadeAumento.dart';
 import 'package:fishcount_app/modules/species/SpecieService.dart';
 import 'package:fishcount_app/modules/tank/TankController.dart';
 import 'package:fishcount_app/repository/TanqueRepository.dart';
@@ -10,6 +12,7 @@ import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
+import 'package:fishcount_app/widgets/buttons/TextButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,6 +47,15 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
   late AnimationController _animationController;
 
   String _orderBy = 'none';
+
+  final Map<String, bool> _filters = {
+    'dataUltimaAnalise': false,
+    'descricao': false,
+  };
+  final List<String> _filterFields = [
+    'dataUltimaAnalise',
+    'descricao',
+  ];
 
   @override
   initState() {
@@ -103,20 +115,52 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
               Container(
                 padding: const EdgeInsets.only(top: 5, bottom: 5),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      child: FilterOptionWidget(
-                        onTap: () => setState(() => _orderBy = 'dataInclusao'),
-                        text: 'Data Inclusão',
-                        icon: const Icon(Icons.date_range),
-                      ),
-                    ),
-                    FilterOptionWidget(
-                      onTap: () => setState(() => _orderBy = 'descricao'),
-                      text: 'Ordem alfabética',
-                      icon: const Icon(LineIcons.sortAlphabeticalDown),
+                    MediaQuery.of(context).orientation != Orientation.portrait
+                        ? Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(right: 10),
+                                child: FilterOptionWidget(
+                                  onTap: () => openTankRegisterModal(
+                                    context: context,
+                                    fishAmounController:
+                                        TextEditingController(),
+                                    tankNameController: TextEditingController(),
+                                    tankSpecie: "",
+                                    animationController: _animationController,
+                                    tankModel: null,
+                                  ),
+                                  text: 'Novo Tanque',
+                                  icon: const Icon(Icons.add),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container(),
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          child: FilterOptionWidget(
+                            backgroundColor: _filters[_filterFields[0]] == true
+                                ? Colors.grey[300]
+                                : Colors.white,
+                            onTap: () => _setOrderBy(_filterFields[0]),
+                            text: 'Data de análise',
+                            icon: const Icon(Icons.date_range),
+                          ),
+                        ),
+                        FilterOptionWidget(
+                          backgroundColor: _filters[_filterFields[1]] == true
+                              ? Colors.grey[300]
+                              : Colors.white,
+                          onTap: () => _setOrderBy(_filterFields[1]),
+                          text: 'Ordem alfabética',
+                          icon: const Icon(LineIcons.sortAlphabeticalDown),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -139,6 +183,23 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  _setOrderBy(String selectedField) {
+    if (_orderBy != selectedField) {
+      setState(() => _orderBy = selectedField);
+      _filters.update(_orderBy, (state) => true);
+
+      _alternateFilterState();
+    }
+  }
+
+  _alternateFilterState() {
+    for (String field in _filterFields) {
+      if (_orderBy != field) {
+        _filters.update(field, (state) => false);
+      }
+    }
   }
 
   Widget _notFoundWidget(BuildContext context) {
@@ -238,157 +299,258 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
         TextEditingController();
     return SingleChildScrollView(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height / 1.5,
+        height: MediaQuery.of(context).orientation == Orientation.portrait
+            ? MediaQuery.of(context).size.height / 1.5
+            : MediaQuery.of(context).size.height / 2,
         child: ListView.builder(
           shrinkWrap: true,
           itemCount: tanks.length,
           itemBuilder: (context, index) {
             TankModel tankModel = tanks[index];
-            return Dismissible(
-              key: Key(tankModel.id!.toString()),
-              onDismissed: (direction) =>
-                  _showAlertDialog(context, batch.id!, tanks, index),
-              background: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.red[400],
-                ),
-                margin: const EdgeInsets.only(top: 15, right: 10),
-                child: Container(
-                  alignment: const Alignment(-0.9, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: const Icon(Icons.delete, color: Colors.white),
-                      ),
-                    ],
+            return Container(
+              margin: const EdgeInsets.only(top: 15),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: backGroundColor,
+                borderRadius: BorderRadius.circular(10),
+                border: const Border(
+                  right: BorderSide(
+                    color: borderColor,
+                  ),
+                  left: BorderSide(
+                    color: borderColor,
+                  ),
+                  top: BorderSide(
+                    color: borderColor,
+                  ),
+                  bottom: BorderSide(
+                    color: borderColor,
                   ),
                 ),
               ),
-              child: Container(
-                margin: const EdgeInsets.only(top: 15),
-                alignment: Alignment.center,
-                height: 90,
-                decoration: BoxDecoration(
-                  color: backGroundColor,
-                  borderRadius: BorderRadius.circular(10),
-                  border: const Border(
-                    right: BorderSide(
-                      color: borderColor,
-                    ),
-                    left: BorderSide(
-                      color: borderColor,
-                    ),
-                    top: BorderSide(
-                      color: borderColor,
-                    ),
-                    bottom: BorderSide(
-                      color: borderColor,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+              child: ExpansionTile(
+                controlAffinity: ListTileControlAffinity.trailing,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(top: 20, left: 15),
+                    child: Column(
                       children: [
-                        GestureDetector(
-                          child: Container(
-                            padding: const EdgeInsets.only(left: 10, right: 10),
-                            child: const Icon(
-                              Icons.drag_indicator,
-                              size: 30,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 100,
+                              height: 100,
+                              padding: const EdgeInsets.only(right: 15),
+                              child: Image.asset(ImagePaths.imageLogo),
                             ),
-                          ),
-                          onTap: () => SnackBarBuilder.info(
-                                  'Arraste para o lado para excluir!')
-                              .buildInfo(context),
-                        ),
-                        GestureDetector(
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width / 1.7,
-                            child: Column(
+                            Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.only(top: 10),
+                                  padding: const EdgeInsets.only(bottom: 5),
                                   child: Text(
-                                    tankModel.description,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    "Espécie: " + tankModel.species.description,
+                                    style: const TextStyle(fontSize: 15),
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.only(top: 10),
+                                  padding: const EdgeInsets.only(bottom: 5),
                                   child: Text(
-                                    tankModel.fishAmount.toString() + ' Peixes',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                    ),
+                                    "Peso Médio: " +
+                                        tankModel.species.averageWeight
+                                            .toString() +
+                                        '0 ' +
+                                        tankModel.species.unidadePesoMedio
+                                            .toLowerCase() +
+                                        's',
+                                    style: const TextStyle(fontSize: 15),
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: const Text(
-                                    'Data de inclusão: 10/10/2021',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
+                                  padding: const EdgeInsets.only(bottom: 5),
+                                  child: Text(
+                                    "Quantidade de ração: " +
+                                        tankModel.species.qtdeMediaRacao
+                                            .toString() +
+                                        ' ' +
+                                        tankModel.species.unidadePesoRacao
+                                            .toLowerCase() +
+                                        's',
+                                    style: const TextStyle(fontSize: 15),
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.only(bottom: 5),
+                                  child: Text(
+                                    "Tamanho médio: " +
+                                        tankModel.species.tamanhoMedio
+                                            .toString() +
+                                        '0 ' +
+                                        UnidadeAumentoHandler.getLowerCase(
+                                            tankModel.species.unidadeTamanho),
+                                    style: const TextStyle(fontSize: 15),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          onTap: () {
-                            // TODO abrir a tela de análises
-                            // NavigatorUtils.pushReplacement(
-                            //   context,
-                            //   TankScreen(
-                            //     lote: tankModel,
-                            //   ),
-                            // );
-                          },
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: TextButton(
+                                  child: Row(
+                                    children: const [
+                                      Text(
+                                        "Análises disponíveis",
+                                        style: TextStyle(color: Colors.green),
+                                      ),
+                                      Icon(
+                                        Icons
+                                            .keyboard_double_arrow_right_rounded,
+                                        color: Colors.green,
+                                      ),
+                                    ],
+                                  ),
+                                  onPressed: () {},
+                                )),
+                          ],
                         ),
                       ],
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                        right: 20,
-                        top: 12,
-                        bottom: 12,
-                      ),
-                      width: 30,
-                      alignment: Alignment.center,
-                      child: GestureDetector(
-                        child: const Icon(
-                          LineIcons.edit,
-                          color: Colors.black,
-                          size: 30,
-                        ),
-                        onTap: () {
-                          _editTankNameController.text = tankModel.description;
-                          _editAmountFishController.text =
-                              tankModel.fishAmount.toString();
-                          openTankRegisterModal(
-                            context: context,
-                            tankNameController: _editTankNameController,
-                            fishAmounController: _editAmountFishController,
-                            tankSpecie: tankModel.species.description,
-                            animationController: _animationController,
-                            tankModel: tankModel,
-                          );
-                        },
+                  ),
+                ],
+                title: Dismissible(
+                  key: Key(tankModel.id!.toString()),
+                  onDismissed: (direction) =>
+                      _showAlertDialog(context, batch.id!, tanks, index),
+                  background: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.red[400],
+                    ),
+                    margin: const EdgeInsets.only(top: 15, right: 10),
+                    child: Container(
+                      alignment: const Alignment(-0.9, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(left: 15),
+                            child:
+                                const Icon(Icons.delete, color: Colors.white),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.only(left: 0, right: 10),
+                              child: const Icon(
+                                Icons.drag_indicator,
+                                size: 30,
+                              ),
+                            ),
+                            onTap: () => SnackBarBuilder.info(
+                                    'Arraste para o lado para excluir!')
+                                .buildInfo(context),
+                          ),
+                          GestureDetector(
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width / 1.9,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Text(
+                                      tankModel.description,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Text(
+                                      tankModel.fishAmount.toString() +
+                                          ' Peixes',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: const Text(
+                                      'Data de inclusão: 10/10/2021',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            onTap: () {
+                              // TODO abrir a tela de análises
+                              // NavigatorUtils.pushReplacement(
+                              //   context,
+                              //   TankScreen(
+                              //     lote: tankModel,
+                              //   ),
+                              // );
+                            },
+                          ),
+                        ],
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 12,
+                          bottom: 12,
+                        ),
+                        width: 30,
+                        alignment: Alignment.center,
+                        child: GestureDetector(
+                          child: const Icon(
+                            LineIcons.edit,
+                            color: Colors.black,
+                            size: 30,
+                          ),
+                          onTap: () {
+                            _editTankNameController.text =
+                                tankModel.description;
+                            _editAmountFishController.text =
+                                tankModel.fishAmount.toString();
+                            openTankRegisterModal(
+                              context: context,
+                              tankNameController: _editTankNameController,
+                              fishAmounController: _editAmountFishController,
+                              tankSpecie: tankModel.species.description,
+                              animationController: _animationController,
+                              tankModel: tankModel,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -425,7 +587,12 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
             return Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.only(top: 100, bottom: 20),
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).orientation ==
+                              Orientation.portrait
+                          ? 100
+                          : 30,
+                      bottom: 20),
                   child: Text(
                     _isUpdate ? "Atualizar Tanque" : "Cadastrar novo Tanque",
                     style: const TextStyle(
@@ -543,9 +710,10 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
   ) async {
     final String speciesDescription =
         tankSpecie != "" ? tankSpecie : species.first.description;
+    TankModel tank = tankModel ?? TankModel.empty(null);
 
     tankModel = await _generateTank(
-        tankModel, tankNameController, fishAmounController, speciesDescription);
+        tank, tankNameController, fishAmounController, speciesDescription);
     if (_isUpdate) {
       return _tankController.updateTank(context, tankModel, widget.batch);
     }
@@ -555,7 +723,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
   Future<TankModel> _generateTank(tankModel, tankNameController,
       fishAmounController, String speciesDescription) async {
     tankModel.description = tankNameController.text;
-    tankModel.fishAmount = fishAmounController.text;
+    tankModel.fishAmount = int.parse(fishAmounController.text);
     tankModel.species =
         await _speciesService.findByDescricao(speciesDescription);
 
@@ -564,6 +732,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
 
   _deleteTank(int batchId, List<TankModel> tanks, int index) {
     _tankService.deleteTank(batchId, tanks[index].id!);
+    setState(() {});
     Navigator.pop(context);
   }
 }

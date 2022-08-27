@@ -62,8 +62,9 @@ class TankService extends AbstractService {
           .addPathParam('$batchId')
           .addPathParam('tanque')
           .buildUrl()
+          .setBody(tank.toJson())
           .post();
-      if (response.statusCode == 201){
+      if (response.statusCode == 201) {
         return TankModel.fromJson(response.data);
       }
       return ErrorModel.fromJson(response.data);
@@ -75,22 +76,20 @@ class TankService extends AbstractService {
   dynamic updateTank(TankModel tank, int tankId, int batchId) async {
     try {
       final int? personId =
-      await SharedPreferencesUtils.getIntVariableFromShared(
-          EnumSharedPreferences.userId);
+          await SharedPreferencesUtils.getIntVariableFromShared(
+              EnumSharedPreferences.userId);
 
-      final Response<dynamic> response = await RequestBuilder(url: '/pessoa')
+      await RequestBuilder(url: '/pessoa')
           .addPathParam('$personId')
           .addPathParam('lote')
           .addPathParam('$batchId')
           .addPathParam('tanque')
           .addPathParam('$tankId')
           .buildUrl()
+          .setBody(tank.toJson())
           .put();
 
-      if (response.statusCode == 200){
-        return TankModel.fromJson(response.data);
-      }
-      return ErrorModel.fromJson(response.data);
+      return tank;
     } on DioError catch (e) {
       return customDioError(e);
     }
