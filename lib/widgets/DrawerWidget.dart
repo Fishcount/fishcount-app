@@ -102,7 +102,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             isThreeLine: false,
             minVerticalPadding: 15,
             horizontalTitleGap: 15,
-            leading: const Icon(Icons.person),
+            leading: const Icon(Icons.home ),
             title: const Text("Home"),
             onTap: () {
               NavigatorUtils.push(context, const BatchScreen());

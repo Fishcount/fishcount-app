@@ -10,7 +10,6 @@ import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import '../../exceptionHandler/ErrorModel.dart';
 
 class TankService extends AbstractService {
-  String url = ApiLote.baseUrl + "/{loteId}/tanque";
 
   Future<List<TankModel>> fetchTanks(
       {batch = TankModel, orderBy = String}) async {

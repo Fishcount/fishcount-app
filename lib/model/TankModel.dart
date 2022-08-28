@@ -9,6 +9,8 @@ class TankModel {
 
   late SpeciesModel species;
 
+  late String? inclusionDate;
+
   late String? lastAnalysis;
 
   late String? nextAnalysis;
@@ -17,15 +19,14 @@ class TankModel {
 
   late String? lastAnalysisDate;
 
-  TankModel.empty(
-      this.id
-      );
+  TankModel.empty(this.id);
 
   TankModel(
     this.id,
     this.description,
     this.fishAmount,
     this.species,
+    this.inclusionDate,
     this.lastAnalysis,
     this.nextAnalysis,
     this.nextAnalysisDate,
@@ -37,6 +38,7 @@ class TankModel {
     description = json['descricao'];
     fishAmount = json['qtdePeixe'];
     species = SpeciesModel.fromJson(json['especie']);
+    inclusionDate = json['dataInclusao'];
     lastAnalysis = json['ultimaAnalise'];
     nextAnalysis = json['proximaAnalise'];
     nextAnalysisDate = json['dataUltimaAnalise'];
@@ -44,20 +46,22 @@ class TankModel {
   }
 
   Map<String, dynamic> toLocalDatabase(int speciesId, int batchId) => {
-    "descricao": description,
-    "qtdePeixes": fishAmount,
-    "ultimaAnalise": lastAnalysis,
-    "proximaAnalise": nextAnalysis,
-    "dataUltimaAnalise": nextAnalysisDate,
-    "dataUltimoTratamento": lastAnalysisDate,
-    "id_especie": speciesId,
-    "id_lote": batchId
-  };
+        "descricao": description,
+        "qtdePeixes": fishAmount,
+        "ultimaAnalise": lastAnalysis,
+        "proximaAnalise": nextAnalysis,
+        "dataInclusao": inclusionDate,
+        "dataUltimaAnalise": nextAnalysisDate,
+        "dataUltimoTratamento": lastAnalysisDate,
+        "id_especie": speciesId,
+        "id_lote": batchId
+      };
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "descricao": description,
         "qtdePeixe": fishAmount,
-        "especie": species
+        "especie": species,
+        "dataInclusao": inclusionDate,
       };
 }

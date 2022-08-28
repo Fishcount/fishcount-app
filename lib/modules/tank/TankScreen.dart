@@ -328,127 +328,134 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              child: ExpansionTile(
-                controlAffinity: ListTileControlAffinity.trailing,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(top: 20, left: 15),
-                    child: Column(
+              child: Dismissible(
+                key: Key(tankModel.id!.toString()),
+                onDismissed: (direction) =>
+                    _showAlertDialog(context, batch.id!, tanks, index),
+                background: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.red[400],
+                  ),
+                  margin: const EdgeInsets.only(right: 10),
+                  child: Container(
+                    alignment: const Alignment(-0.9, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              padding: const EdgeInsets.only(right: 15),
-                              child: Image.asset(ImagePaths.imageLogo),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Text(
-                                    "Espécie: " + tankModel.species.description,
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Text(
-                                    "Peso Médio: " +
-                                        tankModel.species.averageWeight
-                                            .toString() +
-                                        '0 ' +
-                                        tankModel.species.unidadePesoMedio
-                                            .toLowerCase() +
-                                        's',
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Text(
-                                    "Quantidade de ração: " +
-                                        tankModel.species.qtdeMediaRacao
-                                            .toString() +
-                                        ' ' +
-                                        tankModel.species.unidadePesoRacao
-                                            .toLowerCase() +
-                                        's',
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Text(
-                                    "Tamanho médio: " +
-                                        tankModel.species.tamanhoMedio
-                                            .toString() +
-                                        '0 ' +
-                                        UnidadeAumentoHandler.getLowerCase(
-                                            tankModel.species.unidadeTamanho),
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: TextButton(
-                                  child: Row(
-                                    children: const [
-                                      Text(
-                                        "Análises disponíveis",
-                                        style: TextStyle(color: Colors.green),
-                                      ),
-                                      Icon(
-                                        Icons
-                                            .keyboard_double_arrow_right_rounded,
-                                        color: Colors.green,
-                                      ),
-                                    ],
-                                  ),
-                                  onPressed: () {},
-                                )),
-                          ],
+                        Container(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: const Icon(Icons.delete, color: Colors.white),
                         ),
                       ],
                     ),
                   ),
-                ],
-                title: Dismissible(
-                  key: Key(tankModel.id!.toString()),
-                  onDismissed: (direction) =>
-                      _showAlertDialog(context, batch.id!, tanks, index),
-                  background: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.red[400],
+                ),
+                child: ExpansionTile(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: const Divider(
+                        height: 1,
+                        thickness: 2,
+                      ),
                     ),
-                    margin: const EdgeInsets.only(top: 15, right: 10),
-                    child: Container(
-                      alignment: const Alignment(-0.9, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Container(
+                      padding: const EdgeInsets.only(top: 10, left: 15),
+                      child: Column(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.only(left: 15),
-                            child:
-                                const Icon(Icons.delete, color: Colors.white),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 100,
+                                height: 100,
+                                padding: const EdgeInsets.only(right: 15),
+                                child: Image.asset(ImagePaths.imageLogo),
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: Text(
+                                      "Espécie: " +
+                                          tankModel.species.description,
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: Text(
+                                      "Peso Médio: " +
+                                          tankModel.species.averageWeight
+                                              .toString() +
+                                          '0 ' +
+                                          tankModel.species.unidadePesoMedio
+                                              .toLowerCase() +
+                                          's',
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: Text(
+                                      "Quantidade de ração: " +
+                                          tankModel.species.qtdeMediaRacao
+                                              .toString() +
+                                          ' ' +
+                                          tankModel.species.unidadePesoRacao
+                                              .toLowerCase() +
+                                          's',
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: Text(
+                                      "Tamanho médio: " +
+                                          tankModel.species.tamanhoMedio
+                                              .toString() +
+                                          '0 ' +
+                                          UnidadeAumentoHandler.getLowerCase(
+                                              tankModel.species.unidadeTamanho),
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Container(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: TextButton(
+                                    child: Row(
+                                      children: const [
+                                        Text(
+                                          "Análises disponíveis",
+                                          style: TextStyle(color: Colors.green),
+                                        ),
+                                        Icon(
+                                          Icons
+                                              .keyboard_double_arrow_right_rounded,
+                                          color: Colors.green,
+                                        ),
+                                      ],
+                                    ),
+                                    onPressed: () {},
+                                  )),
+                            ],
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  child: Row(
+                  ],
+                  title: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
