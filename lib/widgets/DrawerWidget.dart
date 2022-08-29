@@ -1,13 +1,17 @@
 import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
+import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/model/PaymentModel.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/modules/batch/BatchScreen.dart';
+import 'package:fishcount_app/modules/login/LoginScreen.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
+import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../handler/AsyncSnapshotHander.dart';
 import '../modules/batch/BatchController.dart';
 import '../modules/financial/FinancialForm.dart';
 import '../modules/financial/FinancialScreen.dart';
@@ -23,12 +27,11 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-  final TextEditingController _cpfController = TextEditingController();
 
-  Future<void> _resolverPermissoes() async {
-    final List<PersonModel> pessoas = await PessoaService().findById();
+  Future<void> _handlePermissions() async {
+    final PersonModel people = await PersonService().findById();
 
-    if (_pessoaHasCpf(pessoas.first)) {
+    if (_pessoaHasCpf(people)) {
       final List<PaymentModel> pagamentos =
           await PagamentoService().buscarPagamentos();
 
@@ -39,7 +42,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ));
       return;
     }
-    NavigatorUtils.push(context, FinancialForm(pessoaModel: pessoas.first));
+    NavigatorUtils.push(context, FinancialForm(pessoaModel: people));
   }
 
   bool _pessoaHasCpf(PersonModel pessoa) =>
@@ -86,13 +89,27 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               ? Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.only(top: 5, bottom: 30),
-                  child: const SizedBox(
-                    child: Text(
-                      "emaildocaboclo@gmail.com",
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 15,
-                      ),
+                  child: SizedBox(
+                    child: FutureBuilder(
+                      future:
+                          SharedPreferencesUtils.getStringVariableFromShared(
+                              EnumSharedPreferences.userEmail),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String?> snapshot) {
+                        return AsyncSnapshotHandler(
+                          asyncSnapshot: snapshot,
+                          widgetOnError: const Text(''),
+                          widgetOnWaiting: const CircularProgressIndicator(),
+                          widgetOnEmptyResponse: const Text(''),
+                          widgetOnSuccess: Text(
+                            snapshot.data == null ? '' : snapshot.data!,
+                            maxLines: 1,
+                            style: const TextStyle(
+                              fontSize: 15,
+                            ),
+                          ),
+                        ).handler();
+                      },
                     ),
                     height: 20,
                   ),
@@ -102,11 +119,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             isThreeLine: false,
             minVerticalPadding: 15,
             horizontalTitleGap: 15,
-            leading: const Icon(Icons.home ),
+            leading: const Icon(Icons.home),
             title: const Text("Home"),
-            onTap: () {
-              NavigatorUtils.push(context, const BatchScreen());
-            },
+            onTap: () => NavigatorUtils.push(context, const BatchScreen()),
           ),
           ListTile(
             isThreeLine: false,
@@ -114,9 +129,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             horizontalTitleGap: 15,
             leading: const Icon(Icons.person),
             title: const Text("Meus dados"),
-            onTap: () {
-              NavigatorUtils.push(context, const PessoaDataForm());
-            },
+            onTap: () => NavigatorUtils.push(context, const PessoaDataForm()),
           ),
           ListTile(
             isThreeLine: false,
@@ -124,8 +137,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             horizontalTitleGap: 15,
             leading: const Icon(Icons.monetization_on),
             title: const Text("Financeiro"),
-            // onTap: () => NavigatorUtils.push(context, const FinanceiroScreen()),
-            onTap: () => _resolverPermissoes(),
+            onTap: () => _handlePermissions(),
           ),
           const ListTile(
             isThreeLine: false,
@@ -142,16 +154,20 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             title: Text("Politica de privacidade"),
           ),
           Container(
-            padding: EdgeInsets.only(left: 30, right: 40, top: MediaQuery.of(context).orientation == Orientation.portrait ? 220 : 40),
+            padding: EdgeInsets.only(
+                left: 30,
+                right: 40,
+                top: MediaQuery.of(context).orientation == Orientation.portrait
+                    ? 220
+                    : 40),
             child: ElevatedButtonWidget(
               buttonText: "Sair",
               buttonColor: Colors.cyan.shade600,
               textColor: Colors.white,
               textSize: 20,
               radioBorder: 50,
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, AppPaths.loginPath);
-              },
+              onPressed: () =>
+                  NavigatorUtils.pushReplacement(context, const LoginScreen()),
             ),
           ),
         ],

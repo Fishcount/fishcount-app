@@ -56,24 +56,25 @@ class UsuarioRepository {
     }
   }
 
-  Future<List<PersonModel>> buscarUsuario(BuildContext context) async {
+  Future<PersonModel?> buscarUsuario(BuildContext context) async {
     try {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
       if (userId == null) {
         ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
-        return [];
       }
       final db = await DBProvider().init();
       List<Map<String, Object?>> maps =
           await db.query("usuario", where: "id = ?", whereArgs: [userId]);
 
-      return List.generate(maps.length, (index) {
+      late PersonModel person;
+      List<PersonModel> people =  List.generate(maps.length, (index) {
         return PersonModel.fromDatabase(maps[index]);
       });
+      return people.first;
     } on Exception catch (e) {
       ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
-      return [];
+      return null;
     }
   }
 }

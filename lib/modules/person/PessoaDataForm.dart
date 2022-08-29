@@ -21,10 +21,10 @@ class PessoaDataForm extends StatefulWidget {
 class _PessoaDataFormState extends State<PessoaDataForm> {
   final TextEditingController _nomeController = TextEditingController();
 
-  Future<List<PersonModel>> buscarUsuario() async {
+  Future<PersonModel?> buscarUsuario() async {
     bool isConnected = await ConnectionUtils().isConnected();
     if (isConnected) {
-      return PessoaService().findById();
+      return PersonService().findById();
     }
     return UsuarioRepository().buscarUsuario(context);
   }
@@ -40,7 +40,7 @@ class _PessoaDataFormState extends State<PessoaDataForm> {
           padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
           child: FutureBuilder(
             future: buscarUsuario(),
-            builder: (context, AsyncSnapshot<List<PersonModel>> snapshot) {
+            builder: (context, AsyncSnapshot<PersonModel?> snapshot) {
               return PessoaController().resolverDadosUsuario(context, snapshot, _nomeController);
             },
           ),

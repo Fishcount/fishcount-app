@@ -47,7 +47,7 @@ class PessoaController extends AbstractController {
       String celular, String nome, String senha) async {
     PersonModel pessoa = _createPessoaModel(email, celular, nome, senha);
 
-    dynamic response = await PessoaService().saveOrUpdate(pessoa);
+    dynamic response = await PersonService().saveOrUpdate(pessoa);
     if (response is PersonModel) {
       NavigatorUtils.pushReplacement(context, const BatchScreen());
     }
@@ -68,7 +68,7 @@ class PessoaController extends AbstractController {
 
   Widget resolverDadosUsuario(
       BuildContext context,
-      AsyncSnapshot<List<PersonModel>> snapshot,
+      AsyncSnapshot<PersonModel?> snapshot,
       TextEditingController _nomeController) {
     if (onHasValue(snapshot)) {
       return Column(
@@ -109,7 +109,7 @@ class PessoaController extends AbstractController {
                   padding: const EdgeInsets.only(bottom: 20),
                   child: TextFieldWidget(
                     controller: _nomeController,
-                    hintText: snapshot.data!.first.name,
+                    hintText: snapshot.data!.name,
                     prefixIcon: const Icon(Icons.person),
                     focusedBorderColor: Colors.blue,
                     iconColor: Colors.black,
@@ -152,7 +152,7 @@ class PessoaController extends AbstractController {
                   textColor: Colors.black,
                   isBold: false,
                 ),
-                EmailController().getEmailList(context, snapshot.data!.first.emails),
+                EmailController().getEmailList(context, snapshot.data!.emails),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -192,7 +192,7 @@ class PessoaController extends AbstractController {
                   textColor: Colors.black,
                   isBold: false,
                 ),
-                PhoneController().getPhoneList(context, snapshot.data!.first.phones),
+                PhoneController().getPhoneList(context, snapshot.data!.phones),
               ],
             ),
           ),

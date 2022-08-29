@@ -74,7 +74,7 @@ class _FinanceiroformState extends State<FinancialForm> {
                     return Text("");
                   }
                   widget.pessoaModel!.cpf = _cpfController.text;
-                  dynamic response = await PessoaService()
+                  dynamic response = await PersonService()
                       .saveOrUpdate(widget.pessoaModel!);
 
                   if (response is PersonModel) {
