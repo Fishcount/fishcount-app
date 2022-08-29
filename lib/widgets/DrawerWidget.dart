@@ -27,7 +27,6 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-
   Future<void> _handlePermissions() async {
     final PersonModel people = await PersonService().findById();
 
@@ -153,22 +152,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             leading: Icon(Icons.privacy_tip),
             title: Text("Politica de privacidade"),
           ),
-          Container(
-            padding: EdgeInsets.only(
-                left: 30,
-                right: 40,
-                top: MediaQuery.of(context).orientation == Orientation.portrait
-                    ? 220
-                    : 40),
-            child: ElevatedButtonWidget(
-              buttonText: "Sair",
-              buttonColor: Colors.cyan.shade600,
-              textColor: Colors.white,
-              textSize: 20,
-              radioBorder: 50,
-              onPressed: () =>
-                  NavigatorUtils.pushReplacement(context, const LoginScreen()),
-            ),
+          ListTile(
+            isThreeLine: false,
+            minVerticalPadding: 15,
+            horizontalTitleGap: 15,
+            leading: const Icon(Icons.exit_to_app_outlined),
+            title: const Text("Sair"),
+            onTap: () =>
+                NavigatorUtils.pushReplacement(context, const LoginScreen()),
           ),
         ],
       ),
