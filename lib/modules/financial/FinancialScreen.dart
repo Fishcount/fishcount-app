@@ -34,15 +34,6 @@ class _FinancialScreenState extends State<FinancialScreen> {
           child: Column(
             children: [
               DividerWidget(
-                // widgetBetween: Text(
-                //   _showPagamentos()
-                //       ? "Planos escolhidos"
-                //       : "Planos disponíveis",
-                //   style: const TextStyle(
-                //       color: Colors.blue,
-                //       fontSize: 17,
-                //       fontWeight: FontWeight.bold),
-                // ),
                 textBetween: _showPagamentos()
                     ? "Planos escolhidos"
                     : "Planos disponíveis",
@@ -54,7 +45,7 @@ class _FinancialScreenState extends State<FinancialScreen> {
                 textColor: Colors.black,
                 isBold: true,
               ),
-              !_showPagamentos()
+              _showPagamentos()
                   ? PagamentoController.pagamentoList(context)
                   : PlanController.planoList(context),
             ],

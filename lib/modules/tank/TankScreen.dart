@@ -295,7 +295,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
       BuildContext context, List<TankModel>? tanksModel, BatchModel batch) {
     final List<TankModel> tanks = tanksModel ?? [];
     const Color borderColor = Colors.black26;
-    final Color? backGroundColor = Colors.grey[200];
+    final Color? backGroundColor = Colors.grey[100];
     final TextEditingController _editTankNameController =
         TextEditingController();
 

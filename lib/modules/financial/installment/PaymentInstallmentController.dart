@@ -30,7 +30,7 @@ class PaymentInstallmentController extends AbstractController {
           return AsyncSnapshotHandler(
             asyncSnapshot: snapshot,
             widgetOnError: const Text("Erro"),
-            widgetOnWaiting: AnimationUtils.progressiveDots(size: 50),
+            widgetOnWaiting: AnimationUtils.progressiveDots(size: 50.0),
             widgetOnEmptyResponse: _onEmptyResponse(),
             widgetOnSuccess: _onSuccessfulRequest(context, snapshot),
           ).handler();
@@ -57,26 +57,30 @@ class PaymentInstallmentController extends AbstractController {
               final InstallmentPaymentModel parcela = snapshot.data![index];
               final String mesParcela = parcela.dueDate.split('/')[1];
               final String anoParcela = parcela.dueDate.split('/')[2];
+              const Color borderColor = Colors.black26;
+              final Color? backGroundColor = Colors.grey[100];
 
               return GestureDetector(
                 onTap: () {},
                 child: Container(
-                  margin: const EdgeInsets.only(top: 25, left: 15, right: 15),
+                  margin: const EdgeInsets.only(top: 20),
                   alignment: Alignment.center,
                   height: 190,
-                  decoration: const BoxDecoration(
-                    border: Border(
+                  decoration: BoxDecoration(
+                    color: backGroundColor,
+                    borderRadius: BorderRadius.circular(10),
+                    border: const Border(
                       bottom: BorderSide(
-                        color: Colors.blue,
+                        color: borderColor,
                       ),
                       left: BorderSide(
-                        color: Colors.black26,
+                        color: borderColor,
                       ),
                       right: BorderSide(
-                        color: Colors.black26,
+                        color: borderColor,
                       ),
                       top: BorderSide(
-                        color: Colors.black26,
+                        color: borderColor,
                       ),
                     ),
                   ),

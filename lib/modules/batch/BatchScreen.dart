@@ -179,7 +179,7 @@ class _BatchScreenState extends State<BatchScreen>
         TextEditingController();
 
     const Color borderColor = Colors.black26;
-    final Color? backGroundColor = Colors.grey[200];
+    final Color? backGroundColor = Colors.grey[100];
     return SingleChildScrollView(
       child: SizedBox(
         height: MediaQuery.of(context).orientation == Orientation.portrait

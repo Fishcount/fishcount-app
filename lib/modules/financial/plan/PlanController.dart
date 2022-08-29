@@ -48,7 +48,7 @@ class PlanController {
   static SingleChildScrollView _onSuccessfulRequest(
       BuildContext context, AsyncSnapshot<List<PlanModel>> snapshot) {
     const Color borderColor = Colors.black26;
-    final Color? backGroundColor = Colors.grey[200];
+    final Color? backGroundColor = Colors.grey[100];
 
     return SingleChildScrollView(
       child: SizedBox(
@@ -65,7 +65,7 @@ class PlanController {
               alignment: Alignment.center,
               height: 200,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: backGroundColor,
                 borderRadius: BorderRadius.circular(10),
                 border: const Border(
                   bottom: BorderSide(
