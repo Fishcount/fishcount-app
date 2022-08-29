@@ -29,27 +29,32 @@ class _FinancialScreenState extends State<FinancialScreen> {
       appBar: CustomAppBar.build(),
       drawer: const DrawerWidget(),
       body: Container(
-        padding: const EdgeInsets.only(top: 30, bottom: 10),
+        padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
         child: SingleChildScrollView(
           child: Column(
             children: [
               DividerWidget(
-                widgetBetween: Text(
-                  _showPagamentos()
-                      ? "Planos escolhidos"
-                      : "Planos disponíveis",
-                  style: const TextStyle(
-                      color: Colors.blue,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold),
-                ),
-                height: 1,
-                thikness: 2,
-                color: Colors.blue,
-                paddingLeft: 12,
-                paddingRight: 12,
+                // widgetBetween: Text(
+                //   _showPagamentos()
+                //       ? "Planos escolhidos"
+                //       : "Planos disponíveis",
+                //   style: const TextStyle(
+                //       color: Colors.blue,
+                //       fontSize: 17,
+                //       fontWeight: FontWeight.bold),
+                // ),
+                textBetween: _showPagamentos()
+                    ? "Planos escolhidos"
+                    : "Planos disponíveis",
+                height: 40,
+                thikness: 2.5,
+                paddingLeft: 10,
+                paddingRight: 10,
+                color: Colors.grey.shade400,
+                textColor: Colors.black,
+                isBold: true,
               ),
-              _showPagamentos()
+              !_showPagamentos()
                   ? PagamentoController.pagamentoList(context)
                   : PlanController.planoList(context),
             ],
