@@ -14,6 +14,7 @@ import 'package:line_icons/line_icons.dart';
 
 import '../../constants/AppPaths.dart';
 import '../../constants/exceptions/ErrorMessage.dart';
+import '../../utils/AnimationUtils.dart';
 import '../../utils/NavigatorUtils.dart';
 import '../../widgets/buttons/ElevatedButtonWidget.dart';
 import '../tank/TankScreen.dart';
@@ -152,7 +153,10 @@ class _BatchScreenState extends State<BatchScreen>
                 return AsyncSnapshotHandler(
                   asyncSnapshot: snapshot,
                   widgetOnError: _notFoundWidget(context),
-                  widgetOnWaiting: const CircularProgressIndicator(),
+                  widgetOnWaiting: Container(
+                    padding: const EdgeInsets.only(top: 30),
+                    child: AnimationUtils.progressiveDots(size: 50.0),
+                  ),
                   widgetOnEmptyResponse: _notFoundWidget(context),
                   widgetOnSuccess: _batchList(context, snapshot.data),
                 ).handler();

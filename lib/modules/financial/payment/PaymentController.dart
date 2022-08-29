@@ -6,6 +6,7 @@ import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../../utils/AnimationUtils.dart';
 import '../installment/PaymentInstallmentScreen.dart';
 import 'PaymentService.dart';
 
@@ -36,10 +37,7 @@ class PagamentoController {
 
   static _onWaitingResponse() => Container(
         padding: const EdgeInsets.only(top: 100),
-        child: LoadingAnimationWidget.bouncingBall(
-          color: Colors.blue,
-          size: 50,
-        ),
+        child: AnimationUtils.bouncingBall(size: 50.0),
       );
 
   static SingleChildScrollView _onSuccessfulRequest(

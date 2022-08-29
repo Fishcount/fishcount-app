@@ -9,14 +9,17 @@ import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/AlertDialogBuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+
+import '../../../utils/AnimationUtils.dart';
 import '../../generic/AbstractController.dart';
 import 'PaymentInstallmentService.dart';
 
 class PaymentInstallmentController extends AbstractController {
   static final PaymentInstallmentService pagamentoParcelaService =
       PaymentInstallmentService();
+
+  static final PixService _pixService = PixService();
 
   static parcelasList(BuildContext context, int pagamentoId) {
     return SingleChildScrollView(
@@ -27,7 +30,7 @@ class PaymentInstallmentController extends AbstractController {
           return AsyncSnapshotHandler(
             asyncSnapshot: snapshot,
             widgetOnError: const Text("Erro"),
-            widgetOnWaiting: _onWaitingResponse(),
+            widgetOnWaiting: AnimationUtils.progressiveDots(size: 50),
             widgetOnEmptyResponse: _onEmptyResponse(),
             widgetOnSuccess: _onSuccessfulRequest(context, snapshot),
           ).handler();
@@ -35,14 +38,6 @@ class PaymentInstallmentController extends AbstractController {
       ),
     );
   }
-
-  static _onWaitingResponse() => Container(
-    padding: const EdgeInsets.only(top: 100),
-    child: LoadingAnimationWidget.bouncingBall(
-      color: Colors.blue,
-      size: 50,
-    ),
-  );
 
   static Text _onEmptyResponse() {
     return const Text("Não foi possível encontrar nenhuma parcela para você.");
@@ -213,13 +208,13 @@ class PaymentInstallmentController extends AbstractController {
       mainAxisAlignment: MainAxisAlignment.center,
       bottomElement: Container(
         child: FutureBuilder(
-          future: PixService().buscarQRCodePorParcela(parcelaId),
+          future: _pixService.buscarQRCodePorParcela(parcelaId),
           builder: (BuildContext context, AsyncSnapshot<PixModel> snapshot) {
             PixModel? pixModel = snapshot.data != null ? snapshot.data! : null;
             return AsyncSnapshotHandler(
                     asyncSnapshot: snapshot,
                     widgetOnError: const Text("Erro"),
-                    widgetOnWaiting: _onWaiting(),
+                    widgetOnWaiting: AnimationUtils.progressiveDots(size: 50),
                     widgetOnEmptyResponse: _onEmptyResponse(),
                     widgetOnSuccess: _dialogQrCode(pixModel, context),
                     )
@@ -228,13 +223,6 @@ class PaymentInstallmentController extends AbstractController {
         ),
       ),
     ).build(context);
-  }
-
-  static Widget _onWaiting() {
-    return LoadingAnimationWidget.prograssiveDots(
-      color: Colors.blue,
-      size: 50
-    );
   }
 
   static _dialogQrCode(PixModel? pixModel, BuildContext context) {

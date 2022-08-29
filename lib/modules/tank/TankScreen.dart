@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
 import '../../model/SpeciesModel.dart';
+import '../../utils/AnimationUtils.dart';
 import '../../widgets/FilterOptionWidget.dart';
 import '../../widgets/SnackBarBuilder.dart';
 import '../../widgets/TextFieldWidget.dart';
@@ -171,7 +172,10 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                   return AsyncSnapshotHandler(
                     asyncSnapshot: snapshot,
                     widgetOnError: const Text(""),
-                    widgetOnWaiting: const CircularProgressIndicator(),
+                    widgetOnWaiting:  Container(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: AnimationUtils.progressiveDots(size: 50.0),
+                    ),
                     widgetOnEmptyResponse: _notFoundWidget(context),
                     widgetOnSuccess:
                         _tankList(context, snapshot.data, widget.batch),

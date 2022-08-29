@@ -1,4 +1,5 @@
 import 'package:fishcount_app/constants/Formatters.dart';
+import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
@@ -31,10 +32,21 @@ class _PessoaFormState extends State<PessoaForm> {
           child: Column(
             children: [
               Container(
-                padding: const EdgeInsets.only(top: 30),
-                child: const Text(
-                  "Novo Usuário!",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                padding: const EdgeInsets.only(top: 20),
+                child: const DividerWidget(
+                  height: 1,
+                  thikness: 1,
+                  color: Colors.grey,
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                  widgetBetween: Text(
+                    'Cadastre-se!',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 20,
+                    ),
+                  ),
                 ),
               ),
               Container(
@@ -42,6 +54,7 @@ class _PessoaFormState extends State<PessoaForm> {
                 child: TextFieldWidget(
                   controller: _nomeController,
                   hintText: "Nome",
+                  labelText: "Digite seu nome",
                   prefixIcon: const Icon(Icons.person),
                   iconColor: Colors.blueGrey,
                   obscureText: false,
@@ -53,6 +66,7 @@ class _PessoaFormState extends State<PessoaForm> {
                 child: TextFieldWidget(
                   controller: _emailController,
                   hintText: "Email",
+                  labelText: "Digite seu email",
                   prefixIcon: const Icon(Icons.email),
                   iconColor: Colors.blueGrey,
                   obscureText: false,
@@ -64,6 +78,7 @@ class _PessoaFormState extends State<PessoaForm> {
                 child: TextFieldWidget(
                   controller: _telefoneController,
                   hintText: "Celular",
+                  labelText: "Digite seu celular",
                   prefixIcon: const Icon(Icons.phone_android),
                   iconColor: Colors.blueGrey,
                   obscureText: false,
@@ -76,9 +91,11 @@ class _PessoaFormState extends State<PessoaForm> {
                 child: TextFieldWidget(
                   controller: _senhaController,
                   hintText: "Senha",
+                  labelText: "Digite sua senha",
                   prefixIcon: const Icon(Icons.password_rounded),
                   iconColor: Colors.blueGrey,
                   focusedBorderColor: Colors.blueGrey,
+                  isPassword: true,
                   obscureText: true,
                 ),
               ),
