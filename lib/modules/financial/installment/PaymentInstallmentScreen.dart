@@ -1,7 +1,7 @@
 import 'package:fishcount_app/model/PlanModel.dart';
 import 'package:fishcount_app/modules/financial/installment/PaymentInstallmentController.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
-import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
+import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +22,7 @@ class _PaymentInstallmentScreenState extends State<PaymentInstallmentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.build(),
+      appBar: AppBarBuilder().build(),
       body: Container(
         padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
         child: SingleChildScrollView(

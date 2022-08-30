@@ -4,8 +4,8 @@ import 'package:fishcount_app/modules/batch/BatchController.dart';
 import 'package:fishcount_app/repository/UsuarioRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
-import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
-import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
+import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
+import 'package:fishcount_app/widgets/custom/BottomSheetBuilder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +20,7 @@ class PessoaDataForm extends StatefulWidget {
   State<PessoaDataForm> createState() => _PessoaDataFormState();
 }
 
-class _PessoaDataFormState extends State<PessoaDataForm> 
+class _PessoaDataFormState extends State<PessoaDataForm>
     with TickerProviderStateMixin {
   final TextEditingController _nomeController = TextEditingController();
   final BatchController _batchController = BatchController();
@@ -50,12 +50,12 @@ class _PessoaDataFormState extends State<PessoaDataForm>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.build(),
-      bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
-        context,
-        () => _batchController.openBatchRegisterModal(
+      appBar:  AppBarBuilder().build(),
+      bottomNavigationBar: CustomBottomSheet(
+        context: context,
+        newFunction: () => _batchController.openBatchRegisterModal(
             context, TextEditingController(), _animationController, null),
-      ),
+      ).build(),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(top: 30, left: 20, right: 20),

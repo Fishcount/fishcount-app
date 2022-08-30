@@ -13,8 +13,8 @@ import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/buttons/TextButtonWidget.dart';
-import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
-import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
+import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
+import 'package:fishcount_app/widgets/custom/BottomSheetBuilder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
@@ -85,11 +85,11 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.build(),
+      appBar:  AppBarBuilder().build(),
       drawer: const DrawerWidget(),
-      bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
-        context,
-        () => openTankRegisterModal(
+      bottomNavigationBar: CustomBottomSheet(
+        context: context,
+        newFunction: () => openTankRegisterModal(
           context: context,
           fishAmounController: TextEditingController(),
           tankNameController: TextEditingController(),
@@ -97,7 +97,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
           animationController: _animationController,
           tankModel: null,
         ),
-      ),
+      ).build(),
       body: Center(
         child: Container(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
@@ -510,7 +510,8 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                   Container(
                                     padding: const EdgeInsets.only(top: 10),
                                     child: Text(
-                                      'Data de inclusão: ' + tankModel.inclusionDate.toString(),
+                                      'Data de inclusão: ' +
+                                          tankModel.inclusionDate.toString(),
                                       style: const TextStyle(
                                         fontSize: 12,
                                       ),

@@ -3,7 +3,7 @@ import 'package:fishcount_app/modules/financial/payment/PaymentController.dart';
 import 'package:fishcount_app/modules/financial/plan/PlanController.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
-import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
+import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/material.dart';
 
 class FinancialScreen extends StatefulWidget {
@@ -26,7 +26,7 @@ class _FinancialScreenState extends State<FinancialScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.build(),
+      appBar:  AppBarBuilder().build(),
       drawer: const DrawerWidget(),
       body: Container(
         padding: const EdgeInsets.only(top: 15, left: 15, right: 15),

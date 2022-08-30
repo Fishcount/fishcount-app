@@ -2,7 +2,7 @@ import 'package:fishcount_app/constants/Formatters.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
-import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
+import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -25,7 +25,7 @@ class _PessoaFormState extends State<PessoaForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.build(),
+      appBar:  AppBarBuilder().build(),
       body: SingleChildScrollView(
         child: Container(
           alignment: Alignment.bottomCenter,

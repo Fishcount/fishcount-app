@@ -6,12 +6,23 @@ import 'package:line_icons/line_icons.dart';
 import '../../modules/batch/BatchScreen.dart';
 
 class CustomBottomSheet {
-  static Widget? getCustomBottomSheet(
-      BuildContext context, Function() newFunction) {
+  BuildContext context;
+  Function() newFunction;
+  final Color iconColor = Colors.white;
+  final Color textColor = Colors.white;
+  final Color bottomSheetColor = Colors.blueGrey[300]!;
+
+  CustomBottomSheet({
+    required this.context,
+    required this.newFunction,
+  });
+
+
+   build() {
     return MediaQuery.of(context).orientation != Orientation.portrait
         ? null
         : Container(
-            color: Colors.yellow,
+            color: bottomSheetColor,
             height: 70,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,10 +33,10 @@ class CustomBottomSheet {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        child: const Icon(
+                        child: Icon(
                           Icons.line_style_outlined,
                           size: 35,
-                          color: Colors.blueAccent,
+                          color: iconColor,
                         ),
                         onTap: () {
                           NavigatorUtils.pushReplacement(
@@ -34,10 +45,10 @@ class CustomBottomSheet {
                           );
                         },
                       ),
-                      const Text(
+                      Text(
                         "Lotes",
                         style: TextStyle(
-                          color: Colors.blueAccent,
+                          color: textColor,
                         ),
                       ),
                     ],
@@ -46,16 +57,16 @@ class CustomBottomSheet {
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(
                         Icons.analytics_outlined,
                         size: 35,
-                        color: Colors.blueAccent,
+                        color: iconColor,
                       ),
                       Text(
                         "Análises",
                         style: TextStyle(
-                          color: Colors.blueAccent,
+                          color: textColor,
                         ),
                       ),
                     ],
@@ -66,17 +77,17 @@ class CustomBottomSheet {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        child: const Icon(
+                        child: Icon(
                           LineIcons.fish,
                           size: 35,
-                          color: Colors.blueAccent,
+                          color: iconColor,
                         ),
                         onTap: newFunction,
                       ),
-                      const Text(
+                      Text(
                         "Novo",
                         style: TextStyle(
-                          color: Colors.blueAccent,
+                          color: textColor,
                         ),
                       ),
                     ],

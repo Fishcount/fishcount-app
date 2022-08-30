@@ -7,8 +7,8 @@ import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/FilterOptionWidget.dart';
 import 'package:fishcount_app/widgets/SnackBarBuilder.dart';
-import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
-import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
+import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
+import 'package:fishcount_app/widgets/custom/BottomSheetBuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -76,13 +76,13 @@ class _BatchScreenState extends State<BatchScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.build(),
+      appBar:  AppBarBuilder().build(),
       drawer: const DrawerWidget(),
-      bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
-        context,
-        () => _batchController.openBatchRegisterModal(
+      bottomNavigationBar: CustomBottomSheet(
+        context: context,
+        newFunction: () => _batchController.openBatchRegisterModal(
             context, TextEditingController(), _animationController, null),
-      ),
+      ).build(),
       body: Container(
         padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
         child: Column(

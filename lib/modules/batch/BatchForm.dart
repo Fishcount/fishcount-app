@@ -1,7 +1,7 @@
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
-import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
+import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,7 @@ class _BatchFormState extends State<BatchForm> {
         widget.lote != null ? widget.lote!.descricao : "";
 
     return Scaffold(
-      appBar: CustomAppBar.build(),
+      appBar: AppBarBuilder().build(),
       body: Container(
         alignment: Alignment.bottomCenter,
         padding: const EdgeInsets.all(20),
