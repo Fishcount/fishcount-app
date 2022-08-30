@@ -218,7 +218,7 @@ class PaymentInstallmentController extends AbstractController {
             return AsyncSnapshotHandler(
                     asyncSnapshot: snapshot,
                     widgetOnError: const Text("Erro"),
-                    widgetOnWaiting: AnimationUtils.progressiveDots(size: 50),
+                    widgetOnWaiting: AnimationUtils.progressiveDots(size: 50.0),
                     widgetOnEmptyResponse: _onEmptyResponse(),
                     widgetOnSuccess: _dialogQrCode(pixModel, context),
                     )

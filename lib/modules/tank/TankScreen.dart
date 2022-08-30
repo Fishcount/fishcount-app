@@ -172,7 +172,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                   return AsyncSnapshotHandler(
                     asyncSnapshot: snapshot,
                     widgetOnError: const Text(""),
-                    widgetOnWaiting:  Container(
+                    widgetOnWaiting: Container(
                       padding: const EdgeInsets.only(top: 30),
                       child: AnimationUtils.progressiveDots(size: 50.0),
                     ),
@@ -229,14 +229,14 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
               verticalPadding: 10,
               textColor: Colors.white,
               buttonColor: Colors.blue,
-              onPressed: () {
-                NavigatorUtils.push(
-                  context,
-                  TankForm(
-                    batch: widget.batch,
-                  ),
-                );
-              },
+              onPressed: () => openTankRegisterModal(
+                context: context,
+                fishAmounController: TextEditingController(),
+                tankNameController: TextEditingController(),
+                tankSpecie: "",
+                animationController: _animationController,
+                tankModel: null,
+              ),
             ),
           ),
         ],
@@ -509,9 +509,9 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                   ),
                                   Container(
                                     padding: const EdgeInsets.only(top: 10),
-                                    child: const Text(
-                                      'Data de inclusão: 10/10/2021',
-                                      style: TextStyle(
+                                    child: Text(
+                                      'Data de inclusão: ' + tankModel.inclusionDate.toString(),
+                                      style: const TextStyle(
                                         fontSize: 12,
                                       ),
                                     ),
@@ -607,20 +607,21 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                   child: Text(
                     _isUpdate ? "Atualizar Tanque" : "Cadastrar novo Tanque",
                     style: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54),
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: TextFieldWidget(
                     controller: tankNameController,
-                    hintText: 'Nome do lote',
+                    hintText: 'Nome do tanque',
                     focusedBorderColor: Colors.blueGrey,
                     iconColor: Colors.blueGrey,
                     obscureText: false,
-                    labelText: 'Nome do lote',
+                    labelText: 'Nome do tanque',
                   ),
                 ),
                 Container(
@@ -632,6 +633,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                     iconColor: Colors.blueGrey,
                     obscureText: false,
                     labelText: 'Quantidade inicial de peixes',
+                    keyBoardType: TextInputType.number,
                   ),
                 ),
                 Container(

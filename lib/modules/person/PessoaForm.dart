@@ -4,6 +4,7 @@ import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'PessoaController.dart';
 
@@ -83,6 +84,7 @@ class _PessoaFormState extends State<PessoaForm> {
                   iconColor: Colors.blueGrey,
                   obscureText: false,
                   focusedBorderColor: Colors.blueGrey,
+                  keyBoardType: TextInputType.number,
                   inputMask: Formatters.phoneMask,
                 ),
               ),

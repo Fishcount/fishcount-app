@@ -412,7 +412,7 @@ class _BatchScreenState extends State<BatchScreen>
     if (lote.tanques != null) {
       String qtde = lote.tanques!.length.toString();
       if (lote.tanques!.isEmpty) {
-        return 'Nenhum lote cadastrado';
+        return 'Nenhum tanque cadastrado';
       }
       return qtde + (lote.tanques!.length > 1 ? " Tanques" : " Tanque");
     }

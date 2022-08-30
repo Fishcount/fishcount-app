@@ -61,7 +61,7 @@ class TankModel {
         "id": id,
         "descricao": description,
         "qtdePeixe": fishAmount,
+        // "dataInclusao": inclusionDate,
         "especie": species,
-        "dataInclusao": inclusionDate,
       };
 }
