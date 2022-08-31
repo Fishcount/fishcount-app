@@ -10,7 +10,7 @@ class CustomBottomSheet {
   Function() newFunction;
   final Color iconColor = Colors.white;
   final Color textColor = Colors.white;
-  final Color bottomSheetColor = Colors.blueGrey[300]!;
+  final Color bottomSheetColor = Colors.blue[700]!;
 
   CustomBottomSheet({
     required this.context,
