@@ -7,13 +7,14 @@ import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/FilterOptionWidget.dart';
 import 'package:fishcount_app/widgets/SnackBarBuilder.dart';
-import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
-import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
+import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
+import 'package:fishcount_app/widgets/custom/BottomSheetBuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
 import '../../constants/AppPaths.dart';
 import '../../constants/exceptions/ErrorMessage.dart';
+import '../../utils/AnimationUtils.dart';
 import '../../utils/NavigatorUtils.dart';
 import '../../widgets/buttons/ElevatedButtonWidget.dart';
 import '../tank/TankScreen.dart';
@@ -75,13 +76,13 @@ class _BatchScreenState extends State<BatchScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.build(),
+      appBar:  AppBarBuilder().build(),
       drawer: const DrawerWidget(),
-      bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
-        context,
-        () => _batchController.openBatchRegisterModal(
+      bottomNavigationBar: CustomBottomSheet(
+        context: context,
+        newFunction: () => _batchController.openBatchRegisterModal(
             context, TextEditingController(), _animationController, null),
-      ),
+      ).build(),
       body: Container(
         padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
         child: Column(
@@ -152,7 +153,10 @@ class _BatchScreenState extends State<BatchScreen>
                 return AsyncSnapshotHandler(
                   asyncSnapshot: snapshot,
                   widgetOnError: _notFoundWidget(context),
-                  widgetOnWaiting: const CircularProgressIndicator(),
+                  widgetOnWaiting: Container(
+                    padding: const EdgeInsets.only(top: 30),
+                    child: AnimationUtils.progressiveDots(size: 50.0),
+                  ),
                   widgetOnEmptyResponse: _notFoundWidget(context),
                   widgetOnSuccess: _batchList(context, snapshot.data),
                 ).handler();
@@ -175,7 +179,7 @@ class _BatchScreenState extends State<BatchScreen>
         TextEditingController();
 
     const Color borderColor = Colors.black26;
-    final Color? backGroundColor = Colors.grey[200];
+    final Color? backGroundColor = Colors.grey[100];
     return SingleChildScrollView(
       child: SizedBox(
         height: MediaQuery.of(context).orientation == Orientation.portrait
@@ -408,7 +412,7 @@ class _BatchScreenState extends State<BatchScreen>
     if (lote.tanques != null) {
       String qtde = lote.tanques!.length.toString();
       if (lote.tanques!.isEmpty) {
-        return 'Nenhum lote cadastrado';
+        return 'Nenhum tanque cadastrado';
       }
       return qtde + (lote.tanques!.length > 1 ? " Tanques" : " Tanque");
     }

@@ -66,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           focusedBorderColor: Colors.blueGrey.shade100,
                           iconColor: Colors.blueGrey,
                           obscureText: true,
+                          isPassword: true,
                         ),
                       ),
                     ],

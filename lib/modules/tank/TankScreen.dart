@@ -4,26 +4,26 @@ import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
 import 'package:fishcount_app/model/enums/EnumUnidadeAumento.dart';
+import 'package:fishcount_app/modules/analisys/AnalisysScreen.dart';
 import 'package:fishcount_app/modules/species/SpecieService.dart';
 import 'package:fishcount_app/modules/tank/TankController.dart';
 import 'package:fishcount_app/repository/TanqueRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
-import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
-import 'package:fishcount_app/widgets/buttons/TextButtonWidget.dart';
-import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
-import 'package:fishcount_app/widgets/custom/CustomBottomSheet.dart';
+import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
+import 'package:fishcount_app/widgets/custom/BottomSheetBuilder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
 import '../../model/SpeciesModel.dart';
+import '../../utils/AnimationUtils.dart';
+import '../../utils/NavigatorUtils.dart';
 import '../../widgets/FilterOptionWidget.dart';
 import '../../widgets/SnackBarBuilder.dart';
 import '../../widgets/TextFieldWidget.dart';
-import 'TankForm.dart';
 import 'TankService.dart';
 
 class TankScreen extends StatefulWidget {
@@ -84,11 +84,11 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.build(),
+      appBar: AppBarBuilder().build(),
       drawer: const DrawerWidget(),
-      bottomNavigationBar: CustomBottomSheet.getCustomBottomSheet(
-        context,
-        () => openTankRegisterModal(
+      bottomNavigationBar: CustomBottomSheet(
+        context: context,
+        newFunction: () => openTankRegisterModal(
           context: context,
           fishAmounController: TextEditingController(),
           tankNameController: TextEditingController(),
@@ -96,7 +96,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
           animationController: _animationController,
           tankModel: null,
         ),
-      ),
+      ).build(),
       body: Center(
         child: Container(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
@@ -171,7 +171,10 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                   return AsyncSnapshotHandler(
                     asyncSnapshot: snapshot,
                     widgetOnError: const Text(""),
-                    widgetOnWaiting: const CircularProgressIndicator(),
+                    widgetOnWaiting: Container(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: AnimationUtils.progressiveDots(size: 50.0),
+                    ),
                     widgetOnEmptyResponse: _notFoundWidget(context),
                     widgetOnSuccess:
                         _tankList(context, snapshot.data, widget.batch),
@@ -225,14 +228,14 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
               verticalPadding: 10,
               textColor: Colors.white,
               buttonColor: Colors.blue,
-              onPressed: () {
-                NavigatorUtils.push(
-                  context,
-                  TankForm(
-                    batch: widget.batch,
-                  ),
-                );
-              },
+              onPressed: () => openTankRegisterModal(
+                context: context,
+                fishAmounController: TextEditingController(),
+                tankNameController: TextEditingController(),
+                tankSpecie: "",
+                animationController: _animationController,
+                tankModel: null,
+              ),
             ),
           ),
         ],
@@ -291,7 +294,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
       BuildContext context, List<TankModel>? tanksModel, BatchModel batch) {
     final List<TankModel> tanks = tanksModel ?? [];
     const Color borderColor = Colors.black26;
-    final Color? backGroundColor = Colors.grey[200];
+    final Color? backGroundColor = Colors.grey[100];
     final TextEditingController _editTankNameController =
         TextEditingController();
 
@@ -328,80 +331,156 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              child: ExpansionTile(
-                controlAffinity: ListTileControlAffinity.trailing,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(top: 20, left: 15),
-                    child: Column(
+              child: Dismissible(
+                key: Key(tankModel.id!.toString()),
+                onDismissed: (direction) =>
+                    _showAlertDialog(context, batch.id!, tanks, index),
+                background: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.red[400],
+                  ),
+                  margin: const EdgeInsets.only(right: 10),
+                  child: Container(
+                    alignment: const Alignment(-0.9, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              padding: const EdgeInsets.only(right: 15),
-                              child: Image.asset(ImagePaths.imageLogo),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        Container(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                child: ExpansionTile(
+                  initiallyExpanded: true,
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: const Divider(
+                        height: 1,
+                        thickness: 2,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(
+                        top: 10,
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 100,
+                                height: 100,
+                                padding:
+                                    const EdgeInsets.only(right: 15, left: 15),
+                                child: Image.asset(ImagePaths.imageLogo),
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: Text(
+                                      "Espécie: " +
+                                          tankModel.species.description,
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: Text(
+                                      "Peso Médio: " +
+                                          tankModel.species.averageWeight
+                                              .toString() +
+                                          '0 ' +
+                                          tankModel.species.unidadePesoMedio
+                                              .toLowerCase() +
+                                          's',
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: Text(
+                                      "Quantidade de ração: " +
+                                          tankModel.species.qtdeMediaRacao
+                                              .toString() +
+                                          ' ' +
+                                          tankModel.species.unidadePesoRacao
+                                              .toLowerCase() +
+                                          's',
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: Text(
+                                      "Tamanho médio: " +
+                                          tankModel.species.tamanhoMedio
+                                              .toString() +
+                                          '0 ' +
+                                          UnidadeAumentoHandler.getLowerCase(
+                                              tankModel.species.unidadeTamanho),
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Text(
-                                    "Espécie: " + tankModel.species.description,
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'Última análise',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 5, top: 5),
+                                      child: Text(
+                                        tankModel.lastAnalysisDate!,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Container(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Text(
-                                    "Peso Médio: " +
-                                        tankModel.species.averageWeight
-                                            .toString() +
-                                        '0 ' +
-                                        tankModel.species.unidadePesoMedio
-                                            .toLowerCase() +
-                                        's',
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Text(
-                                    "Quantidade de ração: " +
-                                        tankModel.species.qtdeMediaRacao
-                                            .toString() +
-                                        ' ' +
-                                        tankModel.species.unidadePesoRacao
-                                            .toLowerCase() +
-                                        's',
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Text(
-                                    "Tamanho médio: " +
-                                        tankModel.species.tamanhoMedio
-                                            .toString() +
-                                        '0 ' +
-                                        UnidadeAumentoHandler.getLowerCase(
-                                            tankModel.species.unidadeTamanho),
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
-                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'Próxima análise',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 5, top: 5),
+                                      child: Text(
+                                        tankModel.nextAnalysisDate!,
+                                      ),
+                                    ),
+                                  ],
+                                )
                               ],
                             ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                                padding: const EdgeInsets.only(right: 10),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Container(
+                                padding:
+                                    const EdgeInsets.only(right: 10, top: 10),
                                 child: TextButton(
                                   child: Row(
                                     children: const [
@@ -416,39 +495,19 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                       ),
                                     ],
                                   ),
-                                  onPressed: () {},
-                                )),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-                title: Dismissible(
-                  key: Key(tankModel.id!.toString()),
-                  onDismissed: (direction) =>
-                      _showAlertDialog(context, batch.id!, tanks, index),
-                  background: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.red[400],
-                    ),
-                    margin: const EdgeInsets.only(top: 15, right: 10),
-                    child: Container(
-                      alignment: const Alignment(-0.9, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(left: 15),
-                            child:
-                                const Icon(Icons.delete, color: Colors.white),
+                                  onPressed: () {
+                                    NavigatorUtils.pushReplacement(
+                                        context, AnalisysScreen(tankModel: tankModel,));
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  child: Row(
+                  ],
+                  title: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -498,9 +557,10 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                   ),
                                   Container(
                                     padding: const EdgeInsets.only(top: 10),
-                                    child: const Text(
-                                      'Data de inclusão: 10/10/2021',
-                                      style: TextStyle(
+                                    child: Text(
+                                      'Próxima análise: ' +
+                                          tankModel.nextAnalysisDate!,
+                                      style: const TextStyle(
                                         fontSize: 12,
                                       ),
                                     ),
@@ -508,15 +568,11 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                 ],
                               ),
                             ),
-                            onTap: () {
-                              // TODO abrir a tela de análises
-                              // NavigatorUtils.pushReplacement(
-                              //   context,
-                              //   TankScreen(
-                              //     lote: tankModel,
-                              //   ),
-                              // );
-                            },
+                            onTap: () => {},
+                            //     NavigatorUtils.pushReplacement(
+                            //   context,
+                            //   AnalisysScreen(),
+                            // ),
                           ),
                         ],
                       ),
@@ -596,20 +652,21 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                   child: Text(
                     _isUpdate ? "Atualizar Tanque" : "Cadastrar novo Tanque",
                     style: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54),
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: TextFieldWidget(
                     controller: tankNameController,
-                    hintText: 'Nome do lote',
+                    hintText: 'Nome do tanque',
                     focusedBorderColor: Colors.blueGrey,
                     iconColor: Colors.blueGrey,
                     obscureText: false,
-                    labelText: 'Nome do lote',
+                    labelText: 'Nome do tanque',
                   ),
                 ),
                 Container(
@@ -621,6 +678,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                     iconColor: Colors.blueGrey,
                     obscureText: false,
                     labelText: 'Quantidade inicial de peixes',
+                    keyBoardType: TextInputType.number,
                   ),
                 ),
                 Container(

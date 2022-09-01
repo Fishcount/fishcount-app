@@ -22,6 +22,7 @@ abstract class AbstractController {
     );
   }
 
+
   dynamic _responseIsErrorModel(BuildContext context, dynamic response) {
     if (response is ErrorModel) {
       Navigator.pop(context);

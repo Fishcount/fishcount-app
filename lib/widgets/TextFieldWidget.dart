@@ -5,10 +5,11 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 class TextFieldWidget extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
-  final Icon? prefixIcon;
   final Color focusedBorderColor;
   final Color iconColor;
   final bool obscureText;
+  final Icon? prefixIcon;
+  final bool? isPassword;
   final TextInputType? keyBoardType;
   final MaskTextInputFormatter? inputMask;
   final String? labelText;
@@ -21,6 +22,7 @@ class TextFieldWidget extends StatefulWidget {
       required this.iconColor,
       required this.obscureText,
       this.prefixIcon,
+      this.isPassword = false,
       this.keyBoardType,
       this.inputMask,
       this.labelText})
@@ -31,6 +33,8 @@ class TextFieldWidget extends StatefulWidget {
 }
 
 class _TextFieldWidgetState extends State<TextFieldWidget> {
+  bool _isObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -40,7 +44,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             : FilteringTextInputFormatter.singleLineFormatter
       ],
       controller: widget.controller,
-      obscureText: widget.obscureText,
+      obscureText: widget.isPassword != null && widget.isPassword! ? _isObscure : widget.obscureText,
       keyboardType: widget.keyBoardType,
       autofocus: false,
       decoration: InputDecoration(
@@ -49,6 +53,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         hintText: widget.hintText,
         prefixIcon: widget.prefixIcon,
         prefixIconColor: widget.iconColor,
+        suffixIcon: _handlePasswordField(),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: const BorderSide(
@@ -64,5 +69,19 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         ),
       ),
     );
+  }
+
+  GestureDetector? _handlePasswordField() {
+    return widget.isPassword != null && widget.isPassword!
+          ? _isObscure
+              ? GestureDetector(
+                  child: const Icon(Icons.visibility_off),
+                  onTap: () => setState(() => _isObscure = false),
+                )
+              : GestureDetector(
+                  child: const Icon(Icons.visibility),
+                  onTap: () => setState(() => _isObscure = true),
+                )
+          : null;
   }
 }

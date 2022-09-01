@@ -13,6 +13,7 @@ import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/AnimationUtils.dart';
 import '../generic/AbstractController.dart';
 import '../species/SpecieService.dart';
 import 'TankForm.dart';
@@ -56,7 +57,10 @@ class TankController extends AbstractController {
     return AsyncSnapshotHandler(
       asyncSnapshot: snapshot,
       widgetOnError: const Text("Erro"),
-      widgetOnWaiting: const CircularProgressIndicator(),
+      widgetOnWaiting: Container(
+        padding: const EdgeInsets.only(top: 30),
+        child: AnimationUtils.progressiveDots(size: 50.0),
+      ),
       widgetOnEmptyResponse: Container(
         padding: const EdgeInsets.only(top: 30),
         child: Column(

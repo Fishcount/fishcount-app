@@ -6,7 +6,7 @@ import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
-import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
+import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +31,7 @@ class _FinanceiroformState extends State<FinancialForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.build(),
+      appBar:  AppBarBuilder().build(),
       body: Container(
         padding: const EdgeInsets.only(top: 50, right: 20, left: 20),
         child: Column(
@@ -74,7 +74,7 @@ class _FinanceiroformState extends State<FinancialForm> {
                     return Text("");
                   }
                   widget.pessoaModel!.cpf = _cpfController.text;
-                  dynamic response = await PessoaService()
+                  dynamic response = await PersonService()
                       .saveOrUpdate(widget.pessoaModel!);
 
                   if (response is PersonModel) {

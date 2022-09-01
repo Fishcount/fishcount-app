@@ -3,7 +3,7 @@ import 'package:fishcount_app/model/PhoneModel.dart';
 import 'package:fishcount_app/model/enums/EnumTipoTelefone.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
-import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
+import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/material.dart';
 
 import 'PhoneController.dart';
@@ -29,7 +29,7 @@ class _PhoneFormState extends State<PhoneForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.build(),
+      appBar: AppBarBuilder().build(),
       body: Container(
         alignment: Alignment.bottomCenter,
         padding: const EdgeInsets.all(20),
@@ -47,7 +47,9 @@ class _PhoneFormState extends State<PhoneForm> {
               child: TextFieldWidget(
                 controller: _telefoneController,
                 hintText: "Telefone",
-                labelText: widget.telefoneModel != null ? widget.telefoneModel!.phoneNumber : "",
+                labelText: widget.telefoneModel != null
+                    ? widget.telefoneModel!.phoneNumber
+                    : "",
                 prefixIcon: const Icon(Icons.account_balance_wallet_sharp),
                 focusedBorderColor: Colors.blueGrey,
                 iconColor: Colors.blueGrey,

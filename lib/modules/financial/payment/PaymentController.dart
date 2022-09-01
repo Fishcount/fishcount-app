@@ -6,6 +6,7 @@ import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../../utils/AnimationUtils.dart';
 import '../installment/PaymentInstallmentScreen.dart';
 import 'PaymentService.dart';
 
@@ -36,17 +37,18 @@ class PagamentoController {
 
   static _onWaitingResponse() => Container(
         padding: const EdgeInsets.only(top: 100),
-        child: LoadingAnimationWidget.bouncingBall(
-          color: Colors.blue,
-          size: 50,
-        ),
+        child: AnimationUtils.bouncingBall(size: 50.0),
       );
 
   static SingleChildScrollView _onSuccessfulRequest(
       BuildContext context, AsyncSnapshot<List<PaymentModel>> snapshot) {
+    const Color borderColor = Colors.black26;
+    final Color? backGroundColor = Colors.grey[100];
     return SingleChildScrollView(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height / 1.3,
+        height:MediaQuery.of(context).orientation == Orientation.portrait
+            ? MediaQuery.of(context).size.height / 1.3
+            : MediaQuery.of(context).size.height / 2,
         child: ListView.builder(
           shrinkWrap: true,
           itemCount: snapshot.data != null ? snapshot.data!.length : 0,
@@ -56,28 +58,30 @@ class PagamentoController {
               onTap: () =>
                   _toParcelasList(context, pagamento.id!, pagamento.plan),
               child: Container(
-                margin: const EdgeInsets.only(top: 25, left: 15, right: 15),
+                margin: const EdgeInsets.only(top: 20),
                 alignment: Alignment.center,
                 height: 225,
-                decoration: const BoxDecoration(
-                  border: Border(
+                decoration: BoxDecoration(
+                  color: backGroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                  border: const Border(
                     bottom: BorderSide(
-                      color: Colors.blue,
+                      color: borderColor,
                     ),
                     left: BorderSide(
-                      color: Colors.black26,
+                      color: borderColor,
                     ),
                     right: BorderSide(
-                      color: Colors.black26,
+                      color: borderColor,
                     ),
                     top: BorderSide(
-                      color: Colors.black26,
+                      color: borderColor,
                     ),
                   ),
                 ),
                 child: Container(
                   color: Colors.white38,
-                  padding: const EdgeInsets.only(left: 10, top: 20, right: 10),
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
                   child: Column(
                     children: [
                       Row(

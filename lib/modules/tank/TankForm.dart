@@ -4,7 +4,7 @@ import 'package:fishcount_app/model/TankModel.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
-import 'package:fishcount_app/widgets/custom/CustomAppBar.dart';
+import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -44,7 +44,7 @@ class _TankFormState extends State<TankForm> {
         ? widget.tank!.fishAmount.toString()
         : _qtdePeixesController.text;
     return Scaffold(
-      appBar: CustomAppBar.build(),
+      appBar:  AppBarBuilder().build(),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -148,6 +148,7 @@ class _TankFormState extends State<TankForm> {
         _nomeTanqueController.text,
         int.parse(_qtdePeixesController.text),
         especieModel!,
+        null,
         null,
         null,
         null,

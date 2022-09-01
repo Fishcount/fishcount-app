@@ -8,9 +8,8 @@ import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 
 import '../login/LoginService.dart';
 
-class PessoaService extends AbstractService {
-
-  Future<List<PersonModel>> findById() async {
+class PersonService extends AbstractService {
+  Future<PersonModel> findById() async {
     try {
       final int? id = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
@@ -18,10 +17,7 @@ class PessoaService extends AbstractService {
       Response<dynamic> response =
           await RequestBuilder(url: '/pessoa/$id').get();
 
-      if (response.statusCode == Responses.OK_STATUS_CODE) {
-        return [PersonModel.fromJson(response.data)];
-      }
-      return [];
+      return PersonModel.fromJson(response.data);
     } on DioError catch (e) {
       rethrow;
     }

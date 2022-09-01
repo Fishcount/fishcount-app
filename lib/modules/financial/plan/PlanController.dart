@@ -11,6 +11,7 @@ import 'package:fishcount_app/widgets/custom/AlertDialogBuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../utils/AnimationUtils.dart';
 import '../FinancialScreen.dart';
 import '../payment/PaymentService.dart';
 import 'PlanoService.dart';
@@ -28,7 +29,10 @@ class PlanController {
           return AsyncSnapshotHandler(
             asyncSnapshot: snapshot,
             widgetOnError: const Text("Error"),
-            widgetOnWaiting: const CircularProgressIndicator(),
+            widgetOnWaiting: Container(
+              padding: const EdgeInsets.only(top: 30),
+              child: AnimationUtils.progressiveDots(size: 50.0),
+            ),
             widgetOnEmptyResponse: _onEmptyResponse(),
             widgetOnSuccess: _onSuccessfulRequest(context, snapshot),
           ).handler();
@@ -43,37 +47,43 @@ class PlanController {
 
   static SingleChildScrollView _onSuccessfulRequest(
       BuildContext context, AsyncSnapshot<List<PlanModel>> snapshot) {
+    const Color borderColor = Colors.black26;
+    final Color? backGroundColor = Colors.grey[100];
+
     return SingleChildScrollView(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height / 1.3,
+        height: MediaQuery.of(context).orientation == Orientation.portrait
+            ? MediaQuery.of(context).size.height / 1.3
+            : MediaQuery.of(context).size.height / 2,
         child: ListView.builder(
           shrinkWrap: true,
           itemCount: snapshot.data != null ? snapshot.data!.length : 0,
           itemBuilder: (context, index) {
             final PlanModel plano = snapshot.data![index];
             return Container(
-              margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
+              margin: const EdgeInsets.only(top: 20),
               alignment: Alignment.center,
               height: 200,
-              decoration: const BoxDecoration(
-                color: Colors.grey,
-                border: Border(
+              decoration: BoxDecoration(
+                color: backGroundColor,
+                borderRadius: BorderRadius.circular(10),
+                border: const Border(
                   bottom: BorderSide(
-                    color: Colors.blue,
+                    color: borderColor,
                   ),
                   left: BorderSide(
-                    color: Colors.black26,
+                    color: borderColor,
                   ),
                   right: BorderSide(
-                    color: Colors.black26,
+                    color: borderColor,
                   ),
                   top: BorderSide(
-                    color: Colors.black26,
+                    color: borderColor,
                   ),
                 ),
               ),
               child: Container(
-                padding: const EdgeInsets.only(left: 10, top: 20, right: 10),
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
                 child: Column(
                   children: [
                     Row(
@@ -160,21 +170,22 @@ class PlanController {
                         children: [
                           ElevatedButtonWidget(
                             buttonText: "Entrar em contato",
-                            buttonColor: Colors.white,
+                            buttonColor: Colors.blue,
                             radioBorder: 10,
                             textSize: 17,
-                            textColor: Colors.grey,
+                            textColor: Colors.white,
                             onPressed: () => _enviarContato(context),
                           ),
                           Container(
                             child: ElevatedButtonWidget(
                               buttonText: "Assine já",
-                              buttonColor: Colors.blue,
+                              buttonColor: Colors.green,
                               radioBorder: 10,
                               textSize: 17,
                               textColor: Colors.white,
-                              onPressed: () =>
-                                  _confirmarAssinatura(context, plano),
+                              onPressed: () {
+                                return _confirmarAssinatura(context, plano);
+                              },
                             ),
                             padding: const EdgeInsets.only(top: 20, bottom: 10),
                           ),
@@ -196,23 +207,50 @@ class PlanController {
     final String descricaoPlano = plano.descricao;
     final String qtdeParcela = plano.qtdeParcela.toString();
     final String precoMax = plano.valorMaximo.toString();
-    final double precoParcela = plano.valorMaximo / plano.qtdeParcela;
+    final double precoParcela = plano.valorParcelaMaximo;
     final String description = 'Você selecionou o plano "$descricaoPlano"'
         '\nValor total de $precoMax'
-        '\nEm $qtdeParcela parcelas de R\$ $precoParcela'
-        '0';
+        '\nEm $qtdeParcela parcelas de R\$ $precoParcela';
 
-    return AlertDialogBuilder(
-      title: 'Confirmar Plano',
-      description: description,
-      leftButtonText: 'Cancelar',
-      leftButtonFunction: () => Navigator.of(context).pop(),
-      leftButtonColor: Colors.grey,
-      rightButtonText: 'Confirmar',
-      rightButtonFunction: _assinarPlano(plano, context),
-      rightButtonColor: Colors.blue,
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-    ).build(context);
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Plano'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(description),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButtonWidget(
+                  buttonText: 'Cancelar',
+                  buttonColor: Colors.blue,
+                  onPressed: () => Navigator.of(context).pop(),
+                  textSize: 15,
+                  textColor: Colors.white,
+                  radioBorder: 10,
+                ),
+                ElevatedButtonWidget(
+                  buttonText: 'Confirmar',
+                  buttonColor: Colors.green,
+                  onPressed: () => _assinarPlano(plano, context),
+                  textSize: 15,
+                  textColor: Colors.white,
+                  radioBorder: 10,
+                )
+              ],
+            )
+          ],
+        );
+      },
+    );
   }
 
   static _assinarPlano(PlanModel plano, BuildContext context) async {
@@ -233,16 +271,46 @@ class PlanController {
   }
 
   static Future<String?> _enviarContato(BuildContext context) async {
-    return AlertDialogBuilder(
-      title: 'Escolha sua preferência',
-      description:
-          'Selecione o meio de comunicação de sua preferência para que possamos entrar em contato.',
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      leftButtonText: 'E-mail',
-      leftButtonFunction: () => Navigator.of(context).pop(),
-      rightButtonText: 'Whatsapp',
-      rightButtonFunction: _launchWhatsApp,
-    ).build(context);
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Escolha sua preferência'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text(
+                    'Selecione o meio de comunicação de sua preferência para que possamos entrar em contato.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButtonWidget(
+                  buttonText: 'Enviar E-mail',
+                  buttonColor: Colors.blue,
+                  onPressed: () => Navigator.of(context).pop(),
+                  textSize: 15,
+                  textColor: Colors.white,
+                  radioBorder: 10,
+                ),
+                ElevatedButtonWidget(
+                  buttonText: 'Whatsapp',
+                  buttonColor: Colors.green,
+                  onPressed: () => _launchWhatsApp(),
+                  textSize: 15,
+                  textColor: Colors.white,
+                  radioBorder: 10,
+                )
+              ],
+            )
+          ],
+        );
+      },
+    );
   }
 
   static PaymentModel _gerarPagamentoFromPlano(PlanModel plano) {

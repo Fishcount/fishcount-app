@@ -66,7 +66,7 @@ class AlertDialogBuilder {
                         radioBorder: 10,
                       )
                     : const Text(""),
-                rightButtonColor != null && rightButtonFunction != null
+                rightButtonFunction != null
                     ? ElevatedButtonWidget(
                         buttonText: rightButtonText!,
                         buttonColor: rightButtonColor == null

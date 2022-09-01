@@ -7,9 +7,14 @@ class PlanModel {
 
   late double valorMaximo;
 
+  late double valorParcelaMaximo;
+
+  late double valorParcelaMinimo;
+
   late int minTanque;
 
   late int maxTanque;
+
 
   late int qtdeParcela;
 
@@ -28,6 +33,8 @@ class PlanModel {
     descricao = json['descricao'];
     valorMinimo = json['valorMinimo'];
     valorMaximo = json['valorMaximo'];
+    valorParcelaMaximo = json['valorParcelaMaximo'];
+    valorParcelaMinimo = json['valorParcelaMinimo'];
     qtdeParcela = json['qtdeParcela'];
     minTanque = json['minTanque'];
     maxTanque = json['maxTanque'];
@@ -37,6 +44,8 @@ class PlanModel {
         "id": id,
         "descricao": descricao,
         "valorMinimo": valorMinimo,
+        "valorParcelaMaximo": valorParcelaMaximo,
+        "valorParcelaMinimo": valorParcelaMinimo,
         "valorMaximo": valorMaximo,
         "qtdeParcela": qtdeParcela,
         "minTanque": minTanque,

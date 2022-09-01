@@ -1,14 +1,18 @@
 import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:flutter/material.dart';
 
-class CustomAppBar {
+class AppBarBuilder {
 
-  static PreferredSize build() {
+  final Color backGroundColor = Colors.blue[700]!;
+
+  AppBarBuilder();
+
+  build() {
     return PreferredSize(
       preferredSize: const Size.fromHeight(70),
       child: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.blue[700],
+        backgroundColor: backGroundColor,
         toolbarHeight: 70,
         title: Container(
           width: 150,
@@ -32,4 +36,5 @@ class CustomAppBar {
       ),
     );
   }
+
 }
