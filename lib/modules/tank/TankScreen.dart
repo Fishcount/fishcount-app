@@ -4,15 +4,14 @@ import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
 import 'package:fishcount_app/model/enums/EnumUnidadeAumento.dart';
+import 'package:fishcount_app/modules/analisys/AnalisysScreen.dart';
 import 'package:fishcount_app/modules/species/SpecieService.dart';
 import 'package:fishcount_app/modules/tank/TankController.dart';
 import 'package:fishcount_app/repository/TanqueRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
-import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
-import 'package:fishcount_app/widgets/buttons/TextButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:fishcount_app/widgets/custom/BottomSheetBuilder.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,10 +20,10 @@ import 'package:line_icons/line_icons.dart';
 
 import '../../model/SpeciesModel.dart';
 import '../../utils/AnimationUtils.dart';
+import '../../utils/NavigatorUtils.dart';
 import '../../widgets/FilterOptionWidget.dart';
 import '../../widgets/SnackBarBuilder.dart';
 import '../../widgets/TextFieldWidget.dart';
-import 'TankForm.dart';
 import 'TankService.dart';
 
 class TankScreen extends StatefulWidget {
@@ -85,7 +84,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  AppBarBuilder().build(),
+      appBar: AppBarBuilder().build(),
       drawer: const DrawerWidget(),
       bottomNavigationBar: CustomBottomSheet(
         context: context,
@@ -356,6 +355,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                   ),
                 ),
                 child: ExpansionTile(
+                  initiallyExpanded: true,
                   controlAffinity: ListTileControlAffinity.trailing,
                   children: [
                     Container(
@@ -366,7 +366,9 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.only(top: 10, left: 15),
+                      padding: const EdgeInsets.only(
+                        top: 10,
+                      ),
                       child: Column(
                         children: [
                           Row(
@@ -375,7 +377,8 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                               Container(
                                 width: 100,
                                 height: 100,
-                                padding: const EdgeInsets.only(right: 15),
+                                padding:
+                                    const EdgeInsets.only(right: 15, left: 15),
                                 child: Image.asset(ImagePaths.imageLogo),
                               ),
                               Column(
@@ -432,27 +435,72 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                               ),
                             ],
                           ),
+                          Container(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'Última análise',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 5, top: 5),
+                                      child: Text(
+                                        tankModel.lastAnalysisDate!,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'Próxima análise',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 5, top: 5),
+                                      child: Text(
+                                        tankModel.nextAnalysisDate!,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Container(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: TextButton(
-                                    child: Row(
-                                      children: const [
-                                        Text(
-                                          "Análises disponíveis",
-                                          style: TextStyle(color: Colors.green),
-                                        ),
-                                        Icon(
-                                          Icons
-                                              .keyboard_double_arrow_right_rounded,
-                                          color: Colors.green,
-                                        ),
-                                      ],
-                                    ),
-                                    onPressed: () {},
-                                  )),
+                                padding:
+                                    const EdgeInsets.only(right: 10, top: 10),
+                                child: TextButton(
+                                  child: Row(
+                                    children: const [
+                                      Text(
+                                        "Análises disponíveis",
+                                        style: TextStyle(color: Colors.green),
+                                      ),
+                                      Icon(
+                                        Icons
+                                            .keyboard_double_arrow_right_rounded,
+                                        color: Colors.green,
+                                      ),
+                                    ],
+                                  ),
+                                  onPressed: () {
+                                    NavigatorUtils.pushReplacement(
+                                        context, AnalisysScreen(tankModel: tankModel,));
+                                  },
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -510,8 +558,8 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                   Container(
                                     padding: const EdgeInsets.only(top: 10),
                                     child: Text(
-                                      'Data de inclusão: ' +
-                                          tankModel.inclusionDate.toString(),
+                                      'Próxima análise: ' +
+                                          tankModel.nextAnalysisDate!,
                                       style: const TextStyle(
                                         fontSize: 12,
                                       ),
@@ -520,15 +568,11 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                 ],
                               ),
                             ),
-                            onTap: () {
-                              // TODO abrir a tela de análises
-                              // NavigatorUtils.pushReplacement(
-                              //   context,
-                              //   TankScreen(
-                              //     lote: tankModel,
-                              //   ),
-                              // );
-                            },
+                            onTap: () => {},
+                            //     NavigatorUtils.pushReplacement(
+                            //   context,
+                            //   AnalisysScreen(),
+                            // ),
                           ),
                         ],
                       ),

@@ -10,7 +10,6 @@ import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import '../../exceptionHandler/ErrorModel.dart';
 
 class TankService extends AbstractService {
-
   Future<List<TankModel>> fetchTanks(
       {batch = TankModel, orderBy = String}) async {
     try {
@@ -66,7 +65,7 @@ class TankService extends AbstractService {
       if (response.statusCode == 201) {
         return TankModel.fromJson(response.data);
       }
-      return ErrorModel.fromJson(response.data); 
+      return ErrorModel.fromJson(response.data);
     } on DioError catch (e) {
       return customDioError(e);
     }
