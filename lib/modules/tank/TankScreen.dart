@@ -654,8 +654,8 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
 
         final Color selectedColor = Colors.grey.shade600;
         final Color noSelectedColor = Colors.grey.shade300;
-        final Color borderColor = Colors.black;
-        Border border = Border(
+        const Color borderColor = Colors.black;
+        const Border border = Border(
           right: BorderSide(
             color: borderColor,
           ),
@@ -822,7 +822,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                             tankNameController,
                             fishAmounController,
                             initialWeightController,
-                            isGrams ? 'GR' : 'KG',
+                            isGrams ? 'GRAMA' : 'KILO',
                             context),
                         textSize: 15,
                         textColor: Colors.white,
