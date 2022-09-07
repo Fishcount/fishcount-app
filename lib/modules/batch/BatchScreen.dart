@@ -76,7 +76,7 @@ class _BatchScreenState extends State<BatchScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  AppBarBuilder().build(),
+      appBar: AppBarBuilder().build(),
       drawer: const DrawerWidget(),
       bottomNavigationBar: CustomBottomSheet(
         context: context,
@@ -169,8 +169,37 @@ class _BatchScreenState extends State<BatchScreen>
   }
 
   Widget _notFoundWidget(BuildContext context) {
-    return BatchController().notFoundWidgetRedirect(
-        context, ErrorMessage.usuarioSemLote, AppPaths.cadastroLotePath);
+    return Container(
+      padding: const EdgeInsets.only(top: 30),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(top: 30),
+            alignment: Alignment.center,
+            child: Text(
+              ErrorMessage.usuarioSemLote,
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(top: 50),
+            child: ElevatedButtonWidget(
+              buttonText: "Novo",
+              textSize: 18,
+              radioBorder: 20,
+              horizontalPadding: 30,
+              verticalPadding: 10,
+              textColor: Colors.white,
+              buttonColor: Colors.blue,
+              onPressed: () => _batchController
+                  .openBatchRegisterModal(context, TextEditingController(),
+                      _animationController, null)
+                  .build(),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _batchList(BuildContext context, List<BatchModel>? batchesModel) {
@@ -189,7 +218,8 @@ class _BatchScreenState extends State<BatchScreen>
           shrinkWrap: true,
           itemCount: batches.length,
           itemBuilder: (context, index) {
-            BatchModel batch = batches[index];
+            final BatchModel batch = batches[index];
+            final String inclusionDate = batch.inclusionDate.toString();
             return Dismissible(
               key: Key(batch.id!.toString()),
               onDismissed: (direction) =>
@@ -265,7 +295,7 @@ class _BatchScreenState extends State<BatchScreen>
                                 Container(
                                   padding: const EdgeInsets.only(top: 10),
                                   child: Text(
-                                    batch.descricao.toUpperCase(),
+                                    batch.description.toUpperCase(),
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
                                       fontSize: 16,
@@ -284,9 +314,9 @@ class _BatchScreenState extends State<BatchScreen>
                                 ),
                                 Container(
                                   padding: const EdgeInsets.only(top: 10),
-                                  child: const Text(
-                                    'Data de inclusão: 10/10/2021',
-                                    style: TextStyle(
+                                  child: Text(
+                                    'Data de inclusão: $inclusionDate',
+                                    style: const TextStyle(
                                       fontSize: 12,
                                     ),
                                   ),
@@ -320,7 +350,7 @@ class _BatchScreenState extends State<BatchScreen>
                             size: 30,
                           ),
                           onTap: () => {
-                                _editBatchNameController.text = batch.descricao,
+                                _editBatchNameController.text = batch.description,
                                 _batchController.openBatchRegisterModal(
                                   context,
                                   _editBatchNameController,
@@ -409,12 +439,12 @@ class _BatchScreenState extends State<BatchScreen>
   }
 
   String _resolverQtdeTanques(BatchModel lote) {
-    if (lote.tanques != null) {
-      String qtde = lote.tanques!.length.toString();
-      if (lote.tanques!.isEmpty) {
+    if (lote.tanks != null) {
+      String qtde = lote.tanks!.length.toString();
+      if (lote.tanks!.isEmpty) {
         return 'Nenhum tanque cadastrado';
       }
-      return qtde + (lote.tanques!.length > 1 ? " Tanques" : " Tanque");
+      return qtde + (lote.tanks!.length > 1 ? " Tanques" : " Tanque");
     }
     return "0 tanques";
   }

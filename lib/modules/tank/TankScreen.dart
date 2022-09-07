@@ -89,12 +89,13 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
       bottomNavigationBar: CustomBottomSheet(
         context: context,
         newFunction: () => openTankRegisterModal(
-          context: context,
-          fishAmounController: TextEditingController(),
-          tankNameController: TextEditingController(),
-          tankSpecie: "",
-          animationController: _animationController,
-          tankModel: null,
+          context,
+          TextEditingController(),
+          TextEditingController(),
+          TextEditingController(),
+          "",
+          _animationController,
+          null,
         ),
       ).build(),
       body: Center(
@@ -124,13 +125,13 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                 margin: const EdgeInsets.only(right: 10),
                                 child: FilterOptionWidget(
                                   onTap: () => openTankRegisterModal(
-                                    context: context,
-                                    fishAmounController:
-                                        TextEditingController(),
-                                    tankNameController: TextEditingController(),
-                                    tankSpecie: "",
-                                    animationController: _animationController,
-                                    tankModel: null,
+                                    context,
+                                    TextEditingController(),
+                                    TextEditingController(),
+                                    TextEditingController(),
+                                    "",
+                                    _animationController,
+                                    null,
                                   ),
                                   text: 'Novo Tanque',
                                   icon: const Icon(Icons.add),
@@ -229,12 +230,13 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
               textColor: Colors.white,
               buttonColor: Colors.blue,
               onPressed: () => openTankRegisterModal(
-                context: context,
-                fishAmounController: TextEditingController(),
-                tankNameController: TextEditingController(),
-                tankSpecie: "",
-                animationController: _animationController,
-                tankModel: null,
+                context,
+                TextEditingController(),
+                TextEditingController(),
+                TextEditingController(),
+                "",
+                _animationController,
+                null,
               ),
             ),
           ),
@@ -299,6 +301,9 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
         TextEditingController();
 
     final TextEditingController _editAmountFishController =
+        TextEditingController();
+
+    final TextEditingController _editInicialWeigthController =
         TextEditingController();
     return SingleChildScrollView(
       child: SizedBox(
@@ -497,7 +502,10 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                   ),
                                   onPressed: () {
                                     NavigatorUtils.pushReplacement(
-                                        context, AnalisysScreen(tankModel: tankModel,));
+                                        context,
+                                        AnalisysScreen(
+                                          tankModel: tankModel,
+                                        ));
                                   },
                                 ),
                               ),
@@ -594,13 +602,16 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                 tankModel.description;
                             _editAmountFishController.text =
                                 tankModel.fishAmount.toString();
+                            _editInicialWeigthController.text =
+                                tankModel.initialWeight.toString();
                             openTankRegisterModal(
-                              context: context,
-                              tankNameController: _editTankNameController,
-                              fishAmounController: _editAmountFishController,
-                              tankSpecie: tankModel.species.description,
-                              animationController: _animationController,
-                              tankModel: tankModel,
+                              context,
+                              _editTankNameController,
+                              _editAmountFishController,
+                              _editInicialWeigthController,
+                              tankModel.species.description,
+                              _animationController,
+                              tankModel,
                             );
                           },
                         ),
@@ -616,14 +627,15 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
     );
   }
 
-  openTankRegisterModal({
-    context = BuildContext,
-    tankNameController = TextEditingController,
-    fishAmounController = TextEditingController,
-    tankSpecie = String,
-    animationController = AnimationController,
-    tankModel = TankModel,
-  }) async {
+  openTankRegisterModal(
+    BuildContext context,
+    TextEditingController tankNameController,
+    TextEditingController fishAmounController,
+    TextEditingController initialWeightController,
+    String tankSpecie,
+    AnimationController animationController,
+    TankModel? tankModel,
+  ) async {
     final bool _isUpdate = tankModel != null;
     final List<SpeciesModel> species =
         await _tankController.resolverListaEspecie(context);
@@ -638,6 +650,26 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
         ),
       ),
       builder: (BuildContext context) {
+        bool isGrams = false;
+
+        final Color selectedColor = Colors.grey.shade600;
+        final Color noSelectedColor = Colors.grey.shade300;
+        const Color borderColor = Colors.black;
+        const Border border = Border(
+          right: BorderSide(
+            color: borderColor,
+          ),
+          left: BorderSide(
+            color: borderColor,
+          ),
+          top: BorderSide(
+            color: borderColor,
+          ),
+          bottom: BorderSide(
+            color: borderColor,
+          ),
+        );
+
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return Column(
@@ -680,6 +712,56 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                     labelText: 'Quantidade inicial de peixes',
                     keyBoardType: TextInputType.number,
                   ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      padding:
+                          const EdgeInsets.only(top: 20, left: 20, right: 20),
+                      child: TextFieldWidget(
+                        controller: initialWeightController,
+                        hintText: 'Peso Inicial',
+                        focusedBorderColor: Colors.blueGrey,
+                        iconColor: Colors.blueGrey,
+                        obscureText: false,
+                        labelText: 'Peso inicial dos peixes',
+                        keyBoardType: TextInputType.number,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => setState(() => isGrams = false),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 25, right: 15),
+                        width: 50,
+                        height: 40,
+                        child: const Center(child: Text("KG")),
+                        decoration: BoxDecoration(
+                          color: isGrams ? noSelectedColor : selectedColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: border,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => setState(() => isGrams = true),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 25),
+                        width: 50,
+                        height: 40,
+                        child: const Center(child: Text("GR")),
+                        decoration: BoxDecoration(
+                          color: !isGrams ? noSelectedColor : selectedColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: border,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 Container(
                   padding: const EdgeInsets.only(left: 20, right: 20),
@@ -739,6 +821,8 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                             tankModel,
                             tankNameController,
                             fishAmounController,
+                            initialWeightController,
+                            isGrams ? 'GRAMA' : 'KILO',
                             context),
                         textSize: 15,
                         textColor: Colors.white,
@@ -762,8 +846,10 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
     List<SpeciesModel> species,
     bool _isUpdate,
     tankModel,
-    tankNameController,
-    fishAmounController,
+    TextEditingController tankNameController,
+    TextEditingController fishAmounController,
+    TextEditingController initialWeightController,
+    String weitghUnity,
     BuildContext context,
   ) async {
     final String speciesDescription =
@@ -771,17 +857,29 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
     TankModel tank = tankModel ?? TankModel.empty(null);
 
     tankModel = await _generateTank(
-        tank, tankNameController, fishAmounController, speciesDescription);
+        tank,
+        tankNameController,
+        fishAmounController,
+        speciesDescription,
+        double.parse(initialWeightController.text),
+        weitghUnity);
     if (_isUpdate) {
       return _tankController.updateTank(context, tankModel, widget.batch);
     }
     return _tankController.saveTank(context, tankModel, widget.batch);
   }
 
-  Future<TankModel> _generateTank(tankModel, tankNameController,
-      fishAmounController, String speciesDescription) async {
+  Future<TankModel> _generateTank(
+      TankModel tankModel,
+      tankNameController,
+      fishAmounController,
+      String speciesDescription,
+      double initialWeigth,
+      String weitghUnity) async {
     tankModel.description = tankNameController.text;
     tankModel.fishAmount = int.parse(fishAmounController.text);
+    tankModel.weightUnity = weitghUnity;
+    tankModel.initialWeight = initialWeigth;
     tankModel.species =
         await _speciesService.findByDescricao(speciesDescription);
 

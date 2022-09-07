@@ -124,7 +124,7 @@ class BatchController extends AbstractController {
                     buttonColor: Colors.green,
                     onPressed: () {
                       if (_isUpdate) {
-                        batchModel.descricao = _batchNameController.text;
+                        batchModel.description = _batchNameController.text;
                         updateBatch(context, batchModel);
                         return;
                       }
