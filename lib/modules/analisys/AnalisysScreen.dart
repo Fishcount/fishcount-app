@@ -105,13 +105,6 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                         ),
                       ),
                     ),
-                    // Expanded(
-                    //   child: Divider(
-                    //     height: 1,
-                    //     thickness: 2,
-                    //     color: Colors.grey.shade400,
-                    //   ),
-                    // ),
                     const Icon(
                       Icons.info,
                       color: Colors.blue,

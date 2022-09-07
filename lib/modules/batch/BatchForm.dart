@@ -23,7 +23,7 @@ class _BatchFormState extends State<BatchForm> {
   @override
   Widget build(BuildContext context) {
     _nomeLoteController.text =
-        widget.lote != null ? widget.lote!.descricao : "";
+        widget.lote != null ? widget.lote!.description : "";
 
     return Scaffold(
       appBar: AppBarBuilder().build(),
@@ -35,7 +35,7 @@ class _BatchFormState extends State<BatchForm> {
             Container(
               padding: const EdgeInsets.only(top: 30),
               child: Text(
-                widget.lote != null ? widget.lote!.descricao : "Novo Lote",
+                widget.lote != null ? widget.lote!.description : "Novo Lote",
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),

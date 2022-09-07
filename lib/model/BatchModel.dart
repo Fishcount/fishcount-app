@@ -3,25 +3,28 @@ import 'package:fishcount_app/model/TankModel.dart';
 class BatchModel {
   late int? id;
 
-  late String descricao;
+  late String description;
 
-  late List<TankModel>? tanques;
+  late List<TankModel>? tanks;
+
+  late String? inclusionDate;
 
   BatchModel(
     this.id,
-    this.descricao,
-    this.tanques,
+    this.description,
+    this.tanks,
   );
 
   Map<String, dynamic> toLocalDatabase(int userId) => {
-        "descricao": descricao,
+        "descricao": description,
         "id_usuario": userId,
       };
 
   BatchModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    descricao = json['descricao'];
-    tanques = json['tanques'] != null
+    description = json['descricao'];
+    inclusionDate = json['dataInclusao'];
+    tanks = json['tanques'] != null
         ? List<TankModel>.from(
             json['tanques'].map((x) => TankModel.fromJson(x)) ?? const [])
         : null;
@@ -29,6 +32,6 @@ class BatchModel {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "descricao": descricao,
+        "descricao": description,
       };
 }

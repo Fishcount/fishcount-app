@@ -84,6 +84,21 @@ class _TankFormState extends State<TankForm> {
                   obscureText: false,
                 ),
               ),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: TextFieldWidget(
+                      controller: _qtdePeixesController,
+                      hintText: "Peso inicial",
+                      prefixIcon: const Icon(Icons.numbers),
+                      focusedBorderColor: Colors.blueGrey,
+                      iconColor: Colors.blueGrey,
+                      obscureText: false,
+                    ),
+                  ),
+                ],
+              ),
               Container(
                 padding: const EdgeInsets.only(top: 10),
                 child: FutureBuilder(
@@ -148,6 +163,8 @@ class _TankFormState extends State<TankForm> {
         _nomeTanqueController.text,
         int.parse(_qtdePeixesController.text),
         especieModel!,
+        20.0,
+        "null",
         null,
         null,
         null,
