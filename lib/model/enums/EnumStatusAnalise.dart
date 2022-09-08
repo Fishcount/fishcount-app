@@ -19,7 +19,7 @@ class StatusAnaliseHandler {
         return 'Aguardando análise';
 
       case 'ANALISE_CONCLUIDA':
-        return 'Análise concluída';
+        return 'Análise concluida';
 
       case 'FALHA_ANALISE':
         return 'Falha na análise';
@@ -36,7 +36,7 @@ class StatusAnaliseHandler {
         return Colors.black;
 
       case 'AGUARDANDO_ANALISE':
-        return Colors.teal;
+        return Colors.blue;
 
       case 'ANALISE_CONCLUIDA':
         return Colors.green;

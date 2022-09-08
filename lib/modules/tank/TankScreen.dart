@@ -443,46 +443,6 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                               ),
                             ],
                           ),
-                          // Container(
-                          //   padding: const EdgeInsets.only(top: 10),
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //     children: [
-                          //       Column(
-                          //         crossAxisAlignment: CrossAxisAlignment.center,
-                          //         children: [
-                          //           const Text(
-                          //             'Última análise',
-                          //             style: TextStyle(fontSize: 16),
-                          //           ),
-                          //           Container(
-                          //             padding: const EdgeInsets.only(
-                          //                 left: 5, top: 5),
-                          //             child: Text(
-                          //               tankModel.lastAnalysisDate!,
-                          //             ),
-                          //           ),
-                          //         ],
-                          //       ),
-                          //       Column(
-                          //         crossAxisAlignment: CrossAxisAlignment.center,
-                          //         children: [
-                          //           const Text(
-                          //             'Data última análise',
-                          //             style: TextStyle(fontSize: 16),
-                          //           ),
-                          //           Container(
-                          //             padding: const EdgeInsets.only(
-                          //                 left: 5, top: 5),
-                          //             child: Text(
-                          //               tankModel.lastAnalysisDate!,
-                          //             ),
-                          //           ),
-                          //         ],
-                          //       )
-                          //     ],
-                          //   ),
-                          // ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [

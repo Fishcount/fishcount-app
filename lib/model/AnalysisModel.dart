@@ -1,17 +1,19 @@
 class AnalysisModel {
   late int? id;
 
-  late double avergageTankWeight;
+  late double? avergageTankWeight;
 
-  late double dailyFoodAmount;
+  late String foodType;
 
-  late String unityWeitghDailyFood;
+  late double? dailyFoodAmount;
 
-  late double mealFoodAmout;
+  late String? unityWeitghDailyFood;
 
-  late String unityWeitghMealFood;
+  late double? mealFoodAmout;
 
-  late int dailyFoodFrequency;
+  late String? unityWeitghMealFood;
+
+  late int? dailyFoodFrequency;
 
   late String analysisStatus;
 
@@ -19,6 +21,7 @@ class AnalysisModel {
 
   AnalysisModel(
     this.avergageTankWeight,
+    this.foodType,
     this.dailyFoodAmount,
     this.unityWeitghDailyFood,
     this.mealFoodAmout,
@@ -31,6 +34,7 @@ class AnalysisModel {
   AnalysisModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     avergageTankWeight = json['pesoMedioTanque'];
+    foodType = json['tipoRacao'];
     dailyFoodAmount = json['qtdeRacaoDiaria'];
     unityWeitghDailyFood = json['unidadePesoRacaoDiaria'];
     mealFoodAmout = json['qtdeRacaoRefeicao'];
@@ -43,6 +47,7 @@ class AnalysisModel {
   Map<String, dynamic> toJson() => {
         'id': id,
         'pesoMedioTanque': avergageTankWeight,
+        'tipoRacao': foodType,
         'qtdeRacaoDiaria': dailyFoodAmount,
         'unidadePesoRacaoDiaria': unityWeitghDailyFood,
         'qtdeRacaoRefeicao': mealFoodAmout,

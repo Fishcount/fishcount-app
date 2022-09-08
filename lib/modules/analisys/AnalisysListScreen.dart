@@ -1,6 +1,7 @@
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/AnalysisModel.dart';
+import 'package:fishcount_app/model/enums/EnumStatusAnalise.dart';
 import 'package:fishcount_app/modules/analisys/AnalisysService.dart';
 import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../model/TankModel.dart';
+import '../../model/enums/EnumUnidadePeso.dart';
 import '../../utils/ConnectionUtils.dart';
 import '../../widgets/buttons/ElevatedButtonWidget.dart';
 
@@ -125,7 +127,7 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
                       child: AnimationUtils.progressiveDots(size: 50.0),
                     ),
                     widgetOnEmptyResponse: _notFoundWidget(context),
-                    widgetOnSuccess: _analysisList(context, snapshot.data!),
+                    widgetOnSuccess: _analysisList(context, snapshot.data),
                     // _tankList(context, snapshot.data, widget.batch),
                   ).handler();
                 },
@@ -200,9 +202,11 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
     return _analisysService.fetchAnalisys(widget.tankModel.id!, null);
   }
 
-  _analysisList(BuildContext context, List<AnalysisModel> analysisModels) {
+  _analysisList(BuildContext context, List<AnalysisModel>? analysisModels) {
     const Color borderColor = Colors.black26;
     final Color? backGroundColor = Colors.grey[100];
+    final List<AnalysisModel> analysisList = analysisModels ?? [];
+
     return SingleChildScrollView(
       child: SizedBox(
         height: MediaQuery.of(context).orientation == Orientation.portrait
@@ -210,9 +214,31 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
             : MediaQuery.of(context).size.height / 2,
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: analysisModels.length,
+          itemCount: analysisList.length,
           itemBuilder: (context, index) {
-            AnalysisModel analysis = analysisModels[index];
+            final AnalysisModel analysis = analysisList[index];
+            const String waitingAnalysis = 'Aguardando..';
+            final String fishAmount = widget.tankModel.fishAmount.toString();
+            final dailyFoodAmount = analysis.dailyFoodAmount ?? waitingAnalysis;
+            final mealFoodAmount = analysis.mealFoodAmout ?? waitingAnalysis;
+            final avergageTankWeight =
+                analysis.avergageTankWeight ?? waitingAnalysis;
+
+            final dailyFrequency =
+                analysis.dailyFoodFrequency ?? waitingAnalysis;
+
+            final mealUnityFoodAmount = analysis.unityWeitghMealFood != null
+                ? UnidadePesoHandler.handle(
+                        analysis.unityWeitghMealFood.toString())
+                    .toLowerCase()
+                : "";
+            final dailyUnityFoodAmount = analysis.unityWeitghDailyFood != null
+                ? UnidadePesoHandler.handle(
+                        analysis.unityWeitghDailyFood.toString())
+                    .toLowerCase()
+                : "";
+
+            final foodType = analysis.foodType;
             return Container(
               margin: const EdgeInsets.only(top: 15),
               alignment: Alignment.center,
@@ -234,7 +260,206 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
                   ),
                 ),
               ),
-              child: Text(analysis.analysisStatus),
+              child: ExpansionTile(
+                initiallyExpanded: false,
+                controlAffinity: ListTileControlAffinity.trailing,
+                title: Container(
+                  padding: const EdgeInsets.only(bottom: 10, top: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            analysis.analysisDate,
+                            style: const TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            StatusAnaliseHandler.handlerText(
+                                analysis.analysisStatus),
+                            style: TextStyle(
+                                color: StatusAnaliseHandler.handlerColor(
+                                    analysis.analysisStatus),
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Container(
+                          margin: const EdgeInsets.only(top: 20),
+                          child: Text('Quantidade: $fishAmount peixes')),
+                      Container(
+                        margin: const EdgeInsets.only(top: 10),
+                        child: Text("Tipo ração: $foodType"),
+                      )
+                    ],
+                  ),
+                ),
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: const Divider(
+                      height: 1,
+                      thickness: 2,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(
+                            top: 15, left: 10, bottom: 5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Ração diária: ',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Container(
+                                    padding:
+                                        const EdgeInsets.only(top: 5, left: 10),
+                                    child: Text(
+                                      '$dailyFoodAmount $dailyUnityFoodAmount',
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Ração por refeição: ',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Container(
+                                    padding:
+                                        const EdgeInsets.only(top: 5, left: 10),
+                                    child: Text(
+                                      '$mealFoodAmount $mealUnityFoodAmount',
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(top: 15, bottom: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding:
+                                  const EdgeInsets.only(bottom: 10, right: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Frequencia diária: ',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Container(
+                                    padding:
+                                        const EdgeInsets.only(top: 5, left: 10),
+                                    child: Text(
+                                      dailyFrequency == waitingAnalysis
+                                          ? dailyFrequency.toString()
+                                          : dailyFrequency.toString() +
+                                              ' vezes ao dia',
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Peso vivo total: ',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Container(
+                                  padding:
+                                      const EdgeInsets.only(top: 5, left: 10),
+                                  child: Text(
+                                    avergageTankWeight == waitingAnalysis
+                                        ? avergageTankWeight.toString()
+                                        : avergageTankWeight.toString() +
+                                        ' quilos',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        padding:
+                        const EdgeInsets.only(right: 10),
+                        child: TextButton(
+                          child: Row(
+                            children: const [
+                              Text(
+                                "Visualizar detalhes",
+                                style: TextStyle(color: Colors.green),
+                              ),
+                              Icon(
+                                Icons
+                                    .keyboard_double_arrow_right_rounded,
+                                color: Colors.green,
+                              ),
+                            ],
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             );
           },
         ),
