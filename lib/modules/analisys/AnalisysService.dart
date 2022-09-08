@@ -5,13 +5,13 @@ import 'package:fishcount_app/service/generic/AbstractService.dart';
 import 'package:fishcount_app/utils/RequestBuilder.dart';
 
 class AnalisysService extends AbstractService {
-  Future<List<AnalysisModel>> fetchAnalisys(int tankId, String? orderBy) async {
+  Future<List<AnalysisModel>> fetchAnalisys(int tankId, String? status) async {
     try {
       RequestBuilder requestBuilder = RequestBuilder(url: '/analise')
           .addQueryParam('tanqueId', tankId.toString());
 
-      if (orderBy != null) {
-        requestBuilder.addQueryParam('orderBy', orderBy);
+      if (status != null) {
+        requestBuilder.addQueryParam('statusAnalise', status);
       }
 
       Response<List<dynamic>> response =

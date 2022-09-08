@@ -36,12 +36,12 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
   String _orderBy = 'none';
 
   final Map<String, bool> _filters = {
-    'dataUltimaAnalise': false,
-    'descricao': false,
+    'AGUARDANDO_ANALISE': false,
+    'ANALISE_CONCLUIDA': false,
   };
   final List<String> _filterFields = [
-    'dataUltimaAnalise',
-    'descricao',
+    'AGUARDANDO_ANALISE',
+    'ANALISE_CONCLUIDA',
   ];
 
   @override
@@ -125,8 +125,8 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
                       child: AnimationUtils.progressiveDots(size: 50.0),
                     ),
                     widgetOnEmptyResponse: _notFoundWidget(context),
-                    widgetOnSuccess: Text("fgsdfgds"),
-                        // _tankList(context, snapshot.data, widget.batch),
+                    widgetOnSuccess: _analysisList(context, snapshot.data!),
+                    // _tankList(context, snapshot.data, widget.batch),
                   ).handler();
                 },
               ),
@@ -160,7 +160,8 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
               verticalPadding: 10,
               textColor: Colors.white,
               buttonColor: Colors.blue,
-              onPressed: () => _analisysService.initiateAnalisys(widget.tankModel.id!),
+              onPressed: () =>
+                  _analisysService.initiateAnalisys(widget.tankModel.id!),
             ),
           ),
         ],
@@ -174,6 +175,12 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
       _filters.update(_orderBy, (state) => true);
 
       _alternateFilterState();
+      return;
+    }
+    if (_orderBy == selectedField) {
+      setState(() => _orderBy = 'none');
+      _filters.update(_filterFields[0], (state) => false);
+      _filters.update(_filterFields[1], (state) => false);
     }
   }
 
@@ -186,13 +193,52 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
   }
 
   Future<List<AnalysisModel>> fetchAnalisys() async {
-    bool isConnected = await _connectionUtils.isConnected();
-    // if (isConnected) {
+    // TODO verificar se esta conectado com internet
     if (_orderBy != 'none') {
-      return _analisysService.fetchAnalisys(widget.tankModel.id!, null);
+      return _analisysService.fetchAnalisys(widget.tankModel.id!, _orderBy);
     }
-    return _analisysService.fetchAnalisys(widget.tankModel.id!, _orderBy);
-    // }
-    // return _tanqueRepository.listarTanques(context, widget.batch.id!);
+    return _analisysService.fetchAnalisys(widget.tankModel.id!, null);
+  }
+
+  _analysisList(BuildContext context, List<AnalysisModel> analysisModels) {
+    const Color borderColor = Colors.black26;
+    final Color? backGroundColor = Colors.grey[100];
+    return SingleChildScrollView(
+      child: SizedBox(
+        height: MediaQuery.of(context).orientation == Orientation.portrait
+            ? MediaQuery.of(context).size.height / 1.5
+            : MediaQuery.of(context).size.height / 2,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: analysisModels.length,
+          itemBuilder: (context, index) {
+            AnalysisModel analysis = analysisModels[index];
+            return Container(
+              margin: const EdgeInsets.only(top: 15),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: backGroundColor,
+                borderRadius: BorderRadius.circular(10),
+                border: const Border(
+                  right: BorderSide(
+                    color: borderColor,
+                  ),
+                  left: BorderSide(
+                    color: borderColor,
+                  ),
+                  top: BorderSide(
+                    color: borderColor,
+                  ),
+                  bottom: BorderSide(
+                    color: borderColor,
+                  ),
+                ),
+              ),
+              child: Text(analysis.analysisStatus),
+            );
+          },
+        ),
+      ),
+    );
   }
 }
