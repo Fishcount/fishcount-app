@@ -34,7 +34,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
 
     double cardWidth = MediaQuery.of(context).size.width / 2.3;
 
-    _getBoxDecoration(Color backColor, Color border, bool useShadow, Color shadowColor) =>
+    _getBoxDecoration(
+            Color backColor, Color border, bool useShadow, Color shadowColor) =>
         BoxDecoration(
           color: backColor,
           borderRadius: BorderRadius.circular(10),
@@ -65,8 +66,6 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
           ),
         );
 
-
-
     return Scaffold(
       appBar: AppBarBuilder().build(),
       drawer: const DrawerWidget(),
@@ -89,7 +88,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
               ),
               Container(
                 padding: const EdgeInsets.all(10),
-                decoration: _getBoxDecoration(Colors.yellow, Colors.yellow, true, Colors.black26),
+                decoration: _getBoxDecoration(
+                    Colors.yellow, Colors.yellow, true, Colors.black26),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -116,8 +116,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
               Container(
                 margin: const EdgeInsets.only(top: 20),
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
-                decoration:
-                    _getBoxDecoration(backGroundColor, borderColor, true, shadowCardColor),
+                decoration: _getBoxDecoration(
+                    backGroundColor, borderColor, true, shadowCardColor),
                 child: Column(
                   children: [
                     Container(
@@ -125,8 +125,9 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                       child: Text(
                         _tankModel.description.toUpperCase(),
                         style: const TextStyle(
-                            fontSize: fontTitleSize,
-                            fontWeight: FontWeight.bold),
+                          fontSize: fontTitleSize,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     Row(
@@ -137,8 +138,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                           margin: const EdgeInsets.only(left: 10),
                           width: 150,
                           height: 190,
-                          decoration: _getBoxDecoration(
-                              Colors.white, borderColor, false, shadowCardColor),
+                          decoration: _getBoxDecoration(Colors.white,
+                              borderColor, false, shadowCardColor),
                           child: Image.asset(ImagePaths.imageLogo),
                         ),
                         Container(
@@ -264,8 +265,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                     Container(
                       height: cardHeight,
                       width: cardWidth,
-                      decoration:
-                          _getBoxDecoration(backGroundColor, borderColor, true, shadowCardColor),
+                      decoration: _getBoxDecoration(
+                          backGroundColor, borderColor, true, shadowCardColor),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -304,8 +305,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                     Container(
                       height: cardHeight,
                       width: cardWidth,
-                      decoration:
-                          _getBoxDecoration(backGroundColor, borderColor, true, shadowCardColor),
+                      decoration: _getBoxDecoration(
+                          backGroundColor, borderColor, true, shadowCardColor),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -356,8 +357,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                     Container(
                       height: cardHeight,
                       width: cardWidth,
-                      decoration:
-                          _getBoxDecoration(backGroundColor, borderColor, true, shadowCardColor),
+                      decoration: _getBoxDecoration(
+                          backGroundColor, borderColor, true, shadowCardColor),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -407,8 +408,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                       margin: const EdgeInsets.only(left: 10),
                       height: cardHeight,
                       width: cardWidth,
-                      decoration:
-                          _getBoxDecoration(backGroundColor, borderColor, true, shadowCardColor),
+                      decoration: _getBoxDecoration(
+                          backGroundColor, borderColor, true, shadowCardColor),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,

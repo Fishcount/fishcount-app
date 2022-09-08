@@ -11,7 +11,9 @@ class TankModel {
 
   late double initialWeight;
 
-  late String weightUnity;
+  late String? weightUnity;
+
+  late String? analisyStatus;
 
   late String? inclusionDate;
 
@@ -32,6 +34,7 @@ class TankModel {
     this.species,
     this.initialWeight,
     this.weightUnity,
+    this.analisyStatus,
     this.inclusionDate,
     this.lastAnalysis,
     this.nextAnalysis,
@@ -45,6 +48,7 @@ class TankModel {
     fishAmount = json['qtdePeixe'];
     initialWeight = json['pesoInicial'];
     weightUnity = json['unidadePeso'];
+    analisyStatus = json['statusAnalise'];
     species = SpeciesModel.fromJson(json['especie']);
     inclusionDate = json['dataInclusao'];
     lastAnalysis = json['ultimaAnalise'];
@@ -58,6 +62,7 @@ class TankModel {
         "qtdePeixes": fishAmount,
         "pesoInicial": initialWeight,
         "unidadePeso": weightUnity,
+        "statusAnalise": analisyStatus,
         "ultimaAnalise": lastAnalysis,
         "proximaAnalise": nextAnalysis,
         "dataInclusao": inclusionDate,

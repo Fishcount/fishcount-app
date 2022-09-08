@@ -1,35 +1,54 @@
 class AnalysisModel {
-  late int id;
+  late int? id;
 
-  late double foodAmount;
+  late double avergageTankWeight;
 
-  late double averageWeight;
+  late double dailyFoodAmount;
 
-  late double averageFoodAmount;
+  late String unityWeitghDailyFood;
 
-  late DateTime analysisDate;
+  late double mealFoodAmout;
+
+  late String unityWeitghMealFood;
+
+  late int dailyFoodFrequency;
+
+  late String analysisStatus;
+
+  late String analysisDate;
 
   AnalysisModel(
-    this.id,
-    this.foodAmount,
-    this.averageWeight,
-    this.averageFoodAmount,
+    this.avergageTankWeight,
+    this.dailyFoodAmount,
+    this.unityWeitghDailyFood,
+    this.mealFoodAmout,
+    this.unityWeitghMealFood,
+    this.dailyFoodFrequency,
+    this.analysisStatus,
     this.analysisDate,
   );
 
   AnalysisModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    foodAmount = json['qtdeRacao'];
-    averageWeight = json['pesoMedio'];
-    averageFoodAmount = json['qtdeMediaRacao'];
+    avergageTankWeight = json['pesoMedioTanque'];
+    dailyFoodAmount = json['qtdeRacaoDiaria'];
+    unityWeitghDailyFood = json['unidadePesoRacaoDiaria'];
+    mealFoodAmout = json['qtdeRacaoRefeicao'];
+    unityWeitghMealFood = json['unidadePesoRacaoRefeicao'];
+    dailyFoodFrequency = json['frequenciaAlimentacaoDiaria'];
+    analysisStatus = json['statusAnalise'];
     analysisDate = json['dataAnalise'];
   }
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "qtdeRacao": foodAmount,
-        "pesoMedio": averageWeight,
-        "qtdeMediaRacao": averageFoodAmount,
-        "dataAnalise": analysisDate
+        'id': id,
+        'pesoMedioTanque': avergageTankWeight,
+        'qtdeRacaoDiaria': dailyFoodAmount,
+        'unidadePesoRacaoDiaria': unityWeitghDailyFood,
+        'qtdeRacaoRefeicao': mealFoodAmout,
+        'unidadePesoRacaoRefeicao': unityWeitghMealFood,
+        'frequenciaAlimentacaoDiaria': dailyFoodFrequency,
+        'statusAnalise': analysisStatus,
+        'dataAnalise': analysisDate,
       };
 }

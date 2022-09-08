@@ -34,12 +34,12 @@ class TankService extends AbstractService {
       }
 
       if (response.statusCode == 200) {
-        List<TankModel> tanques = [];
+        List<TankModel> tanks = [];
         if (response.data != null) {
           for (var element in response.data!) {
-            tanques.add(TankModel.fromJson(element));
+            tanks.add(TankModel.fromJson(element));
           }
-          return tanques;
+          return tanks;
         }
       }
       return [];

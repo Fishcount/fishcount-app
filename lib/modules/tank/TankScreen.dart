@@ -3,7 +3,10 @@ import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
+import 'package:fishcount_app/model/enums/EnumStatusAnalise.dart';
+import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
 import 'package:fishcount_app/model/enums/EnumUnidadeAumento.dart';
+import 'package:fishcount_app/modules/analisys/AnalisysListScreen.dart';
 import 'package:fishcount_app/modules/analisys/AnalisysScreen.dart';
 import 'package:fishcount_app/modules/species/SpecieService.dart';
 import 'package:fishcount_app/modules/tank/TankController.dart';
@@ -440,46 +443,46 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                               ),
                             ],
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'Última análise',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.only(
-                                          left: 5, top: 5),
-                                      child: Text(
-                                        tankModel.lastAnalysisDate!,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'Próxima análise',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.only(
-                                          left: 5, top: 5),
-                                      child: Text(
-                                        tankModel.nextAnalysisDate!,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
+                          // Container(
+                          //   padding: const EdgeInsets.only(top: 10),
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //     children: [
+                          //       Column(
+                          //         crossAxisAlignment: CrossAxisAlignment.center,
+                          //         children: [
+                          //           const Text(
+                          //             'Última análise',
+                          //             style: TextStyle(fontSize: 16),
+                          //           ),
+                          //           Container(
+                          //             padding: const EdgeInsets.only(
+                          //                 left: 5, top: 5),
+                          //             child: Text(
+                          //               tankModel.lastAnalysisDate!,
+                          //             ),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //       Column(
+                          //         crossAxisAlignment: CrossAxisAlignment.center,
+                          //         children: [
+                          //           const Text(
+                          //             'Data última análise',
+                          //             style: TextStyle(fontSize: 16),
+                          //           ),
+                          //           Container(
+                          //             padding: const EdgeInsets.only(
+                          //                 left: 5, top: 5),
+                          //             child: Text(
+                          //               tankModel.lastAnalysisDate!,
+                          //             ),
+                          //           ),
+                          //         ],
+                          //       )
+                          //     ],
+                          //   ),
+                          // ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -490,7 +493,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                   child: Row(
                                     children: const [
                                       Text(
-                                        "Análises disponíveis",
+                                        "Visualizar análises",
                                         style: TextStyle(color: Colors.green),
                                       ),
                                       Icon(
@@ -502,10 +505,10 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                   ),
                                   onPressed: () {
                                     NavigatorUtils.pushReplacement(
-                                        context,
-                                        AnalisysScreen(
-                                          tankModel: tankModel,
-                                        ));
+                                      context,
+                                      // AnalisysScreen(tankModel: tankModel),
+                                      AnalisysListScreen(tankModel: tankModel),
+                                    );
                                   },
                                 ),
                               ),
@@ -564,13 +567,20 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   Container(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: Text(
-                                      'Próxima análise: ' +
-                                          tankModel.nextAnalysisDate!,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                      ),
+                                    padding: const EdgeInsets.only(
+                                        top: 10, bottom: 10),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          StatusAnaliseHandler.handlerText(
+                                              tankModel.analisyStatus!),
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: StatusAnaliseHandler
+                                                  .handlerColor(tankModel
+                                                      .analisyStatus!)),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
