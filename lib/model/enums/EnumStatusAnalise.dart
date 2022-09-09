@@ -16,10 +16,10 @@ class StatusAnaliseHandler {
         return 'Analise não realizada';
 
       case 'AGUARDANDO_ANALISE':
-        return 'Aguardando análise';
+        return 'Aguardando';
 
       case 'ANALISE_CONCLUIDA':
-        return 'Análise concluida';
+        return 'Concluida';
 
       case 'FALHA_ANALISE':
         return 'Falha na análise';

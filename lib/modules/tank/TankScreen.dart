@@ -607,6 +607,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
     TankModel? tankModel,
   ) async {
     final bool _isUpdate = tankModel != null;
+    bool? hasTemperature = false;
     final List<SpeciesModel> species =
         await _tankController.resolverListaEspecie(context);
     return showModalBottomSheet<void>(
@@ -745,23 +746,37 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                     ),
                   ),
                   child: DropdownButton<String>(
-                      value: tankSpecie != ""
-                          ? tankSpecie
-                          : species.first.description,
-                      isExpanded: true,
-                      items: species
-                          .map(
-                            (specie) => DropdownMenuItem(
-                              value: specie.description,
-                              child: Text(specie.description),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
+                    value: tankSpecie != ""
+                        ? tankSpecie
+                        : species.first.description,
+                    isExpanded: true,
+                    items: species
+                        .map(
+                          (specie) => DropdownMenuItem(
+                            value: specie.description,
+                            child: Text(specie.description),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (String? newValue) {
+                      setState(
+                        () {
                           tankSpecie = newValue ?? "";
-                        });
-                      }),
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  child: CheckboxListTile(
+                    title: const Text("Possui medidor temperatura"),
+                    value: hasTemperature,
+                    onChanged: (newValue) {
+                      setState(() => hasTemperature = newValue);
+                    },
+                    controlAffinity: ListTileControlAffinity
+                        .leading, //  <-- leading Checkbox
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,

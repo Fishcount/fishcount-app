@@ -1,3 +1,5 @@
+import 'package:fishcount_app/model/TankModel.dart';
+import 'package:fishcount_app/modules/analisys/AnalisysListScreen.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,7 @@ class CustomBottomSheet {
   });
 
 
-   build() {
+   build({tankModel: TankModel}) {
     return MediaQuery.of(context).orientation != Orientation.portrait
         ? null
         : Container(
@@ -58,10 +60,13 @@ class CustomBottomSheet {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.analytics_outlined,
-                        size: 35,
-                        color: iconColor,
+                      GestureDetector(
+                        child: Icon(
+                          Icons.analytics_outlined,
+                          size: 35,
+                          color: iconColor,
+                        ),
+                        onTap: () => NavigatorUtils.pushReplacement(context, AnalisysListScreen(tankModel: tankModel)),
                       ),
                       Text(
                         "Análises",

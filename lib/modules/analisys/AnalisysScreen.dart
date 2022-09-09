@@ -1,3 +1,4 @@
+import 'package:fishcount_app/model/AnalysisModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
@@ -11,10 +12,12 @@ import '../../widgets/custom/BottomSheetBuilder.dart';
 
 class AnalisysScreen extends StatefulWidget {
   final TankModel tankModel;
+  final AnalysisModel analysisModel;
 
   const AnalisysScreen({
     Key? key,
     required this.tankModel,
+    required this.analysisModel,
   }) : super(key: key);
 
   @override
@@ -25,8 +28,30 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
   @override
   Widget build(BuildContext context) {
     final TankModel _tankModel = widget.tankModel;
+    final AnalysisModel _analysisModel = widget.analysisModel;
+
+    final String analysisStatus = _analysisModel.analysisStatus;
+    final bool isConcluded = analysisStatus != 'AGUARDANDO_ANALISE';
+
+    const String waitingSonar = 'Aguardando sonar..';
+
+    final String fishAmount = isConcluded
+        ? _tankModel.fishAmount.toString() + ' peixes'
+        : waitingSonar;
+
+    final String dailyFoodAmount = isConcluded
+        ? _analysisModel.dailyFoodAmount.toString() + '0 KG'
+        : waitingSonar;
+
+    final String foodType =
+        isConcluded ? _analysisModel.foodType.toString() : waitingSonar;
+
+    final String dailyFrequency = isConcluded
+        ? _analysisModel.dailyFoodFrequency.toString() + ' vezes ao dia'
+        : waitingSonar;
+
     const Color borderColor = Colors.black26;
-    final Color backGroundColor = Colors.grey.shade300;
+    final Color backGroundColor = Colors.grey.shade100;
     final Color shadowCardColor = Colors.blue.shade800;
     const fontTitleSize = 16.0;
     const fontDescriptionSize = 17.0;
@@ -44,8 +69,6 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                   BoxShadow(
                     offset: Offset.fromDirection(2, 2),
                     spreadRadius: 0.5,
-                    // blurRadius: 0.5,
-                    // blurStyle: BlurStyle.normal,
                     color: shadowColor,
                   ),
                 ]
@@ -69,8 +92,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
     return Scaffold(
       appBar: AppBarBuilder().build(),
       drawer: const DrawerWidget(),
-      bottomSheet:
-          CustomBottomSheet(newFunction: () {}, context: context).build(),
+      bottomSheet: CustomBottomSheet(newFunction: () {}, context: context)
+          .build(tankModel: widget.tankModel),
       body: Center(
         child: Container(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
@@ -86,33 +109,34 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                 textColor: Colors.black,
                 isBold: true,
               ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: _getBoxDecoration(
-                    Colors.yellow, Colors.yellow, true, Colors.black26),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 1.3,
-                      child: const Text(
-                        // _tankModel.description.toUpperCase(),
-                        "Análise iniciada, aguardando resposta do sonar..",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic,
-                          fontSize: 16,
-                        ),
+              isConcluded
+                  ? Container()
+                  : Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: _getBoxDecoration(
+                          Colors.yellow, Colors.yellow, true, Colors.grey),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.3,
+                            child: const Text(
+                              "Análise iniciada, aguardando resposta do sonar..",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          const Icon(
+                            Icons.info,
+                            color: Colors.blue,
+                            size: 25,
+                          ),
+                        ],
                       ),
                     ),
-                    const Icon(
-                      Icons.info,
-                      color: Colors.blue,
-                      size: 25,
-                    ),
-                  ],
-                ),
-              ),
               Container(
                 margin: const EdgeInsets.only(top: 20),
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -171,9 +195,9 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                                     Container(
                                       padding: const EdgeInsets.only(
                                           left: 5, top: 5),
-                                      child: const Text(
-                                        'Tilápia',
-                                        style: TextStyle(
+                                      child: Text(
+                                        _tankModel.species.description,
+                                        style: const TextStyle(
                                           fontSize: fontDescriptionSize,
                                         ),
                                       ),
@@ -204,9 +228,9 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                                     Container(
                                       padding: const EdgeInsets.only(
                                           left: 5, top: 5),
-                                      child: const Text(
-                                        '800 gramas',
-                                        style: TextStyle(
+                                      child: Text(
+                                        _tankModel.initialWeight.toString(),
+                                        style: const TextStyle(
                                           fontSize: fontDescriptionSize,
                                         ),
                                       ),
@@ -238,9 +262,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                                     Container(
                                       padding: const EdgeInsets.only(
                                           left: 5, top: 5),
-                                      child: const Text(
-                                        // '2.000 peixes',
-                                        'Aguardando sonar..',
+                                      child: Text(
+                                        fishAmount,
                                         style: TextStyle(
                                             fontSize: fontDescriptionSize),
                                       ),
@@ -327,10 +350,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                               children: [
                                 Container(
                                   padding: const EdgeInsets.only(right: 5),
-                                  child: const Text(
-                                    // "40 Kg",
-                                    "Aguardando sonar..",
-                                    // style: TextStyle(fontSize: 20),
+                                  child: Text(
+                                    dailyFoodAmount,
                                     style: TextStyle(fontSize: 15),
                                   ),
                                 ),
@@ -381,14 +402,9 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                                 Container(
                                   padding:
                                       const EdgeInsets.only(top: 5, right: 5),
-                                  child: const Text(
-                                    // "2 - 3 mm",
-                                    'Aguardando sonar..',
-                                    // style: TextStyle(
-                                    //   fontSize: fontTitleSize,
-                                    //   overflow: TextOverflow.fade,
-                                    // ),
-                                    style: TextStyle(
+                                  child: Text(
+                                    foodType,
+                                    style: const TextStyle(
                                       fontSize: 15,
                                     ),
                                   ),
@@ -431,9 +447,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                               children: [
                                 Container(
                                   padding: const EdgeInsets.only(right: 5),
-                                  child: const Text(
-                                    // "5 vezes",
-                                    "Aguardando sonar..",
+                                  child: Text(
+                                    dailyFrequency,
                                     style: TextStyle(fontSize: 15),
                                   ),
                                 ),

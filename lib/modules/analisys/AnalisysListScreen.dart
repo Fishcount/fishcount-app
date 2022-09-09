@@ -2,8 +2,10 @@ import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/AnalysisModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusAnalise.dart';
+import 'package:fishcount_app/modules/analisys/AnalisysScreen.dart';
 import 'package:fishcount_app/modules/analisys/AnalisysService.dart';
 import 'package:fishcount_app/utils/AnimationUtils.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/FilterOptionWidget.dart';
@@ -36,6 +38,7 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
   final AnalisysService _analisysService = AnalisysService();
 
   String _orderBy = 'none';
+  final String _waitingAnalysis = 'Aguardando..';
 
   final Map<String, bool> _filters = {
     'AGUARDANDO_ANALISE': false,
@@ -54,7 +57,7 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
       bottomNavigationBar: CustomBottomSheet(
         context: context,
         newFunction: () => {},
-      ).build(),
+      ).build(tankModel: widget.tankModel),
       body: Center(
         child: Container(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
@@ -128,7 +131,6 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
                     ),
                     widgetOnEmptyResponse: _notFoundWidget(context),
                     widgetOnSuccess: _analysisList(context, snapshot.data),
-                    // _tankList(context, snapshot.data, widget.batch),
                   ).handler();
                 },
               ),
@@ -217,28 +219,27 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
           itemCount: analysisList.length,
           itemBuilder: (context, index) {
             final AnalysisModel analysis = analysisList[index];
-            const String waitingAnalysis = 'Aguardando..';
+
             final String fishAmount = widget.tankModel.fishAmount.toString();
-            final dailyFoodAmount = analysis.dailyFoodAmount ?? waitingAnalysis;
-            final mealFoodAmount = analysis.mealFoodAmout ?? waitingAnalysis;
+            final dailyFoodAmount =
+                analysis.dailyFoodAmount ?? _waitingAnalysis;
+            final mealFoodAmount = analysis.mealFoodAmout ?? _waitingAnalysis;
+            final foodType = analysis.foodType ?? _waitingAnalysis;
             final avergageTankWeight =
-                analysis.avergageTankWeight ?? waitingAnalysis;
+                analysis.avergageTankWeight ?? _waitingAnalysis;
 
             final dailyFrequency =
-                analysis.dailyFoodFrequency ?? waitingAnalysis;
+                analysis.dailyFoodFrequency ?? _waitingAnalysis;
 
             final mealUnityFoodAmount = analysis.unityWeitghMealFood != null
                 ? UnidadePesoHandler.handle(
-                        analysis.unityWeitghMealFood.toString())
-                    .toLowerCase()
+                    analysis.unityWeitghMealFood.toString())
                 : "";
             final dailyUnityFoodAmount = analysis.unityWeitghDailyFood != null
                 ? UnidadePesoHandler.handle(
-                        analysis.unityWeitghDailyFood.toString())
-                    .toLowerCase()
+                    analysis.unityWeitghDailyFood.toString())
                 : "";
 
-            final foodType = analysis.foodType;
             return Container(
               margin: const EdgeInsets.only(top: 15),
               alignment: Alignment.center,
@@ -261,7 +262,7 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
                 ),
               ),
               child: ExpansionTile(
-                initiallyExpanded: false,
+                initiallyExpanded: true,
                 controlAffinity: ListTileControlAffinity.trailing,
                 title: Container(
                   padding: const EdgeInsets.only(bottom: 10, top: 10),
@@ -310,8 +311,8 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: const EdgeInsets.only(
-                            top: 15, left: 10, bottom: 5),
+                        padding:
+                            const EdgeInsets.only(top: 15, left: 10, bottom: 5),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -390,7 +391,7 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
                                     padding:
                                         const EdgeInsets.only(top: 5, left: 10),
                                     child: Text(
-                                      dailyFrequency == waitingAnalysis
+                                      dailyFrequency == _waitingAnalysis
                                           ? dailyFrequency.toString()
                                           : dailyFrequency.toString() +
                                               ' vezes ao dia',
@@ -416,10 +417,9 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
                                   padding:
                                       const EdgeInsets.only(top: 5, left: 10),
                                   child: Text(
-                                    avergageTankWeight == waitingAnalysis
+                                    avergageTankWeight == _waitingAnalysis
                                         ? avergageTankWeight.toString()
-                                        : avergageTankWeight.toString() +
-                                        ' quilos',
+                                        : avergageTankWeight.toString() + ' KG',
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -437,8 +437,7 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Container(
-                        padding:
-                        const EdgeInsets.only(right: 10),
+                        padding: const EdgeInsets.only(right: 10),
                         child: TextButton(
                           child: Row(
                             children: const [
@@ -447,13 +446,18 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
                                 style: TextStyle(color: Colors.green),
                               ),
                               Icon(
-                                Icons
-                                    .keyboard_double_arrow_right_rounded,
+                                Icons.keyboard_double_arrow_right_rounded,
                                 color: Colors.green,
                               ),
                             ],
                           ),
-                          onPressed: () {},
+                          onPressed: () => NavigatorUtils.push(
+                            context,
+                            AnalisysScreen(
+                              tankModel: widget.tankModel,
+                              analysisModel: analysis,
+                            ),
+                          ),
                         ),
                       ),
                     ],

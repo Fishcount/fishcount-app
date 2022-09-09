@@ -3,7 +3,7 @@ class AnalysisModel {
 
   late double? avergageTankWeight;
 
-  late String foodType;
+  late String? foodType;
 
   late double? dailyFoodAmount;
 
