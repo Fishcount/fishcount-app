@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import '../../model/TankModel.dart';
 import '../../model/enums/EnumUnidadePeso.dart';
 import '../../utils/ConnectionUtils.dart';
+import '../../widgets/TextFieldWidget.dart';
 import '../../widgets/buttons/ElevatedButtonWidget.dart';
 
 class AnalisysListScreen extends StatefulWidget {
@@ -33,9 +34,12 @@ class AnalisysListScreen extends StatefulWidget {
   State<AnalisysListScreen> createState() => _AnalisysListScreenState();
 }
 
-class _AnalisysListScreenState extends State<AnalisysListScreen> {
+class _AnalisysListScreenState extends State<AnalisysListScreen>
+    with TickerProviderStateMixin {
   final ConnectionUtils _connectionUtils = ConnectionUtils();
   final AnalisysService _analisysService = AnalisysService();
+  late AnimationController _animationController;
+  TextEditingController _temperatureController = TextEditingController();
 
   String _orderBy = 'none';
   final String _waitingAnalysis = 'Aguardando..';
@@ -48,6 +52,19 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
     'AGUARDANDO_ANALISE',
     'ANALISE_CONCLUIDA',
   ];
+
+  @override
+  initState() {
+    super.initState();
+    _animationController = BottomSheet.createAnimationController(this);
+    _animationController.duration = const Duration(milliseconds: 300);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,13 +181,75 @@ class _AnalisysListScreenState extends State<AnalisysListScreen> {
               verticalPadding: 10,
               textColor: Colors.white,
               buttonColor: Colors.blue,
-              onPressed: () =>
-                  _analisysService.initiateAnalisys(widget.tankModel.id!),
+              onPressed: () => openAnalysisModal(),
             ),
           ),
         ],
       ),
     );
+  }
+
+  openAnalysisModal() {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: false,
+      transitionAnimationController: _animationController,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            Container(
+              padding: EdgeInsets.only(top: 30, bottom: 20),
+              child: Text(
+                "Informações iniciais",
+                style: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+            widget.tankModel.hasTemperatureGauge
+                ? Container(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: TextFieldWidget(
+                      controller: _temperatureController,
+                      hintText: 'Temperatura do tanque',
+                      focusedBorderColor: Colors.blueGrey,
+                      iconColor: Colors.blueGrey,
+                      obscureText: false,
+                      labelText: 'Temperatura',
+                    ),
+                  )
+                : Container(),
+            Container(
+              padding: const EdgeInsets.only(top: 20),
+              child: ElevatedButtonWidget(
+                buttonText: "Confirmar",
+                buttonColor: Colors.green,
+                textSize: 15,
+                textColor: Colors.white,
+                radioBorder: 10,
+                horizontalPadding: 20,
+                verticalPadding: 10,
+                onPressed: _initiateAnalysisAndUpdate(_temperatureController.text),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _initiateAnalysisAndUpdate(String temperature) async {
+    await _analisysService.initiateAnalisys(widget.tankModel.id!, temperature);
+    NavigatorUtils.pushReplacement(
+        context, AnalisysListScreen(tankModel: widget.tankModel));
   }
 
   _setOrderBy(String selectedField) {

@@ -21,6 +21,8 @@ import 'TankScreen.dart';
 import 'TankService.dart';
 
 class TankController extends AbstractController {
+  final SpeciesService _speciesService = SpeciesService();
+
   final TextEditingController _pesoMedioController = TextEditingController();
   final TextEditingController _tamanhoMedioController = TextEditingController();
   final TextEditingController _qtdeMediaRacaoController =
@@ -47,6 +49,285 @@ class TankController extends AbstractController {
       response: response,
       redirect: TankScreen(batch: batch),
     );
+  }
+
+  openTankRegisterModal(
+      BuildContext context,
+      TextEditingController tankNameController,
+      TextEditingController fishAmounController,
+      TextEditingController initialWeightController,
+      String tankSpecie,
+      AnimationController animationController,
+      TankModel? tankModel,
+      BatchModel batchModel) async {
+    final bool _isUpdate = tankModel != null;
+    bool? hasTemperature = false;
+    final List<SpeciesModel> species = await resolverListaEspecie(context);
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      transitionAnimationController: animationController,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      builder: (BuildContext context) {
+        bool isGrams = false;
+
+        final Color selectedColor = Colors.grey.shade600;
+        final Color noSelectedColor = Colors.grey.shade300;
+        const Color borderColor = Colors.black;
+        const Border border = Border(
+          right: BorderSide(
+            color: borderColor,
+          ),
+          left: BorderSide(
+            color: borderColor,
+          ),
+          top: BorderSide(
+            color: borderColor,
+          ),
+          bottom: BorderSide(
+            color: borderColor,
+          ),
+        );
+
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).orientation ==
+                              Orientation.portrait
+                          ? 100
+                          : 30,
+                      bottom: 20),
+                  child: Text(
+                    _isUpdate ? "Atualizar Tanque" : "Cadastrar novo Tanque",
+                    style: const TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: TextFieldWidget(
+                    controller: tankNameController,
+                    hintText: 'Nome do tanque',
+                    focusedBorderColor: Colors.blueGrey,
+                    iconColor: Colors.blueGrey,
+                    obscureText: false,
+                    labelText: 'Nome do tanque',
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  child: TextFieldWidget(
+                    controller: fishAmounController,
+                    hintText: 'Quantidade de peixes',
+                    focusedBorderColor: Colors.blueGrey,
+                    iconColor: Colors.blueGrey,
+                    obscureText: false,
+                    labelText: 'Quantidade inicial de peixes',
+                    keyBoardType: TextInputType.number,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      padding:
+                          const EdgeInsets.only(top: 20, left: 20, right: 20),
+                      child: TextFieldWidget(
+                        controller: initialWeightController,
+                        hintText: 'Peso Inicial',
+                        focusedBorderColor: Colors.blueGrey,
+                        iconColor: Colors.blueGrey,
+                        obscureText: false,
+                        labelText: 'Peso inicial dos peixes',
+                        keyBoardType: TextInputType.number,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => setState(() => isGrams = false),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 25, right: 15),
+                        width: 50,
+                        height: 40,
+                        child: const Center(child: Text("KG")),
+                        decoration: BoxDecoration(
+                          color: isGrams ? noSelectedColor : selectedColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: border,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => setState(() => isGrams = true),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 25),
+                        width: 50,
+                        height: 40,
+                        child: const Center(child: Text("GR")),
+                        decoration: BoxDecoration(
+                          color: !isGrams ? noSelectedColor : selectedColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: border,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  height: 60,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(232, 232, 232, 232),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                  child: DropdownButton<String>(
+                    value: tankSpecie != ""
+                        ? tankSpecie
+                        : species.first.description,
+                    isExpanded: true,
+                    items: species
+                        .map(
+                          (specie) => DropdownMenuItem(
+                            value: specie.description,
+                            child: Text(specie.description),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (String? newValue) {
+                      setState(
+                        () {
+                          tankSpecie = newValue ?? "";
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  child: CheckboxListTile(
+                    title: const Text("Possui medidor temperatura"),
+                    value: hasTemperature,
+                    onChanged: (newValue) {
+                      setState(() => hasTemperature = newValue);
+                    },
+                    controlAffinity: ListTileControlAffinity
+                        .leading, //  <-- leading Checkbox
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: ElevatedButtonWidget(
+                        buttonText: "Cancelar",
+                        buttonColor: Colors.blue,
+                        onPressed: () => Navigator.pop(context),
+                        textSize: 15,
+                        textColor: Colors.white,
+                        radioBorder: 10,
+                        horizontalPadding: 20,
+                        verticalPadding: 10,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: ElevatedButtonWidget(
+                        buttonText: "Confirmar",
+                        buttonColor: Colors.green,
+                        textSize: 15,
+                        textColor: Colors.white,
+                        radioBorder: 10,
+                        horizontalPadding: 20,
+                        verticalPadding: 10,
+                        onPressed: () async => await _confirmTank(
+                            tankSpecie,
+                            species,
+                            _isUpdate,
+                            tankModel,
+                            batchModel,
+                            tankNameController,
+                            fishAmounController,
+                            initialWeightController,
+                            isGrams ? 'GRAMA' : 'KILO',
+                            context,
+                            hasTemperature!),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<dynamic> _confirmTank(
+      String tankSpecie,
+      List<SpeciesModel> species,
+      bool _isUpdate,
+      TankModel? tankModel,
+      BatchModel batchModel,
+      TextEditingController tankNameController,
+      TextEditingController fishAmounController,
+      TextEditingController initialWeightController,
+      String weitghUnity,
+      BuildContext context,
+      bool hasTemperature) async {
+    final String speciesDescription =
+        tankSpecie != "" ? tankSpecie : species.first.description;
+    final TankModel tank = tankModel ?? TankModel.empty(null);
+
+    tankModel = await _generateTank(
+        tank,
+        tankNameController,
+        fishAmounController,
+        speciesDescription,
+        double.parse(initialWeightController.text),
+        weitghUnity,
+        hasTemperature);
+    if (_isUpdate) {
+      return updateTank(context, tankModel, batchModel);
+    }
+    return saveTank(context, tankModel, batchModel);
+  }
+
+  Future<TankModel> _generateTank(
+      TankModel tankModel,
+      tankNameController,
+      fishAmounController,
+      String speciesDescription,
+      double initialWeigth,
+      String weitghUnity,
+      bool hasTemperature) async {
+    tankModel.description = tankNameController.text;
+    tankModel.fishAmount = int.parse(fishAmounController.text);
+    tankModel.weightUnity = weitghUnity;
+    tankModel.initialWeight = initialWeigth;
+    tankModel.species =
+        await _speciesService.findByDescricao(speciesDescription);
+    tankModel.hasTemperatureGauge = hasTemperature;
+
+    return tankModel;
   }
 
   Widget resolveSpecieData(AsyncSnapshot<SpeciesModel> snapshot,

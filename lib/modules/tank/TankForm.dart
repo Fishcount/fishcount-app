@@ -170,7 +170,8 @@ class _TankFormState extends State<TankForm> {
         null,
         null,
         null,
-        null);
+        null,
+        false);
 
     await TankController().saveTank(context, tanque, widget.batch);
   }

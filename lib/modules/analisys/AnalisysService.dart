@@ -31,13 +31,15 @@ class AnalisysService extends AbstractService {
     }
   }
 
-  dynamic initiateAnalisys(int tankId) async {
+  dynamic initiateAnalisys(int tankId, String? temperature) async {
     try {
-      Response<dynamic> response = await RequestBuilder(url: '/analise')
-          .addQueryParam('tanqueId', tankId.toString())
-          .hasBody(false)
-          .buildUrl()
-          .post();
+      RequestBuilder request = RequestBuilder(url: '/analise')
+          .addQueryParam('tanqueId', tankId.toString());
+      if (temperature != null && temperature.isNotEmpty) {
+        request.addQueryParam('temperatura', temperature);
+      }
+      Response<dynamic> response =
+          await request.hasBody(false).buildUrl().post();
 
       if (response.statusCode == 201) {
         return AnalysisModel.fromJson(response.data);

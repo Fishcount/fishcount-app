@@ -25,6 +25,8 @@ class TankModel {
 
   late String? lastAnalysisDate;
 
+  late bool hasTemperatureGauge;
+
   TankModel.empty(this.id);
 
   TankModel(
@@ -40,6 +42,7 @@ class TankModel {
     this.nextAnalysis,
     this.nextAnalysisDate,
     this.lastAnalysisDate,
+    this.hasTemperatureGauge,
   );
 
   TankModel.fromJson(Map<String, dynamic> json) {
@@ -55,6 +58,7 @@ class TankModel {
     nextAnalysis = json['proximaAnalise'];
     nextAnalysisDate = json['dataUltimaAnalise'];
     lastAnalysisDate = json['dataUltimoTratamento'];
+    hasTemperatureGauge = json['possuiMedicaoTemperatura']; 
   }
 
   Map<String, dynamic> toLocalDatabase(int speciesId, int batchId) => {
@@ -79,5 +83,6 @@ class TankModel {
         "unidadePeso": weightUnity,
         "pesoInicial": initialWeight,
         "especie": species,
+        "possuiMedicaoTemperatura": hasTemperatureGauge,
       };
 }
