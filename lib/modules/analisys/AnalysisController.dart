@@ -15,11 +15,12 @@ class AnalysisController extends AbstractController {
     BuildContext context,
     AnimationController _animationController,
     TankModel tankModel,
-    TextEditingController temperatureController,
   ) {
+    TextEditingController _temperatureController = TextEditingController();
+    TextEditingController _actualWeightController = TextEditingController();
     return showModalBottomSheet<void>(
       context: context,
-      isScrollControlled: false,
+      isScrollControlled: true,
       transitionAnimationController: _animationController,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -52,7 +53,7 @@ class AnalysisController extends AbstractController {
             return Column(
               children: [
                 Container(
-                  padding: EdgeInsets.only(top: 30, bottom: 20),
+                  padding: const EdgeInsets.only(top: 50, bottom: 20),
                   child: const Text(
                     "Informações iniciais",
                     style: TextStyle(
@@ -66,12 +67,12 @@ class AnalysisController extends AbstractController {
                     ? Container(
                         padding: const EdgeInsets.only(left: 20, right: 20),
                         child: TextFieldWidget(
-                          controller: temperatureController,
+                          controller: _temperatureController,
                           hintText: 'Temperatura do tanque',
                           focusedBorderColor: Colors.blueGrey,
                           iconColor: Colors.blueGrey,
                           obscureText: false,
-                          labelText: 'Temperatura',
+                          labelText: 'Temperatura do tanque',
                         ),
                       )
                     : Container(),
@@ -84,7 +85,7 @@ class AnalysisController extends AbstractController {
                       padding:
                           const EdgeInsets.only(top: 20, left: 20, right: 20),
                       child: TextFieldWidget(
-                        controller: temperatureController,
+                        controller: _actualWeightController,
                         hintText: 'Peso Atual',
                         focusedBorderColor: Colors.blueGrey,
                         iconColor: Colors.blueGrey,
@@ -136,7 +137,12 @@ class AnalysisController extends AbstractController {
                     horizontalPadding: 20,
                     verticalPadding: 10,
                     onPressed: () => _initiateAnalysisAndUpdate(
-                        temperatureController.text, tankModel, context),
+                      _temperatureController.text,
+                      _actualWeightController.text,
+                      tankModel,
+                      isGrams,
+                      context,
+                    ),
                   ),
                 ),
               ],
@@ -147,9 +153,9 @@ class AnalysisController extends AbstractController {
     );
   }
 
-  _initiateAnalysisAndUpdate(
-      String temperature, TankModel tankModel, BuildContext context) async {
-    await _analisysService.initiateAnalisys(tankModel.id!, temperature);
+  _initiateAnalysisAndUpdate(String temperature, String actualWeight,
+      TankModel tankModel, bool isGrams, BuildContext context) async {
+    await _analisysService.initiateAnalisys(tankModel.id!, actualWeight, isGrams ? 'GR' : 'KG', temperature);
     NavigatorUtils.pushReplacement(
         context, AnalisysListScreen(tankModel: tankModel));
   }

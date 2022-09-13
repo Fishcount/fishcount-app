@@ -35,8 +35,11 @@ class RequestBuilder<T> {
   }
 
   Future<Response<void>> put() async {
-    if (_body == null) {
+    if (_body == null && _hasBody) {
       throw Exception('Body was not set!');
+    }
+    if (!_hasBody){
+      return CustomDio().dioPutWithoutBody(url);
     }
     return CustomDio().dioPut(url, _body!);
   }

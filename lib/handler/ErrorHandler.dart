@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class ErrorHandler {
   static ErrorModel verifyDioError(DioError error) {
-    if (error.response != null) {
+    if (error.response != null && error.response!.statusCode != 500) {
       return ErrorModel.fromJson(error.response!.data);
     }
     return ErrorModel(ErrorMessage.serverError, null, null, null);

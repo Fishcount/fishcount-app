@@ -31,6 +31,10 @@ class CustomDio<T> {
     return await dio.get(url);
   }
 
+  Future<Response<dynamic>> dioPutWithoutBody(String url) async {
+    return await dio.put(url);
+  }
+
   Future<Response<void>> dioPut(String url, Map<String, dynamic> data) async {
     return await dio.put(url, data: data);
   }

@@ -1,5 +1,6 @@
 import 'package:fishcount_app/model/AnalysisModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
+import 'package:fishcount_app/modules/analisys/AnalisysService.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,6 +30,7 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
   Widget build(BuildContext context) {
     final TankModel _tankModel = widget.tankModel;
     final AnalysisModel _analysisModel = widget.analysisModel;
+    final AnalisysService _analysisService = AnalisysService();
 
     final String analysisStatus = _analysisModel.analysisStatus;
     final bool isConcluded = analysisStatus != 'AGUARDANDO_ANALISE';
@@ -63,6 +65,9 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
             ? _analysisModel.tankTemperature.toString() + ' ºC'
             : waitingSonar
         : waitingSonar;
+
+    final int tankId = _tankModel.id!;
+    final int analysisId = _analysisModel.id!;
 
     const Color borderColor = Colors.black26;
     final Color backGroundColor = Colors.grey.shade100;
@@ -106,8 +111,33 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
     return Scaffold(
       appBar: AppBarBuilder().build(),
       drawer: const DrawerWidget(),
-      bottomSheet: CustomBottomSheet(newFunction: () {}, context: context)
-          .build(tankModel: widget.tankModel),
+      bottomSheet: CustomBottomSheet(
+        newFunction: () {},
+        context: context,
+        rightElement: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              child: const Icon(
+                LineIcons.syncIcon,
+                size: 35,
+                color: Colors.white,
+              ),
+              onTap: () => _analysisService.simulateAnalysis(
+                tankId,
+                analysisId,
+                _analysisModel.tankTemperature,
+              ),
+            ),
+            const Text(
+              "Simular",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ).build(tankModel: widget.tankModel),
       body: Center(
         child: Container(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),

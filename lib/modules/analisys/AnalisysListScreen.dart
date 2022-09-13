@@ -41,7 +41,7 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
   final AnalisysService _analisysService = AnalisysService();
   final AnalysisController _analysisController = AnalysisController();
   late AnimationController _animationController;
-  TextEditingController _temperatureController = TextEditingController();
+
 
   String _orderBy = 'none';
   final String _waitingAnalysis = 'Aguardando..';
@@ -79,7 +79,6 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
           context,
           _animationController,
           widget.tankModel,
-          _temperatureController,
         ),
       ).build(tankModel: widget.tankModel),
       body: Center(
@@ -192,7 +191,6 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
                 context,
                 _animationController,
                 widget.tankModel,
-                _temperatureController,
               ),
             ),
           ),
