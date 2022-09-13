@@ -43,11 +43,25 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
         ? _analysisModel.dailyFoodAmount.toString() + '0 KG'
         : waitingSonar;
 
+    final String mealFoodAmount = isConcluded
+        ? _analysisModel.mealFoodAmout.toString() + '0 KG'
+        : waitingSonar;
+
     final String foodType =
         isConcluded ? _analysisModel.foodType.toString() : waitingSonar;
 
     final String dailyFrequency = isConcluded
         ? _analysisModel.dailyFoodFrequency.toString() + ' vezes ao dia'
+        : waitingSonar;
+
+    final tankWeight = isConcluded
+        ? _analysisModel.avergageTankWeight.toString() + '0 Kg'
+        : waitingSonar;
+
+    final tankTemperature = isConcluded
+        ? _tankModel.hasTemperatureGauge
+            ? _analysisModel.tankTemperature.toString() + ' ºC'
+            : waitingSonar
         : waitingSonar;
 
     const Color borderColor = Colors.black26;
@@ -264,7 +278,7 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                                           left: 5, top: 5),
                                       child: Text(
                                         fishAmount,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: fontDescriptionSize),
                                       ),
                                     ),
@@ -279,191 +293,373 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                   ],
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.only(top: 5),
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: cardHeight,
-                      width: cardWidth,
-                      decoration: _getBoxDecoration(
-                          backGroundColor, borderColor, true, shadowCardColor),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: const Text(
-                              "Temperatura da Água",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: fontTitleSize),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  // "28º",
-                                  "Aguardando sonar..",
-                                  // style: TextStyle(fontSize: 20),
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                                Icon(
-                                  LineIcons.highTemperature,
-                                  color: Colors.blueGrey,
-                                  size: 30,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: cardHeight,
-                      width: cardWidth,
-                      decoration: _getBoxDecoration(
-                          backGroundColor, borderColor, true, shadowCardColor),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: const Text(
-                              "Ração estimada",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: fontTitleSize),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.only(right: 5),
-                                  child: Text(
-                                    dailyFoodAmount,
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                ),
-                                const Icon(
-                                  Icons.blur_linear_outlined,
-                                  color: Colors.grey,
-                                  size: 30,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 5),
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: cardHeight,
-                      width: cardWidth,
-                      decoration: _getBoxDecoration(
-                          backGroundColor, borderColor, true, shadowCardColor),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: const Text(
-                              "Tipo de ração",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: fontTitleSize,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding:
-                                      const EdgeInsets.only(top: 5, right: 5),
-                                  child: Text(
-                                    foodType,
-                                    style: const TextStyle(
-                                      fontSize: 15,
+              SingleChildScrollView(
+                padding: const EdgeInsets.only(top: 15, bottom: 10),
+                child: SizedBox(
+                  height:
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? MediaQuery.of(context).size.height / 2.5
+                          : MediaQuery.of(context).size.height / 3,
+                  child: ListView(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              height: cardHeight,
+                              width: cardWidth,
+                              decoration: _getBoxDecoration(backGroundColor,
+                                  borderColor, true, shadowCardColor),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 20),
+                                    child: const Text(
+                                      "Ração por refeição",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: fontTitleSize),
                                     ),
                                   ),
-                                ),
-                                const Icon(
-                                  Icons.backpack_rounded,
-                                  color: Colors.grey,
-                                  size: 30,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 10),
-                      height: cardHeight,
-                      width: cardWidth,
-                      decoration: _getBoxDecoration(
-                          backGroundColor, borderColor, true, shadowCardColor),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: const Text(
-                              "Frequência diária",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: fontTitleSize,
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(right: 5),
+                                          child: Text(
+                                            mealFoodAmount,
+                                            style:
+                                                const TextStyle(fontSize: 15),
+                                          ),
+                                        ),
+                                        const Icon(
+                                          Icons.blur_linear_outlined,
+                                          color: Colors.grey,
+                                          size: 30,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.only(right: 5),
-                                  child: Text(
-                                    dailyFrequency,
-                                    style: TextStyle(fontSize: 15),
+                            Container(
+                              height: cardHeight,
+                              width: cardWidth,
+                              decoration: _getBoxDecoration(backGroundColor,
+                                  borderColor, true, shadowCardColor),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 20),
+                                    child: const Text(
+                                      "Ração diária",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: fontTitleSize),
+                                    ),
                                   ),
-                                ),
-                                const Icon(
-                                  Icons.alarm_on_outlined,
-                                  color: Colors.grey,
-                                  size: 30,
-                                ),
-                              ],
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(right: 5),
+                                          child: Text(
+                                            dailyFoodAmount,
+                                            style:
+                                                const TextStyle(fontSize: 15),
+                                          ),
+                                        ),
+                                        const Icon(
+                                          Icons.blur_linear_outlined,
+                                          color: Colors.grey,
+                                          size: 30,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        margin: const EdgeInsets.only(top: 5),
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              height: cardHeight,
+                              width: cardWidth,
+                              decoration: _getBoxDecoration(backGroundColor,
+                                  borderColor, true, shadowCardColor),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 20),
+                                    child: const Text(
+                                      "Frequência diária",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: fontTitleSize,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(right: 5),
+                                          child: Text(
+                                            dailyFrequency,
+                                            style:
+                                                const TextStyle(fontSize: 15),
+                                          ),
+                                        ),
+                                        const Icon(
+                                          Icons.alarm_on_outlined,
+                                          color: Colors.grey,
+                                          size: 30,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: cardHeight,
+                              width: cardWidth,
+                              decoration: _getBoxDecoration(backGroundColor,
+                                  borderColor, true, shadowCardColor),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 20),
+                                    child: const Text(
+                                      "Tipo de ração",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: fontTitleSize,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.only(
+                                              top: 5, right: 5),
+                                          child: Text(
+                                            foodType,
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ),
+                                        const Icon(
+                                          Icons.backpack_rounded,
+                                          color: Colors.grey,
+                                          size: 30,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      !_tankModel.hasTemperatureGauge
+                          ? Container(
+                              margin: const EdgeInsets.only(top: 5),
+                              height: cardHeight,
+                              width: cardWidth,
+                              decoration: _getBoxDecoration(backGroundColor,
+                                  borderColor, true, shadowCardColor),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 20),
+                                    child: const Text(
+                                      "Peso total do tanque",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: fontTitleSize,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.only(
+                                              top: 5, right: 5),
+                                          child: Text(
+                                            tankWeight,
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ),
+                                        const Icon(
+                                          LineIcons.fish,
+                                          color: Colors.grey,
+                                          size: 30,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Container(),
+                      _tankModel.hasTemperatureGauge
+                          ? Container(
+                              margin: const EdgeInsets.only(top: 5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    height: cardHeight,
+                                    width: cardWidth,
+                                    decoration: _getBoxDecoration(
+                                        backGroundColor,
+                                        borderColor,
+                                        true,
+                                        shadowCardColor),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: const Text(
+                                            "Peso total do tanque",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: fontTitleSize,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                padding: const EdgeInsets.only(
+                                                    top: 5, right: 5),
+                                                child: Text(
+                                                  tankWeight,
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                              ),
+                                              const Icon(
+                                                LineIcons.fish,
+                                                color: Colors.grey,
+                                                size: 30,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    height: cardHeight,
+                                    width: cardWidth,
+                                    decoration: _getBoxDecoration(
+                                        backGroundColor,
+                                        borderColor,
+                                        true,
+                                        shadowCardColor),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: const Text(
+                                            "Temperatura da Água",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: fontTitleSize),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                tankTemperature,
+                                                style: const TextStyle(
+                                                    fontSize: 15),
+                                              ),
+                                              const Icon(
+                                                LineIcons.highTemperature,
+                                                color: Colors.blueGrey,
+                                                size: 30,
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          : Container(),
+                    ],
+                  ),
                 ),
               ),
             ],

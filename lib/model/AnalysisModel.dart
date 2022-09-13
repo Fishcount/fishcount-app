@@ -15,6 +15,8 @@ class AnalysisModel {
 
   late int? dailyFoodFrequency;
 
+  late double? tankTemperature;
+
   late String analysisStatus;
 
   late String analysisDate;
@@ -27,6 +29,7 @@ class AnalysisModel {
     this.mealFoodAmout,
     this.unityWeitghMealFood,
     this.dailyFoodFrequency,
+    this.tankTemperature,
     this.analysisStatus,
     this.analysisDate,
   );
@@ -40,6 +43,7 @@ class AnalysisModel {
     mealFoodAmout = json['qtdeRacaoRefeicao'];
     unityWeitghMealFood = json['unidadePesoRacaoRefeicao'];
     dailyFoodFrequency = json['frequenciaAlimentacaoDiaria'];
+    tankTemperature = json['temperaturaAgua'];
     analysisStatus = json['statusAnalise'];
     analysisDate = json['dataAnalise'];
   }
@@ -53,6 +57,7 @@ class AnalysisModel {
         'qtdeRacaoRefeicao': mealFoodAmout,
         'unidadePesoRacaoRefeicao': unityWeitghMealFood,
         'frequenciaAlimentacaoDiaria': dailyFoodFrequency,
+        'temperaturaAgua': tankTemperature,
         'statusAnalise': analysisStatus,
         'dataAnalise': analysisDate,
       };
