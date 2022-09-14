@@ -59,8 +59,8 @@ class TankService extends AbstractService {
           .addPathParam('lote')
           .addPathParam('$batchId')
           .addPathParam('tanque')
-          .buildUrl()
           .setBody(tank.toJson())
+          .buildUrl()
           .post();
       if (response.statusCode == 201) {
         return TankModel.fromJson(response.data);

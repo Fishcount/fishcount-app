@@ -36,6 +36,7 @@ class _BatchScreenState extends State<BatchScreen>
   final BatchController _batchController = BatchController();
   final List<BatchModel> lotes = [];
   late AnimationController _animationController;
+  String _text = '';
 
   String _orderBy = 'none';
 
@@ -81,7 +82,11 @@ class _BatchScreenState extends State<BatchScreen>
       bottomNavigationBar: CustomBottomSheet(
         context: context,
         newFunction: () => _batchController.openBatchRegisterModal(
-            context, TextEditingController(), _animationController, null),
+            (text) => setState(() => _text),
+            context,
+            TextEditingController(),
+            _animationController,
+            null),
       ).build(),
       body: Container(
         padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
@@ -110,6 +115,7 @@ class _BatchScreenState extends State<BatchScreen>
                               child: FilterOptionWidget(
                                 onTap: () =>
                                     _batchController.openBatchRegisterModal(
+                                        (text) => setState(() => _text),
                                         context,
                                         TextEditingController(),
                                         _animationController,
@@ -192,8 +198,12 @@ class _BatchScreenState extends State<BatchScreen>
               textColor: Colors.white,
               buttonColor: Colors.blue,
               onPressed: () => _batchController
-                  .openBatchRegisterModal(context, TextEditingController(),
-                      _animationController, null)
+                  .openBatchRegisterModal(
+                      (text) => setState(() => _text),
+                      context,
+                      TextEditingController(),
+                      _animationController,
+                      null)
                   .build(),
             ),
           ),
@@ -209,6 +219,7 @@ class _BatchScreenState extends State<BatchScreen>
 
     const Color borderColor = Colors.black26;
     final Color? backGroundColor = Colors.grey[100];
+
     return SingleChildScrollView(
       child: SizedBox(
         height: MediaQuery.of(context).orientation == Orientation.portrait
@@ -350,8 +361,10 @@ class _BatchScreenState extends State<BatchScreen>
                             size: 30,
                           ),
                           onTap: () => {
-                                _editBatchNameController.text = batch.description,
+                                _editBatchNameController.text =
+                                    batch.description,
                                 _batchController.openBatchRegisterModal(
+                                  (text) => setState(() => _text),
                                   context,
                                   _editBatchNameController,
                                   _animationController,

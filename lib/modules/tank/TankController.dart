@@ -22,6 +22,7 @@ import 'TankService.dart';
 
 class TankController extends AbstractController {
   final SpeciesService _speciesService = SpeciesService();
+  final TankService _tankService = TankService();
 
   final TextEditingController _pesoMedioController = TextEditingController();
   final TextEditingController _tamanhoMedioController = TextEditingController();
@@ -30,7 +31,7 @@ class TankController extends AbstractController {
 
   Future<dynamic> saveTank(
       BuildContext context, TankModel tank, BatchModel batch) async {
-    dynamic response = await TankService().saveTank(tank, batch.id!);
+    dynamic response = await _tankService.saveTank(tank, batch.id!);
 
     return validateResponse(
       context: context,
@@ -63,6 +64,7 @@ class TankController extends AbstractController {
     final bool _isUpdate = tankModel != null;
     bool? hasTemperature = false;
     final List<SpeciesModel> species = await resolverListaEspecie(context);
+
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -93,7 +95,7 @@ class TankController extends AbstractController {
             color: borderColor,
           ),
         );
-
+        bool _submitted = false;
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return Column(
@@ -123,6 +125,15 @@ class TankController extends AbstractController {
                     iconColor: Colors.blueGrey,
                     obscureText: false,
                     labelText: 'Nome do tanque',
+                    errorText: resolveErrorText(
+                      controller: tankNameController,
+                      submitted: _submitted,
+                      errorMessage: 'O nome do tanque não pode estar vazio.',
+                    ),
+                    onChanged: (text) => setState(
+                      () =>
+                          resolveOnChaged(tankNameController, _submitted, text),
+                    ),
                   ),
                 ),
                 Container(
@@ -135,6 +146,15 @@ class TankController extends AbstractController {
                     obscureText: false,
                     labelText: 'Quantidade inicial de peixes',
                     keyBoardType: TextInputType.number,
+                    errorText: resolveErrorText(
+                        controller: fishAmounController,
+                        submitted: _submitted,
+                        errorMessage:
+                            'A quantidade de peixes não pode estar vazia.'),
+                    onChanged: (text) => setState(
+                      () => resolveOnChaged(
+                          fishAmounController, _submitted, text),
+                    ),
                   ),
                 ),
                 Row(
@@ -153,6 +173,15 @@ class TankController extends AbstractController {
                         obscureText: false,
                         labelText: 'Peso inicial dos peixes',
                         keyBoardType: TextInputType.number,
+                        errorText: resolveErrorText(
+                            controller: initialWeightController,
+                            submitted: _submitted,
+                            errorMessage:
+                                ' O peso inicial dos peixes não pode estar vazio.'),
+                        onChanged: (text) => setState(
+                          () => resolveOnChaged(
+                              fishAmounController, _submitted, text),
+                        ),
                       ),
                     ),
                     GestureDetector(
@@ -257,7 +286,14 @@ class TankController extends AbstractController {
                         radioBorder: 10,
                         horizontalPadding: 20,
                         verticalPadding: 10,
-                        onPressed: () async => await _confirmTank(
+                        onPressed: () async {
+                          setState(() => _submitted = true);
+                          if (!_isFormValid(initialWeightController,
+                              fishAmounController, tankNameController)) {
+                            return;
+                          }
+
+                          return await _confirmTank(
                             tankSpecie,
                             species,
                             _isUpdate,
@@ -268,7 +304,9 @@ class TankController extends AbstractController {
                             initialWeightController,
                             isGrams ? 'GRAMA' : 'KILO',
                             context,
-                            hasTemperature!),
+                            hasTemperature!,
+                          );
+                        },
                       ),
                     ),
                   ],
@@ -280,6 +318,14 @@ class TankController extends AbstractController {
       },
     );
   }
+
+  bool _isFormValid(
+          TextEditingController initialWeightController,
+          TextEditingController fishAmounController,
+          TextEditingController tankNameController) =>
+      initialWeightController.text.isNotEmpty &&
+          fishAmounController.text.isNotEmpty ||
+      tankNameController.text.isNotEmpty;
 
   Future<dynamic> _confirmTank(
       String tankSpecie,

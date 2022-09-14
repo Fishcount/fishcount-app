@@ -49,7 +49,7 @@ class TankModel {
     id = json['id'];
     description = json['descricao'];
     fishAmount = json['qtdePeixe'];
-    initialWeight = json['pesoInicial'];
+    initialWeight = json['pesoUnitario'];
     weightUnity = json['unidadePeso'];
     analisyStatus = json['statusAnalise'];
     species = SpeciesModel.fromJson(json['especie']);
@@ -81,7 +81,7 @@ class TankModel {
         "descricao": description,
         "qtdePeixe": fishAmount,
         "unidadePeso": weightUnity,
-        "pesoInicial": initialWeight,
+        "pesoUnitario": initialWeight,
         "especie": species,
         "possuiMedicaoTemperatura": hasTemperatureGauge,
       };

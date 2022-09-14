@@ -25,6 +25,7 @@ class _PessoaDataFormState extends State<PessoaDataForm>
   final TextEditingController _nomeController = TextEditingController();
   final BatchController _batchController = BatchController();
   late AnimationController _animationController;
+  String _text = '';
 
   @override
   initState() {
@@ -50,11 +51,15 @@ class _PessoaDataFormState extends State<PessoaDataForm>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  AppBarBuilder().build(),
+      appBar: AppBarBuilder().build(),
       bottomNavigationBar: CustomBottomSheet(
         context: context,
         newFunction: () => _batchController.openBatchRegisterModal(
-            context, TextEditingController(), _animationController, null),
+            (text) => setState(() => _text),
+            context,
+            TextEditingController(),
+            _animationController,
+            null),
       ).build(),
       body: SingleChildScrollView(
         child: Container(

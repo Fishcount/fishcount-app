@@ -22,10 +22,8 @@ abstract class AbstractController {
     );
   }
 
-
   dynamic _responseIsErrorModel(BuildContext context, dynamic response) {
     if (response is ErrorModel) {
-      Navigator.pop(context);
       return ErrorHandler.getDefaultErrorMessage(context, response.message);
     }
     return true;
@@ -37,10 +35,27 @@ abstract class AbstractController {
     redirect = Widget,
   }) {
     dynamic validationResult = _responseIsErrorModel(context, response);
-    if (validationResult) {
+    if (validationResult == true) {
       NavigatorUtils.pushReplacement(context, redirect);
     }
     return validationResult;
+  }
+
+  String resolveOnChaged(
+      TextEditingController _controller, bool _submitted, String text) {
+    return _controller.text.isEmpty && _submitted
+        ? _controller.text = text
+        : _controller.text;
+  }
+
+  String? resolveErrorText({
+    controller = TextEditingController,
+    submitted = bool,
+    errorMessage = String,
+  }) {
+    return controller.text.isEmpty && submitted
+        ? errorMessage
+        : null;
   }
 
   Widget notFoundWidgetRedirect(
