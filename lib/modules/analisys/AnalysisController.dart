@@ -15,9 +15,12 @@ class AnalysisController extends AbstractController {
     BuildContext context,
     AnimationController _animationController,
     TankModel tankModel,
-  ) {
+    int? analysisId,
+  ) async {
     TextEditingController _temperatureController = TextEditingController();
     TextEditingController _actualWeightController = TextEditingController();
+    TextEditingController _fishAmountController = TextEditingController();
+    bool _submitted = false;
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -48,104 +51,172 @@ class AnalysisController extends AbstractController {
             color: borderColor,
           ),
         );
+
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(top: 50, bottom: 20),
-                  child: const Text(
-                    "Informações iniciais",
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
+            return SizedBox(
+              height: 650,
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(top: 70, bottom: 35),
+                    child: const Text(
+                      "Informações iniciais",
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
                     ),
                   ),
-                ),
-                tankModel.hasTemperatureGauge
-                    ? Container(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
-                        child: TextFieldWidget(
-                          controller: _temperatureController,
-                          hintText: 'Temperatura do tanque',
-                          focusedBorderColor: Colors.blueGrey,
-                          iconColor: Colors.blueGrey,
-                          obscureText: false,
-                          labelText: 'Temperatura do tanque',
+                  tankModel.hasTemperatureGauge
+                      ? Container(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: TextFieldWidget(
+                            controller: _temperatureController,
+                            hintText: 'Temperatura do tanque',
+                            focusedBorderColor: Colors.blueGrey,
+                            iconColor: Colors.blueGrey,
+                            obscureText: false,
+                            labelText: 'Temperatura do tanque',
+                            keyBoardType: TextInputType.number,
+                            errorText: resolveErrorText(
+                              controller: _temperatureController,
+                              submitted: _submitted,
+                              errorMessage:
+                                  'Temperatura do tanque não pode estar vazia.',
+                            ),
+                            onChanged: (text) => setState(() => resolveOnChaged(
+                                _temperatureController, _submitted, text)),
+                          ),
+                        )
+                      : Container(),
+                  analysisId == null
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width / 1.5,
+                              padding: const EdgeInsets.only(
+                                  top: 20, left: 20, right: 20),
+                              child: TextFieldWidget(
+                                controller: _actualWeightController,
+                                hintText: 'Peso Atual',
+                                focusedBorderColor: Colors.blueGrey,
+                                iconColor: Colors.blueGrey,
+                                obscureText: false,
+                                labelText: 'Peso atual dos peixes',
+                                keyBoardType: TextInputType.number,
+                                errorText: resolveErrorText(
+                                  controller: _actualWeightController,
+                                  submitted: _submitted,
+                                  errorMessage:
+                                      'Peso dos peixes não pode estar vazio.',
+                                ),
+                                onChanged: (text) => setState(() =>
+                                    resolveOnChaged(_actualWeightController,
+                                        _submitted, text)),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => setState(() => isGrams = false),
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.only(top: 25, right: 15),
+                                width: 50,
+                                height: 40,
+                                child: const Center(child: Text("KG")),
+                                decoration: BoxDecoration(
+                                  color:
+                                      isGrams ? noSelectedColor : selectedColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  border: border,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => setState(() => isGrams = true),
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 25),
+                                width: 50,
+                                height: 40,
+                                child: const Center(child: Text("GR")),
+                                decoration: BoxDecoration(
+                                  color: !isGrams
+                                      ? noSelectedColor
+                                      : selectedColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  border: border,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container(
+                          padding: const EdgeInsets.only(
+                              top: 20, left: 20, right: 20),
+                          child: TextFieldWidget(
+                            controller: _fishAmountController,
+                            hintText: 'Quantidade de peixes simulada',
+                            focusedBorderColor: Colors.blueGrey,
+                            iconColor: Colors.blueGrey,
+                            obscureText: false,
+                            labelText: 'Quantidade de peixes simulada',
+                            keyBoardType: TextInputType.number,
+                            errorText: resolveErrorText(
+                              controller: _fishAmountController,
+                              submitted: _submitted,
+                              errorMessage:
+                                  'Quantidade de peixes não pode estar vazia.',
+                            ),
+                            onChanged: (text) => setState(() => resolveOnChaged(
+                                _fishAmountController, _submitted, text)),
+                          ),
                         ),
-                      )
-                    : Container(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width / 1.5,
-                      padding:
-                          const EdgeInsets.only(top: 20, left: 20, right: 20),
-                      child: TextFieldWidget(
-                        controller: _actualWeightController,
-                        hintText: 'Peso Atual',
-                        focusedBorderColor: Colors.blueGrey,
-                        iconColor: Colors.blueGrey,
-                        obscureText: false,
-                        labelText: 'Peso atual dos peixes',
-                        keyBoardType: TextInputType.number,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => setState(() => isGrams = false),
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 25, right: 15),
-                        width: 50,
-                        height: 40,
-                        child: const Center(child: Text("KG")),
-                        decoration: BoxDecoration(
-                          color: isGrams ? noSelectedColor : selectedColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          border: border,
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => setState(() => isGrams = true),
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 25),
-                        width: 50,
-                        height: 40,
-                        child: const Center(child: Text("GR")),
-                        decoration: BoxDecoration(
-                          color: !isGrams ? noSelectedColor : selectedColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          border: border,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: ElevatedButtonWidget(
-                    buttonText: "Confirmar",
-                    buttonColor: Colors.green,
-                    textSize: 15,
-                    textColor: Colors.white,
-                    radioBorder: 10,
-                    horizontalPadding: 20,
-                    verticalPadding: 10,
-                    onPressed: () => _initiateAnalysisAndUpdate(
-                      _temperatureController.text,
-                      _actualWeightController.text,
-                      tankModel,
-                      isGrams,
-                      context,
+                  Container(
+                    padding: const EdgeInsets.only(top: 30),
+                    child: ElevatedButtonWidget(
+                      buttonText: "Confirmar",
+                      buttonColor: Colors.green,
+                      textSize: 15,
+                      textColor: Colors.white,
+                      radioBorder: 10,
+                      horizontalPadding: 20,
+                      verticalPadding: 10,
+                      onPressed: () {
+                        setState(() => _submitted = true);
+                        if ((tankModel.hasTemperatureGauge &&
+                                _temperatureController.text.isEmpty) ||
+                            (analysisId != null &&
+                                _fishAmountController.text.isEmpty) ||
+                            (analysisId == null &&
+                                _actualWeightController.text.isEmpty)) {
+                          return;
+                        }
+                        if (analysisId == null) {
+                          _initiateAnalysisAndUpdate(
+                            _temperatureController.text,
+                            _actualWeightController.text,
+                            tankModel,
+                            isGrams,
+                            context,
+                          );
+                        } else {
+                          _simulateAnalysis(
+                              tankModel,
+                              _temperatureController.text,
+                              _fishAmountController.text,
+                              analysisId,
+                              context);
+                        }
+                      },
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           },
         );
@@ -153,9 +224,18 @@ class AnalysisController extends AbstractController {
     );
   }
 
+  _simulateAnalysis(TankModel tankModel, String temperature, String fishAmount,
+      int analysisId, BuildContext context) async {
+    await _analisysService.simulateAnalysis(
+        tankModel.id!, analysisId, temperature, fishAmount);
+    NavigatorUtils.pushReplacement(
+        context, AnalisysListScreen(tankModel: tankModel));
+  }
+
   _initiateAnalysisAndUpdate(String temperature, String actualWeight,
       TankModel tankModel, bool isGrams, BuildContext context) async {
-    await _analisysService.initiateAnalisys(tankModel.id!, actualWeight, isGrams ? 'GR' : 'KG', temperature);
+    await _analisysService.initiateAnalisys(
+        tankModel.id!, actualWeight, isGrams ? 'GRAMA' : 'KILO', temperature);
     NavigatorUtils.pushReplacement(
         context, AnalisysListScreen(tankModel: tankModel));
   }

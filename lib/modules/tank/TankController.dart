@@ -54,7 +54,7 @@ class TankController extends AbstractController {
 
   openTankRegisterModal(
       BuildContext context,
-      TextEditingController tankNameController,
+      TextEditingController _tankNameController,
       TextEditingController fishAmounController,
       TextEditingController initialWeightController,
       String tankSpecie,
@@ -64,7 +64,7 @@ class TankController extends AbstractController {
     final bool _isUpdate = tankModel != null;
     bool? hasTemperature = false;
     final List<SpeciesModel> species = await resolverListaEspecie(context);
-
+    bool _submitted = false;
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -95,7 +95,7 @@ class TankController extends AbstractController {
             color: borderColor,
           ),
         );
-        bool _submitted = false;
+
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return Column(
@@ -119,21 +119,19 @@ class TankController extends AbstractController {
                 Container(
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: TextFieldWidget(
-                    controller: tankNameController,
+                    controller: _tankNameController,
                     hintText: 'Nome do tanque',
                     focusedBorderColor: Colors.blueGrey,
                     iconColor: Colors.blueGrey,
                     obscureText: false,
                     labelText: 'Nome do tanque',
                     errorText: resolveErrorText(
-                      controller: tankNameController,
+                      controller: _tankNameController,
                       submitted: _submitted,
                       errorMessage: 'O nome do tanque não pode estar vazio.',
                     ),
-                    onChanged: (text) => setState(
-                      () =>
-                          resolveOnChaged(tankNameController, _submitted, text),
-                    ),
+                    onChanged: (text) => setState(() =>
+                        resolveOnChaged(_tankNameController, _submitted, text)),
                   ),
                 ),
                 Container(
@@ -289,7 +287,7 @@ class TankController extends AbstractController {
                         onPressed: () async {
                           setState(() => _submitted = true);
                           if (!_isFormValid(initialWeightController,
-                              fishAmounController, tankNameController)) {
+                              fishAmounController, _tankNameController)) {
                             return;
                           }
 
@@ -299,7 +297,7 @@ class TankController extends AbstractController {
                             _isUpdate,
                             tankModel,
                             batchModel,
-                            tankNameController,
+                            _tankNameController,
                             fishAmounController,
                             initialWeightController,
                             isGrams ? 'GRAMA' : 'KILO',

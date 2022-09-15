@@ -79,6 +79,7 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
           context,
           _animationController,
           widget.tankModel,
+          null,
         ),
       ).build(tankModel: widget.tankModel),
       body: Center(
@@ -191,6 +192,7 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
                 context,
                 _animationController,
                 widget.tankModel,
+                null,
               ),
             ),
           ),

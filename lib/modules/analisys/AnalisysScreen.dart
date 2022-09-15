@@ -1,6 +1,7 @@
 import 'package:fishcount_app/model/AnalysisModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
 import 'package:fishcount_app/modules/analisys/AnalisysService.dart';
+import 'package:fishcount_app/modules/analisys/AnalysisController.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,17 +26,33 @@ class AnalisysScreen extends StatefulWidget {
   State<AnalisysScreen> createState() => _AnalisysScreenState();
 }
 
-class _AnalisysScreenState extends State<AnalisysScreen> {
+class _AnalisysScreenState extends State<AnalisysScreen>
+    with TickerProviderStateMixin {
+  late AnimationController _animationController;
+  final AnalisysService _analysisService = AnalisysService();
+  final AnalysisController _analysisController = AnalysisController();
+  final String waitingSonar = 'Aguardando sonar..';
+
+  @override
+  initState() {
+    super.initState();
+    _animationController = BottomSheet.createAnimationController(this);
+    _animationController.duration = const Duration(milliseconds: 300);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final TankModel _tankModel = widget.tankModel;
     final AnalysisModel _analysisModel = widget.analysisModel;
-    final AnalisysService _analysisService = AnalisysService();
 
     final String analysisStatus = _analysisModel.analysisStatus;
     final bool isConcluded = analysisStatus != 'AGUARDANDO_ANALISE';
-
-    const String waitingSonar = 'Aguardando sonar..';
 
     final String fishAmount = isConcluded
         ? _tankModel.fishAmount.toString() + ' peixes'
@@ -123,11 +140,8 @@ class _AnalisysScreenState extends State<AnalisysScreen> {
                 size: 35,
                 color: Colors.white,
               ),
-              onTap: () => _analysisService.simulateAnalysis(
-                tankId,
-                analysisId,
-                _analysisModel.tankTemperature,
-              ),
+              onTap: () => _analysisController.openAnalysisModal(
+                  context, _animationController, widget.tankModel, analysisId),
             ),
             const Text(
               "Simular",

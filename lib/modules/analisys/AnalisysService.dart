@@ -31,8 +31,8 @@ class AnalisysService extends AbstractService {
     }
   }
 
-  dynamic initiateAnalisys(
-      int tankId, String actualWeight, String unityWeight, String? temperature) async {
+  dynamic initiateAnalisys(int tankId, String actualWeight, String unityWeight,
+      String? temperature) async {
     try {
       RequestBuilder request = RequestBuilder(url: '/analise')
           .addQueryParam('tanqueId', tankId.toString())
@@ -54,15 +54,16 @@ class AnalisysService extends AbstractService {
     }
   }
 
-  dynamic simulateAnalysis(
-      int tankId, int analysisId, double? temperature) async {
+  dynamic simulateAnalysis(int tankId, int analysisId, String? temperature,
+      String fishAmount) async {
     try {
       RequestBuilder request = RequestBuilder(url: '/analise')
           .addPathParam(analysisId.toString())
+          .addQueryParam('qtdePeixes', fishAmount)
           .addQueryParam('tanqueId', tankId.toString());
 
       if (temperature != null) {
-        request.addQueryParam('temperatura', temperature.toString());
+        request.addQueryParam('temperatura', temperature);
       }
       Response<dynamic> response =
           await request.hasBody(false).buildUrl().put();
