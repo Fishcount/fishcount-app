@@ -65,6 +65,7 @@ class TankController extends AbstractController {
     bool? hasTemperature = false;
     final List<SpeciesModel> species = await resolverListaEspecie(context);
     bool _submitted = false;
+    bool loading = false;
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -258,57 +259,62 @@ class TankController extends AbstractController {
                         .leading, //  <-- leading Checkbox
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: ElevatedButtonWidget(
-                        buttonText: "Cancelar",
-                        buttonColor: Colors.blue,
-                        onPressed: () => Navigator.pop(context),
-                        textSize: 15,
-                        textColor: Colors.white,
-                        radioBorder: 10,
-                        horizontalPadding: 20,
-                        verticalPadding: 10,
+                loading
+                    ? Container(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: AnimationUtils.progressiveDots(size: 50.0),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: ElevatedButtonWidget(
+                              buttonText: "Cancelar",
+                              buttonColor: Colors.blue,
+                              onPressed: () => Navigator.pop(context),
+                              textSize: 15,
+                              textColor: Colors.white,
+                              radioBorder: 10,
+                              horizontalPadding: 20,
+                              verticalPadding: 10,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: ElevatedButtonWidget(
+                              buttonText: "Confirmar",
+                              buttonColor: Colors.green,
+                              textSize: 15,
+                              textColor: Colors.white,
+                              radioBorder: 10,
+                              horizontalPadding: 20,
+                              verticalPadding: 10,
+                              onPressed: () async {
+                                setState(() => _submitted = true);
+                                if (!_isFormValid(initialWeightController,
+                                    fishAmounController, _tankNameController)) {
+                                  return;
+                                }
+                                setState(() => loading = true);
+                                return await _confirmTank(
+                                  tankSpecie,
+                                  species,
+                                  _isUpdate,
+                                  tankModel,
+                                  batchModel,
+                                  _tankNameController,
+                                  fishAmounController,
+                                  initialWeightController,
+                                  isGrams ? 'GRAMA' : 'KILO',
+                                  context,
+                                  hasTemperature!,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: ElevatedButtonWidget(
-                        buttonText: "Confirmar",
-                        buttonColor: Colors.green,
-                        textSize: 15,
-                        textColor: Colors.white,
-                        radioBorder: 10,
-                        horizontalPadding: 20,
-                        verticalPadding: 10,
-                        onPressed: () async {
-                          setState(() => _submitted = true);
-                          if (!_isFormValid(initialWeightController,
-                              fishAmounController, _tankNameController)) {
-                            return;
-                          }
-
-                          return await _confirmTank(
-                            tankSpecie,
-                            species,
-                            _isUpdate,
-                            tankModel,
-                            batchModel,
-                            _tankNameController,
-                            fishAmounController,
-                            initialWeightController,
-                            isGrams ? 'GRAMA' : 'KILO',
-                            context,
-                            hasTemperature!,
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
               ],
             );
           },

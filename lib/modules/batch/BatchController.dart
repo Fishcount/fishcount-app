@@ -1,6 +1,7 @@
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/modules/batch/BatchScreen.dart';
 import 'package:fishcount_app/repository/LoteRepository.dart';
+import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:flutter/material.dart';
 
@@ -69,6 +70,7 @@ class BatchController extends AbstractController {
       BatchModel? batchModel) {
     final bool _isUpdate = batchModel != null;
     bool _submitted = false;
+    bool loading = false;
 
     return showModalBottomSheet<void>(
       context: context,
@@ -117,48 +119,59 @@ class BatchController extends AbstractController {
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(top: 40),
-                        child: ElevatedButtonWidget(
-                          buttonText: "Cancelar",
-                          buttonColor: Colors.blue,
-                          onPressed: () => Navigator.pop(context),
-                          textSize: 15,
-                          textColor: Colors.white,
-                          radioBorder: 10,
-                          horizontalPadding: 20,
-                          verticalPadding: 10,
+                  loading
+                      ? Container(
+                          padding: const EdgeInsets.only(top: 30),
+                          child: AnimationUtils.progressiveDots(size: 50.0),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(top: 30),
+                              child: ElevatedButtonWidget(
+                                buttonText: "Cancelar",
+                                buttonColor: Colors.blue,
+                                onPressed: () => Navigator.pop(context),
+                                textSize: 15,
+                                textColor: Colors.white,
+                                radioBorder: 10,
+                                horizontalPadding: 20,
+                                verticalPadding: 10,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(top: 40),
+                              child: ElevatedButtonWidget(
+                                buttonText: "Confirmar",
+                                buttonColor: Colors.green,
+                                onPressed: () async {
+                                  setState(() {
+                                    _submitted = true;
+                                  });
+                                  if (_batchNameController.text.isNotEmpty) {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    if (_isUpdate) {
+                                      batchModel.description =
+                                          _batchNameController.text;
+                                      updateBatch(context, batchModel);
+                                      return;
+                                    }
+                                    saveBatch(
+                                        context, _batchNameController.text);
+                                  }
+                                },
+                                textSize: 15,
+                                textColor: Colors.white,
+                                radioBorder: 10,
+                                horizontalPadding: 20,
+                                verticalPadding: 10,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(top: 40),
-                        child: ElevatedButtonWidget(
-                          buttonText: "Confirmar",
-                          buttonColor: Colors.green,
-                          onPressed: () async {
-                            setState(() {
-                              _submitted = true;
-                            });
-                            if (_isUpdate) {
-                              batchModel.description =
-                                  _batchNameController.text;
-                              updateBatch(context, batchModel);
-                              return;
-                            }
-                            saveBatch(context, _batchNameController.text);
-                          },
-                          textSize: 15,
-                          textColor: Colors.white,
-                          radioBorder: 10,
-                          horizontalPadding: 20,
-                          verticalPadding: 10,
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             );

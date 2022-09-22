@@ -13,7 +13,7 @@ class ErrorHandler {
     return ErrorModel(ErrorMessage.serverError, null, null, null);
   }
 
-  static Widget getDefaultErrorMessage(BuildContext context, String? message) {
+  static dynamic getDefaultErrorMessage(BuildContext context, String? message) {
     message ??= ErrorMessage.serverError;
     return SnackBarBuilder.error(message, Colors.red[400]).buildError(context);
   }

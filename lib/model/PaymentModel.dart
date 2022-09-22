@@ -1,7 +1,7 @@
 import 'package:fishcount_app/model/PlanModel.dart';
 
 class PaymentModel {
-  late int? id;
+  int? id;
 
   late double value;
 
@@ -32,6 +32,7 @@ class PaymentModel {
     this.increase,
     this.discount,
     this.installmentNumber,
+    this.dueDate,
     this.plan,
     this.paymentType,
     this.paymentStatus,

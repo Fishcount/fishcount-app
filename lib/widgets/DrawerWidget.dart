@@ -5,6 +5,7 @@ import 'package:fishcount_app/model/PaymentModel.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/modules/batch/BatchScreen.dart';
 import 'package:fishcount_app/modules/login/LoginScreen.dart';
+import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
@@ -27,12 +28,15 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-  Future<void> _handlePermissions() async {
-    final PersonModel people = await PersonService().findById();
+  final PaymentService _paymentService = PaymentService();
+  final PersonService _personService = PersonService();
 
-    if (_pessoaHasCpf(people)) {
+  Future<void> _handlePermissions() async {
+    final PersonModel people = await _personService.findById();
+
+    if (_personHasCpf(people)) {
       final List<PaymentModel> pagamentos =
-          await PagamentoService().buscarPagamentos();
+          await _paymentService.buscarPagamentos();
 
       NavigatorUtils.push(
           context,
@@ -44,8 +48,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     NavigatorUtils.push(context, FinancialForm(pessoaModel: people));
   }
 
-  bool _pessoaHasCpf(PersonModel pessoa) =>
+  bool _personHasCpf(PersonModel pessoa) =>
       pessoa.cpf != null && pessoa.cpf!.isNotEmpty;
+
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -134,9 +140,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             isThreeLine: false,
             minVerticalPadding: 15,
             horizontalTitleGap: 15,
+            tileColor: loading ? Colors.blueGrey.shade50 : null,
             leading: const Icon(Icons.monetization_on),
+            trailing: loading ? AnimationUtils.progressiveDots(size: 30.0) : null,
             title: const Text("Financeiro"),
-            onTap: () => _handlePermissions(),
+            onTap: () {
+              setState(() => loading = true);
+              _handlePermissions();
+            },
           ),
           const ListTile(
             isThreeLine: false,

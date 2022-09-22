@@ -11,7 +11,7 @@ import '../installment/PaymentInstallmentScreen.dart';
 import 'PaymentService.dart';
 
 class PagamentoController {
-  static final PagamentoService _pagamentoService = PagamentoService();
+  static final PaymentService _pagamentoService = PaymentService();
 
   static pagamentoList(BuildContext context) {
     return SingleChildScrollView(

@@ -15,4 +15,8 @@ class AnimationUtils {
   static Widget threeRotatungDots({size = double}) {
     return LoadingAnimationWidget.threeRotatingDots(color: Colors.blue, size: size);
   }
+
+  static Widget beat({size = double}) {
+    return LoadingAnimationWidget.beat(color: Colors.blue, size: size);
+  }
 }

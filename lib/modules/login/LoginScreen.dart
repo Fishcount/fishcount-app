@@ -1,5 +1,7 @@
 import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
+import 'package:fishcount_app/utils/AnimationUtils.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/IconWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
 import 'LoginController.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -18,11 +21,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool loading = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController _emailController = TextEditingController();
-    TextEditingController _senhaController = TextEditingController();
-
     _emailController.text = "admin@admin.com";
     _senhaController.text = "admin";
     return Scaffold(
@@ -74,23 +78,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Container(
                   padding: const EdgeInsets.only(top: 40),
-                  child: ElevatedButtonWidget(
-                    textSize: 18,
-                    radioBorder: 20,
-                    horizontalPadding: 30,
-                    verticalPadding: 10,
-                    textColor: Colors.white,
-                    buttonColor: Colors.blue,
-                    paddingAll: 10,
-                    buttonText: "Entrar".toUpperCase(),
-                    onPressed: () {
-                      return LoginController().doLogin(
-                        context,
-                        _emailController.text,
-                        _senhaController.text,
-                      );
-                    },
-                  ),
+                  child: loading
+                      ? Container(
+                          child: AnimationUtils.progressiveDots(size: 40.0),
+                        )
+                      : ElevatedButtonWidget(
+                          textSize: 18,
+                          radioBorder: 20,
+                          horizontalPadding: 30,
+                          verticalPadding: 10,
+                          textColor: Colors.white,
+                          buttonColor: Colors.blue,
+                          paddingAll: 10,
+                          buttonText: "Entrar".toUpperCase(),
+                          onPressed: () async {
+                            setState(() => loading = true);
+                            dynamic result = await LoginController().doLogin(
+                              context,
+                              _emailController.text,
+                              _senhaController.text,
+                            );
+                            if (result is ScaffoldFeatureController) {
+                              setState(() => loading = false);
+                            }
+                          },
+                        ),
                 ),
                 Container(
                   padding: const EdgeInsets.only(top: 40),
