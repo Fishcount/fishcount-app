@@ -1,6 +1,6 @@
 import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
-import 'package:fishcount_app/utils/AnimationUtils.dart';
+import 'package:fishcount_app/modules/batch/BatchScreen.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/IconWidget.dart';
@@ -9,9 +9,9 @@ import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/buttons/TextButtonWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'LoginController.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -80,7 +80,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.only(top: 40),
                   child: loading
                       ? Container(
-                          child: LoadingAnimationWidget.prograssiveDots(color: Colors.blue, size: 40.0),
+                          child: LoadingAnimationWidget.prograssiveDots(
+                              color: Colors.blue, size: 40.0),
                         )
                       : ElevatedButtonWidget(
                           textSize: 18,
@@ -100,6 +101,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                             if (result is ScaffoldFeatureController) {
                               setState(() => loading = false);
+                              return result;
+                            }
+                            if (result is bool) {
+                              NavigatorUtils.pushReplacement(
+                                  context, const BatchScreen());
                             }
                           },
                         ),

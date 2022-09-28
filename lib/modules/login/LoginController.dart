@@ -12,13 +12,13 @@ import '../batch/BatchScreen.dart';
 import 'LoginService.dart';
 
 class LoginController {
-  Future<dynamic> doLogin(
-      BuildContext context, String email, String senha) async {
+  Future<dynamic> doLogin(BuildContext context, String email,
+      String senha) async {
     AuthUserModel userModel = AuthUserModel(email, senha);
 
     bool isConnected = await ConnectionUtils().isConnected();
     if (isConnected) {
-      dynamic result = loginWithApi(userModel, context);
+      dynamic result = await loginWithApi(userModel, context);
       return result;
     }
     dynamic result = loginLocal(context, email, senha);
@@ -29,19 +29,16 @@ class LoginController {
     return UsuarioRepository().login(context, email, senha);
   }
 
-  Future<dynamic> loginWithApi(
-      AuthUserModel userModel, BuildContext context) async {
-    dynamic response = 
-        await LoginService().doLogin(userModel.username, userModel.password);
+  Future<dynamic> loginWithApi(AuthUserModel userModel,
+      BuildContext context) async {
+    dynamic response =
+    await LoginService().doLogin(userModel.username, userModel.password);
 
     if (response is AuthUserModel) {
-      NavigatorUtils.pushReplacementWithFadeAnimation(
-          context, const BatchScreen());
+      return true;
     }
     if (response is ErrorModel) {
       return ErrorHandler.getDefaultErrorMessage(context, response.message);
     }
   }
-
-  void resolveToken(Response<dynamic> response, SharedPreferences prefs) {}
 }
