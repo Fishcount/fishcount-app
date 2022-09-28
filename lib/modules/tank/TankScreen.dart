@@ -2,13 +2,16 @@ import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
+import 'package:fishcount_app/model/PaymentModel.dart';
+import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusAnalise.dart';
-import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
 import 'package:fishcount_app/model/enums/EnumUnidadeAumento.dart';
 import 'package:fishcount_app/modules/analisys/AnalisysListScreen.dart';
-import 'package:fishcount_app/modules/analisys/AnalisysScreen.dart';
-import 'package:fishcount_app/modules/species/SpecieService.dart';
+import 'package:fishcount_app/modules/financial/FinancialForm.dart';
+import 'package:fishcount_app/modules/financial/FinancialScreen.dart';
+import 'package:fishcount_app/modules/financial/payment/PaymentService.dart';
+import 'package:fishcount_app/modules/person/PessoaService.dart';
 import 'package:fishcount_app/modules/tank/TankController.dart';
 import 'package:fishcount_app/repository/TanqueRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
@@ -21,12 +24,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
-import '../../model/SpeciesModel.dart';
 import '../../utils/AnimationUtils.dart';
 import '../../utils/NavigatorUtils.dart';
 import '../../widgets/FilterOptionWidget.dart';
 import '../../widgets/SnackBarBuilder.dart';
-import '../../widgets/TextFieldWidget.dart';
 import 'TankService.dart';
 
 class TankScreen extends StatefulWidget {
@@ -84,6 +85,33 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
     return _tanqueRepository.listarTanques(context, widget.batch.id!);
   }
 
+  bool _personHasCpf(PersonModel pessoa) =>
+      pessoa.cpf != null && pessoa.cpf!.isNotEmpty;
+
+  final PersonService _personService = PersonService();
+  final PaymentService _paymentService = PaymentService();
+
+  Future<void> _handlePermissions(StateSetter setState) async {
+    setState(() => loading = true);
+
+    final PersonModel people = await _personService.findById();
+    if (_personHasCpf(people)) {
+      final List<PaymentModel> pagamentos =
+          await _paymentService.buscarPagamentos();
+
+      NavigatorUtils.push(
+        context,
+        FinancialScreen(
+          pagamentos: pagamentos,
+        ),
+      );
+      return;
+    }
+    NavigatorUtils.push(context, FinancialForm(pessoaModel: people));
+  }
+
+  bool loading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,6 +119,34 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
       drawer: const DrawerWidget(),
       bottomNavigationBar: CustomBottomSheet(
         context: context,
+        centerElement: Center(
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return loading
+                  ? AnimationUtils.threeRotatungDots(
+                      size: 30.0, color: Colors.white)
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          child: const Icon(
+                            Icons.monetization_on_outlined,
+                            size: 35,
+                            color: Colors.white,
+                          ),
+                          onTap: () async => await _handlePermissions(setState),
+                        ),
+                        const Text(
+                          "Financeiro",
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    );
+            },
+          ),
+        ),
         newFunction: () => _tankController.openTankRegisterModal(
           context,
           TextEditingController(),

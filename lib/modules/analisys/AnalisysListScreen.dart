@@ -81,6 +81,30 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
           widget.tankModel,
           null,
         ),
+        centerElement: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                  child: const Icon(
+                    Icons.propane_tank,
+                    size: 35,
+                    color: Colors.white,
+                  ),
+                  onTap: () {
+                    // NavigatorUtils.pushReplacement(context,
+                    //     TankScreen(batch:));
+                  }
+              ),
+              Text(
+                "Tanques",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
       ).build(tankModel: widget.tankModel),
       body: Center(
         child: Container(
@@ -126,7 +150,7 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
                                 : Colors.white,
                             onTap: () => _setOrderBy(_filterFields[0]),
                             text: 'Aguardando análise',
-                            icon: const Icon(Icons.connected_tv),
+                            icon: const Icon(LineIcons.cloud),
                           ),
                         ),
                         FilterOptionWidget(

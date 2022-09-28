@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.only(top: 40),
                   child: loading
                       ? Container(
-                          child: AnimationUtils.progressiveDots(size: 40.0),
+                          child: LoadingAnimationWidget.prograssiveDots(color: Colors.blue, size: 40.0),
                         )
                       : ElevatedButtonWidget(
                           textSize: 18,

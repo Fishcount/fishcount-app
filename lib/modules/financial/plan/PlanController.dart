@@ -51,7 +51,7 @@ class PlanController {
     final Color? backGroundColor = Colors.grey[100];
     return SizedBox(
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height / 1.3
+          ? MediaQuery.of(context).size.height / 1.4
           : MediaQuery.of(context).size.height / 2,
       child: ListView.builder(
         shrinkWrap: true,
@@ -59,7 +59,7 @@ class PlanController {
         itemBuilder: (context, index) {
           final PlanModel plano = snapshot.data![index];
           return Container(
-            margin: const EdgeInsets.only(top: 20),
+            margin: const EdgeInsets.only(top: 10),
             alignment: Alignment.center,
             height: 200,
             decoration: BoxDecoration(

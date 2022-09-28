@@ -6,6 +6,8 @@ import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/material.dart';
 
+import '../../widgets/custom/BottomSheetBuilder.dart';
+
 class FinancialScreen extends StatefulWidget {
   final List<PaymentModel>? pagamentos;
 
@@ -26,8 +28,54 @@ class _FinancialScreenState extends State<FinancialScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  AppBarBuilder().build(),
+      appBar: AppBarBuilder().build(),
       drawer: const DrawerWidget(),
+      bottomSheet: CustomBottomSheet(
+        context: context,
+        newFunction: () {},
+        rightElement: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                child: const Icon(
+                  Icons.support_agent,
+                  size: 35,
+                  color: Colors.white,
+                ),
+                onTap: () {},
+              ),
+              const Text(
+                "Suporte",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+        centerElement: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                child: const Icon(
+                  Icons.person,
+                  size: 35,
+                  color: Colors.white,
+                ),
+                onTap: () {},
+              ),
+              const Text(
+                "Meus Dados",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ).build(),
       body: Container(
         padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
         child: SingleChildScrollView(

@@ -1,6 +1,12 @@
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/AuthUserModel.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
+import 'package:fishcount_app/model/PaymentModel.dart';
+import 'package:fishcount_app/model/PersonModel.dart';
+import 'package:fishcount_app/modules/financial/FinancialForm.dart';
+import 'package:fishcount_app/modules/financial/FinancialScreen.dart';
+import 'package:fishcount_app/modules/financial/payment/PaymentService.dart';
+import 'package:fishcount_app/modules/person/PessoaService.dart';
 import 'package:fishcount_app/repository/LoteRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
@@ -12,7 +18,6 @@ import 'package:fishcount_app/widgets/custom/BottomSheetBuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
-import '../../constants/AppPaths.dart';
 import '../../constants/exceptions/ErrorMessage.dart';
 import '../../utils/AnimationUtils.dart';
 import '../../utils/NavigatorUtils.dart';
@@ -74,6 +79,32 @@ class _BatchScreenState extends State<BatchScreen>
     return LoteRepository().listarLotesUsuario(context);
   }
 
+  bool _personHasCpf(PersonModel pessoa) =>
+      pessoa.cpf != null && pessoa.cpf!.isNotEmpty;
+
+  final PersonService _personService = PersonService();
+  final PaymentService _paymentService = PaymentService();
+
+  Future<void> _handlePermissions(StateSetter setState) async {
+    setState(() => loading = true);
+
+    final PersonModel people = await _personService.findById();
+    if (_personHasCpf(people)) {
+      final List<PaymentModel> pagamentos =
+          await _paymentService.buscarPagamentos();
+
+      NavigatorUtils.push(
+          context,
+          FinancialScreen(
+            pagamentos: pagamentos,
+          ));
+      return;
+    }
+    NavigatorUtils.push(context, FinancialForm(pessoaModel: people));
+  }
+
+  bool loading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,6 +118,33 @@ class _BatchScreenState extends State<BatchScreen>
             TextEditingController(),
             _animationController,
             null),
+        centerElement: Center(
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return loading
+                  ? AnimationUtils.threeRotatungDots(size: 30.0, color: Colors.white)
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          child: const Icon(
+                            Icons.monetization_on_outlined,
+                            size: 35,
+                            color: Colors.white,
+                          ),
+                          onTap: () async => await _handlePermissions(setState),
+                        ),
+                        const Text(
+                          "Financeiro",
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    );
+            },
+          ),
+        ),
       ).build(),
       body: Container(
         padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
