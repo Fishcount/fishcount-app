@@ -1,4 +1,6 @@
+import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 enum EnumStatusAnalise {
   ANALISE_NAO_REALIZADA,
@@ -27,6 +29,15 @@ class StatusAnaliseHandler {
       default:
         return 'Analise não realizada';
 
+    }
+  }
+
+  static dynamic handlerAnimation(String value) {
+    switch (value) {
+      case 'AGUARDANDO_ANALISE':
+        return LoadingAnimationWidget.hexagonDots(color: Colors.blue, size: 30.0);
+      default:
+        return null;
     }
   }
 

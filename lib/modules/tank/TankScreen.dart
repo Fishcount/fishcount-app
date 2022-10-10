@@ -7,7 +7,7 @@ import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusAnalise.dart';
 import 'package:fishcount_app/model/enums/EnumUnidadeAumento.dart';
-import 'package:fishcount_app/modules/analisys/AnalisysListScreen.dart';
+import 'package:fishcount_app/modules/analisys/AnalysisListScreen.dart';
 import 'package:fishcount_app/modules/financial/FinancialForm.dart';
 import 'package:fishcount_app/modules/financial/FinancialScreen.dart';
 import 'package:fishcount_app/modules/financial/payment/PaymentService.dart';
@@ -527,7 +527,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                     NavigatorUtils.pushReplacement(
                                       context,
                                       // AnalisysScreen(tankModel: tankModel),
-                                      AnalisysListScreen(tankModel: tankModel),
+                                      AnalysisListScreen(tankModel: tankModel, batchId: widget.batch.id!),
                                     );
                                   },
                                 ),

@@ -1,10 +1,13 @@
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/AnalysisModel.dart';
+import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusAnalise.dart';
-import 'package:fishcount_app/modules/analisys/AnalisysScreen.dart';
-import 'package:fishcount_app/modules/analisys/AnalisysService.dart';
 import 'package:fishcount_app/modules/analisys/AnalysisController.dart';
+import 'package:fishcount_app/modules/analisys/AnalysisScreen.dart';
+import 'package:fishcount_app/modules/analisys/AnalysisService.dart';
+import 'package:fishcount_app/modules/batch/BatchService.dart';
+import 'package:fishcount_app/modules/tank/TankScreen.dart';
 import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
@@ -12,36 +15,36 @@ import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/FilterOptionWidget.dart';
 import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:fishcount_app/widgets/custom/BottomSheetBuilder.dart';
-
-import 'package:line_icons/line_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 
 import '../../model/TankModel.dart';
 import '../../model/enums/EnumUnidadePeso.dart';
 import '../../utils/ConnectionUtils.dart';
-import '../../widgets/TextFieldWidget.dart';
 import '../../widgets/buttons/ElevatedButtonWidget.dart';
 
-class AnalisysListScreen extends StatefulWidget {
+class AnalysisListScreen extends StatefulWidget {
   final TankModel tankModel;
+  final int batchId;
 
-  const AnalisysListScreen({
+  const AnalysisListScreen({
     Key? key,
     required this.tankModel,
+    required this.batchId,
   }) : super(key: key);
 
   @override
-  State<AnalisysListScreen> createState() => _AnalisysListScreenState();
+  State<AnalysisListScreen> createState() => _AnalysisListScreenState();
 }
 
-class _AnalisysListScreenState extends State<AnalisysListScreen>
+class _AnalysisListScreenState extends State<AnalysisListScreen>
     with TickerProviderStateMixin {
   final ConnectionUtils _connectionUtils = ConnectionUtils();
-  final AnalisysService _analisysService = AnalisysService();
+  final AnalysisService _analisysService = AnalysisService();
+  final BatchService _batchService = BatchService();
   final AnalysisController _analysisController = AnalysisController();
   late AnimationController _animationController;
-
 
   String _orderBy = 'none';
   final String _waitingAnalysis = 'Aguardando..';
@@ -68,6 +71,8 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
     super.dispose();
   }
 
+  bool loading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,35 +80,46 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
       drawer: const DrawerWidget(),
       bottomNavigationBar: CustomBottomSheet(
         context: context,
-        newFunction: () => _analysisController.openAnalysisModal(
-          context,
-          _animationController,
-          widget.tankModel,
-          null,
-        ),
+        newFunction: () => _analysisController.openAnalysisModal(context,
+            _animationController, widget.tankModel, null, widget.batchId),
         centerElement: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                  child: const Icon(
-                    Icons.propane_tank,
-                    size: 35,
-                    color: Colors.white,
-                  ),
-                  onTap: () {
-                    // NavigatorUtils.pushReplacement(context,
-                    //     TankScreen(batch:));
-                  }
-              ),
-              Text(
-                "Tanques",
-                style: TextStyle(
+          child: loading
+              ? AnimationUtils.threeRotatungDots(
+                  size: 20.0,
                   color: Colors.white,
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    StatefulBuilder(
+                      builder: (BuildContext context, StateSetter setState) {
+                        return GestureDetector(
+                          child: const Icon(
+                            Icons.propane_tank,
+                            size: 35,
+                            color: Colors.white,
+                          ),
+                          onTap: () async {
+                            setState(() => loading = true);
+                            dynamic response =
+                                await _batchService.findBatch(widget.batchId);
+                            if (response is BatchModel) {
+                              NavigatorUtils.pushReplacement(
+                                  context, TankScreen(batch: response));
+                              setState(() => loading = false);
+                            }
+                          },
+                        );
+                      },
+                    ),
+                    const Text(
+                      "Tanques",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
         ),
       ).build(tankModel: widget.tankModel),
       body: Center(
@@ -212,12 +228,8 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
               verticalPadding: 10,
               textColor: Colors.white,
               buttonColor: Colors.blue,
-              onPressed: () => _analysisController.openAnalysisModal(
-                context,
-                _animationController,
-                widget.tankModel,
-                null,
-              ),
+              onPressed: () => _analysisController.openAnalysisModal(context,
+                  _animationController, widget.tankModel, null, widget.batchId),
             ),
           ),
         ],
@@ -314,7 +326,7 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
                 ),
               ),
               child: ExpansionTile(
-                initiallyExpanded: true,
+                initiallyExpanded: false,
                 controlAffinity: ListTileControlAffinity.trailing,
                 title: Container(
                   padding: const EdgeInsets.only(bottom: 10, top: 10),
@@ -334,20 +346,35 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
                             StatusAnaliseHandler.handlerText(
                                 analysis.analysisStatus),
                             style: TextStyle(
-                                color: StatusAnaliseHandler.handlerColor(
-                                    analysis.analysisStatus),
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold),
+                              color: StatusAnaliseHandler.handlerColor(
+                                  analysis.analysisStatus),
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
-                      Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child: Text('Quantidade: $fishAmount peixes')),
-                      Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        child: Text("Tipo ração: $foodType"),
-                      )
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  margin: const EdgeInsets.only(top: 20),
+                                  child:
+                                      Text('Quantidade: $fishAmount peixes')),
+                              Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                child: Text("Tipo ração: $foodType"),
+                              )
+                            ],
+                          ),
+                          StatusAnaliseHandler.handlerAnimation(
+                                  analysis.analysisStatus) ??
+                              Icon(Icons.check, color: Colors.green,),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -505,7 +532,7 @@ class _AnalisysListScreenState extends State<AnalisysListScreen>
                           ),
                           onPressed: () => NavigatorUtils.push(
                             context,
-                            AnalisysScreen(
+                            AnalysisScreen(
                               tankModel: widget.tankModel,
                               analysisModel: analysis,
                             ),

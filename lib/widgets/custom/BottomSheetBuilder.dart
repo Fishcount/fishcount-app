@@ -1,5 +1,5 @@
 import 'package:fishcount_app/model/TankModel.dart';
-import 'package:fishcount_app/modules/analisys/AnalisysListScreen.dart';
+import 'package:fishcount_app/modules/analisys/AnalysisListScreen.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -73,8 +73,9 @@ class CustomBottomSheet {
                               size: 35,
                               color: iconColor,
                             ),
-                            onTap: () => NavigatorUtils.pushReplacement(context,
-                                AnalisysListScreen(tankModel: tankModel)),
+                            onTap: () => {},
+                                // NavigatorUtils.pushReplacement(context,
+                                // AnalysisListScreen(tankModel: tankModel)),
                           ),
                           Text(
                             "Análises",

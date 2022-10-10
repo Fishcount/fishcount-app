@@ -1,7 +1,8 @@
 import 'package:fishcount_app/model/TankModel.dart';
-import 'package:fishcount_app/modules/analisys/AnalisysListScreen.dart';
-import 'package:fishcount_app/modules/analisys/AnalisysService.dart';
+import 'package:fishcount_app/modules/analisys/AnalysisListScreen.dart';
+import 'package:fishcount_app/modules/analisys/AnalysisService.dart';
 import 'package:fishcount_app/modules/generic/AbstractController.dart';
+import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
@@ -9,14 +10,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AnalysisController extends AbstractController {
-  final AnalisysService _analisysService = AnalisysService();
+  final AnalysisService _analisysService = AnalysisService();
 
   openAnalysisModal(
-    BuildContext context,
-    AnimationController _animationController,
-    TankModel tankModel,
-    int? analysisId,
-  ) async {
+      BuildContext context,
+      AnimationController _animationController,
+      TankModel tankModel,
+      int? analysisId,
+      int? batchId) async {
     TextEditingController _temperatureController = TextEditingController();
     TextEditingController _actualWeightController = TextEditingController();
     TextEditingController _fishAmountController = TextEditingController();
@@ -32,8 +33,6 @@ class AnalysisController extends AbstractController {
         ),
       ),
       builder: (BuildContext context) {
-        bool isGrams = false;
-
         final Color selectedColor = Colors.grey.shade500;
         final Color noSelectedColor = Colors.grey.shade300;
         const Color borderColor = Colors.black;
@@ -52,6 +51,8 @@ class AnalysisController extends AbstractController {
           ),
         );
 
+        bool isGrams = false;
+        bool loading = false;
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return SizedBox(
@@ -176,45 +177,51 @@ class AnalysisController extends AbstractController {
                                 _fishAmountController, _submitted, text)),
                           ),
                         ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: ElevatedButtonWidget(
-                      buttonText: "Confirmar",
-                      buttonColor: Colors.green,
-                      textSize: 15,
-                      textColor: Colors.white,
-                      radioBorder: 10,
-                      horizontalPadding: 20,
-                      verticalPadding: 10,
-                      onPressed: () {
-                        setState(() => _submitted = true);
-                        if ((tankModel.hasTemperatureGauge &&
-                                _temperatureController.text.isEmpty) ||
-                            (analysisId != null &&
-                                _fishAmountController.text.isEmpty) ||
-                            (analysisId == null &&
-                                _actualWeightController.text.isEmpty)) {
-                          return;
-                        }
-                        if (analysisId == null) {
-                          _initiateAnalysisAndUpdate(
-                            _temperatureController.text,
-                            _actualWeightController.text,
-                            tankModel,
-                            isGrams,
-                            context,
-                          );
-                        } else {
-                          _simulateAnalysis(
-                              tankModel,
-                              _temperatureController.text,
-                              _fishAmountController.text,
-                              analysisId,
-                              context);
-                        }
-                      },
-                    ),
-                  ),
+                  loading
+                      ? AnimationUtils.progressiveDots(size: 20.0)
+                      : Container(
+                          padding: const EdgeInsets.only(top: 30),
+                          child: ElevatedButtonWidget(
+                            buttonText: "Confirmar",
+                            buttonColor: Colors.green,
+                            textSize: 15,
+                            textColor: Colors.white,
+                            radioBorder: 10,
+                            horizontalPadding: 20,
+                            verticalPadding: 10,
+                            onPressed: () {
+                              setState(() => _submitted = true);
+                              setState(() => loading = true);
+                              if ((tankModel.hasTemperatureGauge &&
+                                      _temperatureController.text.isEmpty) ||
+                                  (analysisId != null &&
+                                      _fishAmountController.text.isEmpty) ||
+                                  (analysisId == null &&
+                                      _actualWeightController.text.isEmpty)) {
+                                setState(() => loading = false);
+                                return;
+                              }
+                              if (analysisId == null) {
+                                _initiateAnalysisAndUpdate(
+                                  _temperatureController.text,
+                                  _actualWeightController.text,
+                                  tankModel,
+                                  isGrams,
+                                  batchId,
+                                  context,
+                                );
+                              } else {
+                                _simulateAnalysis(
+                                    tankModel,
+                                    _temperatureController.text,
+                                    _fishAmountController.text,
+                                    analysisId,
+                                    batchId,
+                                    context);
+                              }
+                            },
+                          ),
+                        ),
                 ],
               ),
             );
@@ -225,18 +232,32 @@ class AnalysisController extends AbstractController {
   }
 
   _simulateAnalysis(TankModel tankModel, String temperature, String fishAmount,
-      int analysisId, BuildContext context) async {
+      int analysisId, int? batchId, BuildContext context) async {
     await _analisysService.simulateAnalysis(
         tankModel.id!, analysisId, temperature, fishAmount);
     NavigatorUtils.pushReplacement(
-        context, AnalisysListScreen(tankModel: tankModel));
+        context,
+        AnalysisListScreen(
+          tankModel: tankModel,
+          batchId: batchId!,
+        ));
   }
 
-  _initiateAnalysisAndUpdate(String temperature, String actualWeight,
-      TankModel tankModel, bool isGrams, BuildContext context) async {
+  _initiateAnalysisAndUpdate(
+      String temperature,
+      String actualWeight,
+      TankModel tankModel,
+      bool isGrams,
+      int? batchId,
+      BuildContext context) async {
     await _analisysService.initiateAnalisys(
         tankModel.id!, actualWeight, isGrams ? 'GRAMA' : 'KILO', temperature);
     NavigatorUtils.pushReplacement(
-        context, AnalisysListScreen(tankModel: tankModel));
+      context,
+      AnalysisListScreen(
+        tankModel: tankModel,
+        batchId: batchId!,
+      ),
+    );
   }
 }

@@ -4,7 +4,7 @@ import 'package:fishcount_app/model/AnalysisModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
 import 'package:fishcount_app/utils/RequestBuilder.dart';
 
-class AnalisysService extends AbstractService {
+class AnalysisService extends AbstractService {
   Future<List<AnalysisModel>> fetchAnalisys(int tankId, String? status) async {
     try {
       RequestBuilder requestBuilder = RequestBuilder(url: '/analise')

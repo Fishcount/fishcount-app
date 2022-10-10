@@ -76,6 +76,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: const BorderSide(
+            color: Colors.black,
             style: BorderStyle.none,
           ),
         ),

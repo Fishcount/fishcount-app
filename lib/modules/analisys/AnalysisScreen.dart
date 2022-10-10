@@ -1,37 +1,35 @@
 import 'package:fishcount_app/model/AnalysisModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
-import 'package:fishcount_app/modules/analisys/AnalisysService.dart';
 import 'package:fishcount_app/modules/analisys/AnalysisController.dart';
-import 'package:fishcount_app/modules/tank/TankScreen.dart';
-import 'package:fishcount_app/utils/NavigatorUtils.dart';
+import 'package:fishcount_app/modules/analisys/AnalysisService.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 
 import '../../constants/AppImages.dart';
 import '../../widgets/DividerWidget.dart';
 import '../../widgets/custom/BottomSheetBuilder.dart';
 
-class AnalisysScreen extends StatefulWidget {
+class AnalysisScreen extends StatefulWidget {
   final TankModel tankModel;
   final AnalysisModel analysisModel;
 
-  const AnalisysScreen({
+  const AnalysisScreen({
     Key? key,
     required this.tankModel,
     required this.analysisModel,
   }) : super(key: key);
 
   @override
-  State<AnalisysScreen> createState() => _AnalisysScreenState();
+  State<AnalysisScreen> createState() => _AnalysisScreenState();
 }
 
-class _AnalisysScreenState extends State<AnalisysScreen>
+class _AnalysisScreenState extends State<AnalysisScreen>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
-  final AnalisysService _analysisService = AnalisysService();
+  final AnalysisService _analysisService = AnalysisService();
   final AnalysisController _analysisController = AnalysisController();
   final String waitingSonar = 'Aguardando sonar..';
 
@@ -69,7 +67,7 @@ class _AnalisysScreenState extends State<AnalisysScreen>
         : waitingSonar;
 
     final String foodType =
-    isConcluded ? _analysisModel.foodType.toString() : waitingSonar;
+        isConcluded ? _analysisModel.foodType.toString() : waitingSonar;
 
     final String dailyFrequency = isConcluded
         ? _analysisModel.dailyFoodFrequency.toString() + ' vezes ao dia'
@@ -81,8 +79,8 @@ class _AnalisysScreenState extends State<AnalisysScreen>
 
     final tankTemperature = isConcluded
         ? _tankModel.hasTemperatureGauge
-        ? _analysisModel.tankTemperature.toString() + ' ºC'
-        : waitingSonar
+            ? _analysisModel.tankTemperature.toString() + ' ºC'
+            : waitingSonar
         : waitingSonar;
 
     final int tankId = _tankModel.id!;
@@ -95,24 +93,21 @@ class _AnalisysScreenState extends State<AnalisysScreen>
     const fontDescriptionSize = 17.0;
     const cardHeight = 100.0;
 
-    double cardWidth = MediaQuery
-        .of(context)
-        .size
-        .width / 2.3;
+    double cardWidth = MediaQuery.of(context).size.width / 2.3;
 
-    _getBoxDecoration(Color backColor, Color border, bool useShadow,
-        Color shadowColor) =>
+    _getBoxDecoration(
+            Color backColor, Color border, bool useShadow, Color shadowColor) =>
         BoxDecoration(
           color: backColor,
           borderRadius: BorderRadius.circular(10),
           boxShadow: useShadow
               ? [
-            BoxShadow(
-              offset: Offset.fromDirection(2, 2),
-              spreadRadius: 0.5,
-              color: shadowColor,
-            ),
-          ]
+                  BoxShadow(
+                    offset: Offset.fromDirection(2, 2),
+                    spreadRadius: 0.5,
+                    color: shadowColor,
+                  ),
+                ]
               : [],
           border: Border(
             right: BorderSide(
@@ -145,10 +140,13 @@ class _AnalisysScreenState extends State<AnalisysScreen>
                 size: 35,
                 color: Colors.white,
               ),
-              onTap: () =>
-                  _analysisController.openAnalysisModal(
-                      context, _animationController, widget.tankModel,
-                      analysisId),
+              onTap: () => _analysisController.openAnalysisModal(
+                context,
+                _animationController,
+                widget.tankModel,
+                null,
+                analysisId,
+              ),
             ),
             const Text(
               "Simular",
@@ -210,7 +208,7 @@ class _AnalisysScreenState extends State<AnalisysScreen>
                             children: [
                               Container(
                                 margin:
-                                const EdgeInsets.only(bottom: 20, top: 5),
+                                    const EdgeInsets.only(bottom: 20, top: 5),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -320,17 +318,9 @@ class _AnalisysScreenState extends State<AnalisysScreen>
                 padding: const EdgeInsets.only(top: 10, bottom: 5),
                 child: SizedBox(
                   height:
-                  MediaQuery
-                      .of(context)
-                      .orientation == Orientation.portrait
-                      ? MediaQuery
-                      .of(context)
-                      .size
-                      .height / 2.5
-                      : MediaQuery
-                      .of(context)
-                      .size
-                      .height / 3,
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? MediaQuery.of(context).size.height / 2.5
+                          : MediaQuery.of(context).size.height / 3,
                   child: ListView(
                     children: [
                       Container(
@@ -360,15 +350,15 @@ class _AnalisysScreenState extends State<AnalisysScreen>
                                     padding: const EdgeInsets.only(top: 10),
                                     child: Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           padding:
-                                          const EdgeInsets.only(right: 5),
+                                              const EdgeInsets.only(right: 5),
                                           child: Text(
                                             mealFoodAmount,
                                             style:
-                                            const TextStyle(fontSize: 15),
+                                                const TextStyle(fontSize: 15),
                                           ),
                                         ),
                                         const Icon(
@@ -404,15 +394,15 @@ class _AnalisysScreenState extends State<AnalisysScreen>
                                     padding: const EdgeInsets.only(top: 10),
                                     child: Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           padding:
-                                          const EdgeInsets.only(right: 5),
+                                              const EdgeInsets.only(right: 5),
                                           child: Text(
                                             dailyFoodAmount,
                                             style:
-                                            const TextStyle(fontSize: 15),
+                                                const TextStyle(fontSize: 15),
                                           ),
                                         ),
                                         const Icon(
@@ -458,15 +448,15 @@ class _AnalisysScreenState extends State<AnalisysScreen>
                                     padding: const EdgeInsets.only(top: 10),
                                     child: Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           padding:
-                                          const EdgeInsets.only(right: 5),
+                                              const EdgeInsets.only(right: 5),
                                           child: Text(
                                             dailyFrequency,
                                             style:
-                                            const TextStyle(fontSize: 15),
+                                                const TextStyle(fontSize: 15),
                                           ),
                                         ),
                                         const Icon(
@@ -503,7 +493,7 @@ class _AnalisysScreenState extends State<AnalisysScreen>
                                     padding: const EdgeInsets.only(top: 10),
                                     child: Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           padding: const EdgeInsets.only(
@@ -531,75 +521,16 @@ class _AnalisysScreenState extends State<AnalisysScreen>
                       ),
                       !_tankModel.hasTemperatureGauge
                           ? Container(
-                        height: cardHeight,
-                        width: cardWidth,
-                        decoration: _getBoxDecoration(backGroundColor,
-                            borderColor, true, shadowCardColor),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.only(top: 20),
-                              child: const Text(
-                                "Peso total do tanque",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: fontTitleSize,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.only(
-                                        top: 5, right: 5),
-                                    child: Text(
-                                      tankWeight,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ),
-                                  const Icon(
-                                    LineIcons.fish,
-                                    color: Colors.grey,
-                                    size: 30,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                          : Container(),
-                      _tankModel.hasTemperatureGauge
-                          ? Container(
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
                               height: cardHeight,
                               width: cardWidth,
-                              decoration: _getBoxDecoration(
-                                  backGroundColor,
-                                  borderColor,
-                                  true,
-                                  shadowCardColor),
+                              decoration: _getBoxDecoration(backGroundColor,
+                                  borderColor, true, shadowCardColor),
                               child: Column(
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                    padding:
-                                    const EdgeInsets.only(top: 20),
+                                    padding: const EdgeInsets.only(top: 20),
                                     child: const Text(
                                       "Peso total do tanque",
                                       style: TextStyle(
@@ -609,11 +540,10 @@ class _AnalisysScreenState extends State<AnalisysScreen>
                                     ),
                                   ),
                                   Container(
-                                    padding:
-                                    const EdgeInsets.only(top: 10),
+                                    padding: const EdgeInsets.only(top: 10),
                                     child: Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           padding: const EdgeInsets.only(
@@ -635,57 +565,117 @@ class _AnalisysScreenState extends State<AnalisysScreen>
                                   ),
                                 ],
                               ),
-                            ),
-                            Container(
-                              height: cardHeight,
-                              width: cardWidth,
-                              decoration: _getBoxDecoration(
-                                  backGroundColor,
-                                  borderColor,
-                                  true,
-                                  shadowCardColor),
-                              child: Column(
+                            )
+                          : Container(),
+                      _tankModel.hasTemperatureGauge
+                          ? Container(
+                              child: Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
-                                    padding:
-                                    const EdgeInsets.only(top: 20),
-                                    child: const Text(
-                                      "Temperatura da Água",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: fontTitleSize),
+                                    height: cardHeight,
+                                    width: cardWidth,
+                                    decoration: _getBoxDecoration(
+                                        backGroundColor,
+                                        borderColor,
+                                        true,
+                                        shadowCardColor),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: const Text(
+                                            "Peso total do tanque",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: fontTitleSize,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                padding: const EdgeInsets.only(
+                                                    top: 5, right: 5),
+                                                child: Text(
+                                                  tankWeight,
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                              ),
+                                              const Icon(
+                                                LineIcons.fish,
+                                                color: Colors.grey,
+                                                size: 30,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   Container(
-                                    padding:
-                                    const EdgeInsets.only(top: 10),
-                                    child: Row(
+                                    height: cardHeight,
+                                    width: cardWidth,
+                                    decoration: _getBoxDecoration(
+                                        backGroundColor,
+                                        borderColor,
+                                        true,
+                                        shadowCardColor),
+                                    child: Column(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          tankTemperature,
-                                          style: const TextStyle(
-                                              fontSize: 15),
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: const Text(
+                                            "Temperatura da Água",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: fontTitleSize),
+                                          ),
                                         ),
-                                        const Icon(
-                                          LineIcons.highTemperature,
-                                          color: Colors.blueGrey,
-                                          size: 30,
-                                        ),
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                tankTemperature,
+                                                style: const TextStyle(
+                                                    fontSize: 15),
+                                              ),
+                                              const Icon(
+                                                LineIcons.highTemperature,
+                                                color: Colors.blueGrey,
+                                                size: 30,
+                                              ),
+                                            ],
+                                          ),
+                                        )
                                       ],
                                     ),
                                   )
                                 ],
                               ),
                             )
-                          ],
-                        ),
-                      )
                           : Container(),
                     ],
                   ),

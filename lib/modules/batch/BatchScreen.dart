@@ -94,10 +94,11 @@ class _BatchScreenState extends State<BatchScreen>
           await _paymentService.buscarPagamentos();
 
       NavigatorUtils.push(
-          context,
-          FinancialScreen(
-            pagamentos: pagamentos,
-          ));
+        context,
+        FinancialScreen(
+          pagamentos: pagamentos,
+        ),
+      );
       return;
     }
     NavigatorUtils.push(context, FinancialForm(pessoaModel: people));
@@ -122,7 +123,8 @@ class _BatchScreenState extends State<BatchScreen>
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return loading
-                  ? AnimationUtils.threeRotatungDots(size: 30.0, color: Colors.white)
+                  ? AnimationUtils.threeRotatungDots(
+                      size: 30.0, color: Colors.white)
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -136,7 +138,7 @@ class _BatchScreenState extends State<BatchScreen>
                         ),
                         const Text(
                           "Financeiro",
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                           ),
                         ),
