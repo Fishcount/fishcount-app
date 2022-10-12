@@ -138,7 +138,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                         ),
                         const Text(
                           "Financeiro",
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                           ),
                         ),
@@ -423,7 +423,6 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                   ),
                 ),
                 child: ExpansionTile(
-                  initiallyExpanded: true,
                   controlAffinity: ListTileControlAffinity.trailing,
                   children: [
                     Container(
@@ -579,7 +578,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                   Container(
                                     padding: const EdgeInsets.only(top: 10),
                                     child: Text(
-                                      tankModel.fishAmount.toString() +
+                                      tankModel.lastFishAmount.toString() +
                                           ' Peixes',
                                       style: const TextStyle(
                                         fontSize: 12,
@@ -598,7 +597,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                               fontSize: 14,
                                               color: StatusAnaliseHandler
                                                   .handlerColor(tankModel
-                                                      .analisyStatus!)),
+                                                      .analisyStatus!),),
                                         ),
                                       ],
                                     ),

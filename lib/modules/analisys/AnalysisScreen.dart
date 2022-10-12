@@ -15,11 +15,13 @@ import '../../widgets/custom/BottomSheetBuilder.dart';
 class AnalysisScreen extends StatefulWidget {
   final TankModel tankModel;
   final AnalysisModel analysisModel;
+  final int bacthId;
 
   const AnalysisScreen({
     Key? key,
     required this.tankModel,
     required this.analysisModel,
+    required this.bacthId
   }) : super(key: key);
 
   @override
@@ -85,6 +87,7 @@ class _AnalysisScreenState extends State<AnalysisScreen>
 
     final int tankId = _tankModel.id!;
     final int analysisId = _analysisModel.id!;
+    final int batchId= widget.bacthId;
 
     const Color borderColor = Colors.black26;
     final Color backGroundColor = Colors.grey.shade100;
@@ -144,8 +147,8 @@ class _AnalysisScreenState extends State<AnalysisScreen>
                 context,
                 _animationController,
                 widget.tankModel,
-                null,
                 analysisId,
+                batchId,
               ),
             ),
             const Text(

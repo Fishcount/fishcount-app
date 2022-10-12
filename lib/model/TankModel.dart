@@ -7,6 +7,8 @@ class TankModel {
 
   late int fishAmount;
 
+  late int lastFishAmount;
+
   late SpeciesModel species;
 
   late double initialWeight;
@@ -33,6 +35,7 @@ class TankModel {
     this.id,
     this.description,
     this.fishAmount,
+    this.lastFishAmount,
     this.species,
     this.initialWeight,
     this.weightUnity,
@@ -49,6 +52,7 @@ class TankModel {
     id = json['id'];
     description = json['descricao'];
     fishAmount = json['qtdePeixe'];
+    lastFishAmount = json['qtdUltimaAnalise'];
     initialWeight = json['pesoUnitario'];
     weightUnity = json['unidadePeso'];
     analisyStatus = json['statusAnalise'];
@@ -58,12 +62,13 @@ class TankModel {
     nextAnalysis = json['proximaAnalise'];
     nextAnalysisDate = json['dataUltimaAnalise'];
     lastAnalysisDate = json['dataUltimoTratamento'];
-    hasTemperatureGauge = json['possuiMedicaoTemperatura']; 
+    hasTemperatureGauge = json['possuiMedicaoTemperatura'];
   }
 
   Map<String, dynamic> toLocalDatabase(int speciesId, int batchId) => {
         "descricao": description,
         "qtdePeixes": fishAmount,
+        "qtdUltimaAnalise": lastFishAmount,
         "pesoInicial": initialWeight,
         "unidadePeso": weightUnity,
         "statusAnalise": analisyStatus,

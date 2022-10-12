@@ -7,6 +7,8 @@ class AnalysisModel {
 
   late double? dailyFoodAmount;
 
+  late int? fishAmount;
+
   late String? unityWeitghDailyFood;
 
   late double? mealFoodAmout;
@@ -15,7 +17,7 @@ class AnalysisModel {
 
   late int? dailyFoodFrequency;
 
-  late double? tankTemperature;
+  late int? tankTemperature;
 
   late String analysisStatus;
 
@@ -24,6 +26,7 @@ class AnalysisModel {
   AnalysisModel(
     this.avergageTankWeight,
     this.foodType,
+    this.fishAmount,
     this.dailyFoodAmount,
     this.unityWeitghDailyFood,
     this.mealFoodAmout,
@@ -38,6 +41,7 @@ class AnalysisModel {
     id = json['id'];
     avergageTankWeight = json['pesoMedioTanque'];
     foodType = json['tipoRacao'];
+    fishAmount = json['qtdePeixe'];
     dailyFoodAmount = json['qtdeRacaoDiaria'];
     unityWeitghDailyFood = json['unidadePesoRacaoDiaria'];
     mealFoodAmout = json['qtdeRacaoRefeicao'];

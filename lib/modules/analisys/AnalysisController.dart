@@ -178,7 +178,10 @@ class AnalysisController extends AbstractController {
                           ),
                         ),
                   loading
-                      ? AnimationUtils.progressiveDots(size: 20.0)
+                      ? Container(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: AnimationUtils.progressiveDots(size: 50.0),
+                        )
                       : Container(
                           padding: const EdgeInsets.only(top: 30),
                           child: ElevatedButtonWidget(
@@ -201,6 +204,25 @@ class AnalysisController extends AbstractController {
                                 setState(() => loading = false);
                                 return;
                               }
+                              // if (tankModel.analisyStatus == EnumStatusAnalise.AGUARDANDO_ANALISE.name){
+                              //   _simulateAnalysis(
+                              //       tankModel,
+                              //       _temperatureController.text,
+                              //       _fishAmountController.text,
+                              //       analysisId,
+                              //       batchId,
+                              //       context);
+                              // } else {
+                              //   _initiateAnalysisAndUpdate(
+                              //     _temperatureController.text,
+                              //     _actualWeightController.text,
+                              //     tankModel,
+                              //     isGrams,
+                              //     batchId,
+                              //     context,
+                              //   );
+                              //
+                              // }
                               if (analysisId == null) {
                                 _initiateAnalysisAndUpdate(
                                   _temperatureController.text,
@@ -236,11 +258,12 @@ class AnalysisController extends AbstractController {
     await _analisysService.simulateAnalysis(
         tankModel.id!, analysisId, temperature, fishAmount);
     NavigatorUtils.pushReplacement(
-        context,
-        AnalysisListScreen(
-          tankModel: tankModel,
-          batchId: batchId!,
-        ));
+      context,
+      AnalysisListScreen(
+        tankModel: tankModel,
+        batchId: batchId!,
+      ),
+    );
   }
 
   _initiateAnalysisAndUpdate(

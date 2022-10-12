@@ -284,7 +284,7 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
           itemBuilder: (context, index) {
             final AnalysisModel analysis = analysisList[index];
 
-            final String fishAmount = widget.tankModel.fishAmount.toString();
+            final String fishAmount = analysis.fishAmount.toString();
             final dailyFoodAmount =
                 analysis.dailyFoodAmount ?? _waitingAnalysis;
             final mealFoodAmount = analysis.mealFoodAmout ?? _waitingAnalysis;
@@ -535,6 +535,7 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
                             AnalysisScreen(
                               tankModel: widget.tankModel,
                               analysisModel: analysis,
+                                bacthId: widget.batchId
                             ),
                           ),
                         ),
