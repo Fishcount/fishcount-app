@@ -2,10 +2,16 @@ import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
+import 'package:fishcount_app/model/PaymentModel.dart';
+import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
+import 'package:fishcount_app/model/enums/EnumStatusAnalise.dart';
 import 'package:fishcount_app/model/enums/EnumUnidadeAumento.dart';
-import 'package:fishcount_app/modules/analisys/AnalisysScreen.dart';
-import 'package:fishcount_app/modules/species/SpecieService.dart';
+import 'package:fishcount_app/modules/analisys/AnalysisListScreen.dart';
+import 'package:fishcount_app/modules/financial/FinancialForm.dart';
+import 'package:fishcount_app/modules/financial/FinancialScreen.dart';
+import 'package:fishcount_app/modules/financial/payment/PaymentService.dart';
+import 'package:fishcount_app/modules/person/PessoaService.dart';
 import 'package:fishcount_app/modules/tank/TankController.dart';
 import 'package:fishcount_app/repository/TanqueRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
@@ -18,12 +24,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
-import '../../model/SpeciesModel.dart';
 import '../../utils/AnimationUtils.dart';
 import '../../utils/NavigatorUtils.dart';
 import '../../widgets/FilterOptionWidget.dart';
 import '../../widgets/SnackBarBuilder.dart';
-import '../../widgets/TextFieldWidget.dart';
 import 'TankService.dart';
 
 class TankScreen extends StatefulWidget {
@@ -40,7 +44,7 @@ class TankScreen extends StatefulWidget {
 
 class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
   final TankService _tankService = TankService();
-  final SpeciesService _speciesService = SpeciesService();
+
   final TankController _tankController = TankController();
   final ConnectionUtils _connectionUtils = ConnectionUtils();
   final TanqueRepository _tanqueRepository = TanqueRepository();
@@ -81,6 +85,33 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
     return _tanqueRepository.listarTanques(context, widget.batch.id!);
   }
 
+  bool _personHasCpf(PersonModel pessoa) =>
+      pessoa.cpf != null && pessoa.cpf!.isNotEmpty;
+
+  final PersonService _personService = PersonService();
+  final PaymentService _paymentService = PaymentService();
+
+  Future<void> _handlePermissions(StateSetter setState) async {
+    setState(() => loading = true);
+
+    final PersonModel people = await _personService.findById();
+    if (_personHasCpf(people)) {
+      final List<PaymentModel> pagamentos =
+          await _paymentService.buscarPagamentos();
+
+      NavigatorUtils.push(
+        context,
+        FinancialScreen(
+          pagamentos: pagamentos,
+        ),
+      );
+      return;
+    }
+    NavigatorUtils.push(context, FinancialForm(pessoaModel: people));
+  }
+
+  bool loading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,7 +119,35 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
       drawer: const DrawerWidget(),
       bottomNavigationBar: CustomBottomSheet(
         context: context,
-        newFunction: () => openTankRegisterModal(
+        centerElement: Center(
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return loading
+                  ? AnimationUtils.threeRotatungDots(
+                      size: 30.0, color: Colors.white)
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          child: const Icon(
+                            Icons.monetization_on_outlined,
+                            size: 35,
+                            color: Colors.white,
+                          ),
+                          onTap: () async => await _handlePermissions(setState),
+                        ),
+                        const Text(
+                          "Financeiro",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    );
+            },
+          ),
+        ),
+        newFunction: () => _tankController.openTankRegisterModal(
           context,
           TextEditingController(),
           TextEditingController(),
@@ -96,6 +155,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
           "",
           _animationController,
           null,
+          widget.batch,
         ),
       ).build(),
       body: Center(
@@ -124,7 +184,8 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                               Container(
                                 margin: const EdgeInsets.only(right: 10),
                                 child: FilterOptionWidget(
-                                  onTap: () => openTankRegisterModal(
+                                  onTap: () =>
+                                      _tankController.openTankRegisterModal(
                                     context,
                                     TextEditingController(),
                                     TextEditingController(),
@@ -132,6 +193,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                     "",
                                     _animationController,
                                     null,
+                                    widget.batch,
                                   ),
                                   text: 'Novo Tanque',
                                   icon: const Icon(Icons.add),
@@ -229,7 +291,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
               verticalPadding: 10,
               textColor: Colors.white,
               buttonColor: Colors.blue,
-              onPressed: () => openTankRegisterModal(
+              onPressed: () => _tankController.openTankRegisterModal(
                 context,
                 TextEditingController(),
                 TextEditingController(),
@@ -237,6 +299,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                 "",
                 _animationController,
                 null,
+                widget.batch,
               ),
             ),
           ),
@@ -360,7 +423,6 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                   ),
                 ),
                 child: ExpansionTile(
-                  initiallyExpanded: true,
                   controlAffinity: ListTileControlAffinity.trailing,
                   children: [
                     Container(
@@ -440,46 +502,6 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                               ),
                             ],
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'Última análise',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.only(
-                                          left: 5, top: 5),
-                                      child: Text(
-                                        tankModel.lastAnalysisDate!,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'Próxima análise',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.only(
-                                          left: 5, top: 5),
-                                      child: Text(
-                                        tankModel.nextAnalysisDate!,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -490,7 +512,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                   child: Row(
                                     children: const [
                                       Text(
-                                        "Análises disponíveis",
+                                        "Visualizar análises",
                                         style: TextStyle(color: Colors.green),
                                       ),
                                       Icon(
@@ -502,10 +524,10 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                   ),
                                   onPressed: () {
                                     NavigatorUtils.pushReplacement(
-                                        context,
-                                        AnalisysScreen(
-                                          tankModel: tankModel,
-                                        ));
+                                      context,
+                                      // AnalisysScreen(tankModel: tankModel),
+                                      AnalysisListScreen(tankModel: tankModel, batchId: widget.batch.id!),
+                                    );
                                   },
                                 ),
                               ),
@@ -556,7 +578,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                   Container(
                                     padding: const EdgeInsets.only(top: 10),
                                     child: Text(
-                                      tankModel.fishAmount.toString() +
+                                      tankModel.lastFishAmount.toString() +
                                           ' Peixes',
                                       style: const TextStyle(
                                         fontSize: 12,
@@ -564,13 +586,20 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   Container(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: Text(
-                                      'Próxima análise: ' +
-                                          tankModel.nextAnalysisDate!,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                      ),
+                                    padding: const EdgeInsets.only(
+                                        top: 10, bottom: 10),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          StatusAnaliseHandler.handlerText(
+                                              tankModel.analisyStatus!),
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: StatusAnaliseHandler
+                                                  .handlerColor(tankModel
+                                                      .analisyStatus!),),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -604,15 +633,15 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                 tankModel.fishAmount.toString();
                             _editInicialWeigthController.text =
                                 tankModel.initialWeight.toString();
-                            openTankRegisterModal(
-                              context,
-                              _editTankNameController,
-                              _editAmountFishController,
-                              _editInicialWeigthController,
-                              tankModel.species.description,
-                              _animationController,
-                              tankModel,
-                            );
+                            _tankController.openTankRegisterModal(
+                                context,
+                                _editTankNameController,
+                                _editAmountFishController,
+                                _editInicialWeigthController,
+                                tankModel.species.description,
+                                _animationController,
+                                tankModel,
+                                widget.batch);
                           },
                         ),
                       ),
@@ -625,265 +654,6 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
         ),
       ),
     );
-  }
-
-  openTankRegisterModal(
-    BuildContext context,
-    TextEditingController tankNameController,
-    TextEditingController fishAmounController,
-    TextEditingController initialWeightController,
-    String tankSpecie,
-    AnimationController animationController,
-    TankModel? tankModel,
-  ) async {
-    final bool _isUpdate = tankModel != null;
-    final List<SpeciesModel> species =
-        await _tankController.resolverListaEspecie(context);
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      transitionAnimationController: _animationController,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
-      ),
-      builder: (BuildContext context) {
-        bool isGrams = false;
-
-        final Color selectedColor = Colors.grey.shade600;
-        final Color noSelectedColor = Colors.grey.shade300;
-        const Color borderColor = Colors.black;
-        const Border border = Border(
-          right: BorderSide(
-            color: borderColor,
-          ),
-          left: BorderSide(
-            color: borderColor,
-          ),
-          top: BorderSide(
-            color: borderColor,
-          ),
-          bottom: BorderSide(
-            color: borderColor,
-          ),
-        );
-
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).orientation ==
-                              Orientation.portrait
-                          ? 100
-                          : 30,
-                      bottom: 20),
-                  child: Text(
-                    _isUpdate ? "Atualizar Tanque" : "Cadastrar novo Tanque",
-                    style: const TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: TextFieldWidget(
-                    controller: tankNameController,
-                    hintText: 'Nome do tanque',
-                    focusedBorderColor: Colors.blueGrey,
-                    iconColor: Colors.blueGrey,
-                    obscureText: false,
-                    labelText: 'Nome do tanque',
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                  child: TextFieldWidget(
-                    controller: fishAmounController,
-                    hintText: 'Quantidade de peixes',
-                    focusedBorderColor: Colors.blueGrey,
-                    iconColor: Colors.blueGrey,
-                    obscureText: false,
-                    labelText: 'Quantidade inicial de peixes',
-                    keyBoardType: TextInputType.number,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width / 1.5,
-                      padding:
-                          const EdgeInsets.only(top: 20, left: 20, right: 20),
-                      child: TextFieldWidget(
-                        controller: initialWeightController,
-                        hintText: 'Peso Inicial',
-                        focusedBorderColor: Colors.blueGrey,
-                        iconColor: Colors.blueGrey,
-                        obscureText: false,
-                        labelText: 'Peso inicial dos peixes',
-                        keyBoardType: TextInputType.number,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => setState(() => isGrams = false),
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 25, right: 15),
-                        width: 50,
-                        height: 40,
-                        child: const Center(child: Text("KG")),
-                        decoration: BoxDecoration(
-                          color: isGrams ? noSelectedColor : selectedColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          border: border,
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => setState(() => isGrams = true),
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 25),
-                        width: 50,
-                        height: 40,
-                        child: const Center(child: Text("GR")),
-                        decoration: BoxDecoration(
-                          color: !isGrams ? noSelectedColor : selectedColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          border: border,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                  height: 60,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(232, 232, 232, 232),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                  ),
-                  child: DropdownButton<String>(
-                      value: tankSpecie != ""
-                          ? tankSpecie
-                          : species.first.description,
-                      isExpanded: true,
-                      items: species
-                          .map(
-                            (specie) => DropdownMenuItem(
-                              value: specie.description,
-                              child: Text(specie.description),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          tankSpecie = newValue ?? "";
-                        });
-                      }),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: ElevatedButtonWidget(
-                        buttonText: "Cancelar",
-                        buttonColor: Colors.blue,
-                        onPressed: () => Navigator.pop(context),
-                        textSize: 15,
-                        textColor: Colors.white,
-                        radioBorder: 10,
-                        horizontalPadding: 20,
-                        verticalPadding: 10,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: ElevatedButtonWidget(
-                        buttonText: "Confirmar",
-                        buttonColor: Colors.green,
-                        onPressed: () async => await _confirmTank(
-                            tankSpecie,
-                            species,
-                            _isUpdate,
-                            tankModel,
-                            tankNameController,
-                            fishAmounController,
-                            initialWeightController,
-                            isGrams ? 'GRAMA' : 'KILO',
-                            context),
-                        textSize: 15,
-                        textColor: Colors.white,
-                        radioBorder: 10,
-                        horizontalPadding: 20,
-                        verticalPadding: 10,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Future<dynamic> _confirmTank(
-    tankSpecie,
-    List<SpeciesModel> species,
-    bool _isUpdate,
-    tankModel,
-    TextEditingController tankNameController,
-    TextEditingController fishAmounController,
-    TextEditingController initialWeightController,
-    String weitghUnity,
-    BuildContext context,
-  ) async {
-    final String speciesDescription =
-        tankSpecie != "" ? tankSpecie : species.first.description;
-    TankModel tank = tankModel ?? TankModel.empty(null);
-
-    tankModel = await _generateTank(
-        tank,
-        tankNameController,
-        fishAmounController,
-        speciesDescription,
-        double.parse(initialWeightController.text),
-        weitghUnity);
-    if (_isUpdate) {
-      return _tankController.updateTank(context, tankModel, widget.batch);
-    }
-    return _tankController.saveTank(context, tankModel, widget.batch);
-  }
-
-  Future<TankModel> _generateTank(
-      TankModel tankModel,
-      tankNameController,
-      fishAmounController,
-      String speciesDescription,
-      double initialWeigth,
-      String weitghUnity) async {
-    tankModel.description = tankNameController.text;
-    tankModel.fishAmount = int.parse(fishAmounController.text);
-    tankModel.weightUnity = weitghUnity;
-    tankModel.initialWeight = initialWeigth;
-    tankModel.species =
-        await _speciesService.findByDescricao(speciesDescription);
-
-    return tankModel;
   }
 
   _deleteTank(int batchId, List<TankModel> tanks, int index) {

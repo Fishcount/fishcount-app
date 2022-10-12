@@ -6,6 +6,25 @@ import 'package:fishcount_app/utils/RequestBuilder.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 
 class BatchService extends AbstractService {
+  Future<BatchModel> findBatch(int batchId) async {
+    try {
+      final int? pessoaId =
+          await SharedPreferencesUtils.getIntVariableFromShared(
+              EnumSharedPreferences.userId);
+      final Response<dynamic> response =
+          await RequestBuilder(url: '/pessoa')
+              .addPathParam('$pessoaId')
+              .addPathParam('lote')
+              .addPathParam('$batchId')
+              .buildUrl()
+              .get();
+
+      return BatchModel.fromJson(response.data);
+    } on DioError catch (e) {
+      return customDioError(e);
+    }
+  }
+
   Future<List<BatchModel>> fetchBatches(String? orderBy) async {
     try {
       final int? pessoaId =

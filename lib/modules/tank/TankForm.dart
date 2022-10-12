@@ -162,14 +162,17 @@ class _TankFormState extends State<TankForm> {
         id,
         _nomeTanqueController.text,
         int.parse(_qtdePeixesController.text),
+        int.parse(_qtdePeixesController.text),
         especieModel!,
         20.0,
-        "null",
         null,
         null,
         null,
         null,
-        null);
+        null,
+        null,
+        null,
+        false);
 
     await TankController().saveTank(context, tanque, widget.batch);
   }

@@ -1,6 +1,7 @@
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/modules/batch/BatchScreen.dart';
 import 'package:fishcount_app/repository/LoteRepository.dart';
+import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:flutter/material.dart';
 
@@ -62,14 +63,18 @@ class BatchController extends AbstractController {
   }
 
   openBatchRegisterModal(
+      Function(String) onChanged,
       BuildContext context,
       TextEditingController _batchNameController,
       AnimationController _animationController,
       BatchModel? batchModel) {
     final bool _isUpdate = batchModel != null;
+    bool _submitted = false;
+    bool loading = false;
 
     return showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       transitionAnimationController: _animationController,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -78,68 +83,99 @@ class BatchController extends AbstractController {
         ),
       ),
       builder: (BuildContext context) {
-        return Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 30, bottom: 20),
-              child: Text(
-                _isUpdate ? "Atualizar Lote" : "Cadastrar novo lote",
-                style: const TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: TextFieldWidget(
-                controller: _batchNameController,
-                hintText: 'Nome do lote',
-                focusedBorderColor: Colors.blueGrey,
-                iconColor: Colors.blueGrey,
-                obscureText: false,
-                labelText: 'Nome do lote',
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: ElevatedButtonWidget(
-                    buttonText: "Cancelar",
-                    buttonColor: Colors.blue,
-                    onPressed: () => Navigator.pop(context),
-                    textSize: 15,
-                    textColor: Colors.white,
-                    radioBorder: 10,
-                    horizontalPadding: 20,
-                    verticalPadding: 10,
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return SizedBox(
+              height: 650,
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(top: 50, bottom: 20),
+                    child: Text(
+                      _isUpdate ? "Atualizar Lote" : "Cadastrar novo lote",
+                      style: const TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54),
+                    ),
                   ),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: ElevatedButtonWidget(
-                    buttonText: "Confirmar",
-                    buttonColor: Colors.green,
-                    onPressed: () {
-                      if (_isUpdate) {
-                        batchModel.description = _batchNameController.text;
-                        updateBatch(context, batchModel);
-                        return;
-                      }
-                      saveBatch(context, _batchNameController.text);
-                    },
-                    textSize: 15,
-                    textColor: Colors.white,
-                    radioBorder: 10,
-                    horizontalPadding: 20,
-                    verticalPadding: 10,
+                  Container(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: TextFieldWidget(
+                      controller: _batchNameController,
+                      hintText: 'Nome do lote',
+                      focusedBorderColor: Colors.blueGrey,
+                      iconColor: Colors.blueGrey,
+                      obscureText: false,
+                      labelText: 'Nome do lote',
+                      errorText: resolveErrorText(
+                        submitted: _submitted,
+                        controller: _batchNameController,
+                        errorMessage: 'O nome do lote não pode estar vazio.',
+                      ),
+                      onChanged: (text) => setState(
+                        () => resolveOnChaged(
+                            _batchNameController, _submitted, text),
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  loading
+                      ? Container(
+                          padding: const EdgeInsets.only(top: 30),
+                          child: AnimationUtils.progressiveDots(size: 50.0),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(top: 30),
+                              child: ElevatedButtonWidget(
+                                buttonText: "Cancelar",
+                                buttonColor: Colors.blue,
+                                onPressed: () => Navigator.pop(context),
+                                textSize: 15,
+                                textColor: Colors.white,
+                                radioBorder: 10,
+                                horizontalPadding: 20,
+                                verticalPadding: 10,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(top: 40),
+                              child: ElevatedButtonWidget(
+                                buttonText: "Confirmar",
+                                buttonColor: Colors.green,
+                                onPressed: () async {
+                                  setState(() {
+                                    _submitted = true;
+                                  });
+                                  if (_batchNameController.text.isNotEmpty) {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    if (_isUpdate) {
+                                      batchModel.description =
+                                          _batchNameController.text;
+                                      updateBatch(context, batchModel);
+                                      return;
+                                    }
+                                    saveBatch(
+                                        context, _batchNameController.text);
+                                  }
+                                },
+                                textSize: 15,
+                                textColor: Colors.white,
+                                radioBorder: 10,
+                                horizontalPadding: 20,
+                                verticalPadding: 10,
+                              ),
+                            ),
+                          ],
+                        ),
+                ],
+              ),
+            );
+          },
         );
       },
     );

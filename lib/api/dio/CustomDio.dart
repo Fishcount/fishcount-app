@@ -19,12 +19,20 @@ class CustomDio<T> {
     return await dio.post(url, data: data);
   }
 
+  Future<Response<dynamic>> dioPostWithoutBody(String url) async {
+    return await dio.post(url);
+  }
+
   Future<Response<List<dynamic>>> dioGetAll(String url) async {
     return await dio.get(url);
   }
 
-  Future<Response<dynamic>> dioGet(String url) async{
+  Future<Response<dynamic>> dioGet(String url) async {
     return await dio.get(url);
+  }
+
+  Future<Response<dynamic>> dioPutWithoutBody(String url) async {
+    return await dio.put(url);
   }
 
   Future<Response<void>> dioPut(String url, Map<String, dynamic> data) async {
@@ -34,5 +42,4 @@ class CustomDio<T> {
   Future<Response<void>> dioDelete(String url) async {
     return await dio.delete(url);
   }
-
 }

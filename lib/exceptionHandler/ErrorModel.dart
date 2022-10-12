@@ -2,7 +2,7 @@ class ErrorModel {
   late String? message;
   late String? trace;
   late int? status;
-  late List<String>? details;
+  late List<dynamic>? details;
 
   ErrorModel(
     this.message,
@@ -15,6 +15,7 @@ class ErrorModel {
     message = json['message'];
     trace = json['trace'];
     status = json['status'];
+    details = json['details'];
   }
 
   Map<String, dynamic> toJson() => {

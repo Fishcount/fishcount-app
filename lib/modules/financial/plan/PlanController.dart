@@ -19,7 +19,7 @@ import 'PlanoService.dart';
 class PlanController {
   static final PlanService _planoService = PlanService();
 
-  static final PagamentoService _pagamentoService = PagamentoService();
+  static final PaymentService _pagamentoService = PaymentService();
 
   static planoList(BuildContext context) {
     return SingleChildScrollView(
@@ -45,71 +45,52 @@ class PlanController {
     return const Text("Não foi possível encontrar nenhum plano disponivel");
   }
 
-  static SingleChildScrollView _onSuccessfulRequest(
+  static Widget _onSuccessfulRequest(
       BuildContext context, AsyncSnapshot<List<PlanModel>> snapshot) {
     const Color borderColor = Colors.black26;
     final Color? backGroundColor = Colors.grey[100];
-
-    return SingleChildScrollView(
-      child: SizedBox(
-        height: MediaQuery.of(context).orientation == Orientation.portrait
-            ? MediaQuery.of(context).size.height / 1.3
-            : MediaQuery.of(context).size.height / 2,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: snapshot.data != null ? snapshot.data!.length : 0,
-          itemBuilder: (context, index) {
-            final PlanModel plano = snapshot.data![index];
-            return Container(
-              margin: const EdgeInsets.only(top: 20),
-              alignment: Alignment.center,
-              height: 200,
-              decoration: BoxDecoration(
-                color: backGroundColor,
-                borderRadius: BorderRadius.circular(10),
-                border: const Border(
-                  bottom: BorderSide(
-                    color: borderColor,
-                  ),
-                  left: BorderSide(
-                    color: borderColor,
-                  ),
-                  right: BorderSide(
-                    color: borderColor,
-                  ),
-                  top: BorderSide(
-                    color: borderColor,
-                  ),
+    return SizedBox(
+      height: MediaQuery.of(context).orientation == Orientation.portrait
+          ? MediaQuery.of(context).size.height / 1.4
+          : MediaQuery.of(context).size.height / 2,
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: snapshot.data != null ? snapshot.data!.length : 0,
+        itemBuilder: (context, index) {
+          final PlanModel plano = snapshot.data![index];
+          return Container(
+            margin: const EdgeInsets.only(top: 10),
+            alignment: Alignment.center,
+            height: 200,
+            decoration: BoxDecoration(
+              color: backGroundColor,
+              borderRadius: BorderRadius.circular(10),
+              border: const Border(
+                bottom: BorderSide(
+                  color: borderColor,
+                ),
+                left: BorderSide(
+                  color: borderColor,
+                ),
+                right: BorderSide(
+                  color: borderColor,
+                ),
+                top: BorderSide(
+                  color: borderColor,
                 ),
               ),
-              child: Container(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                child: Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            plano.descricao,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-                        const Expanded(
-                          child: Divider(
-                            height: 1,
-                            thickness: 2,
-                            color: Colors.blue,
-                          ),
-                        ),
-                        Text(
-                          "R\$ " + plano.valorMaximo.toString() + "0",
+            ),
+            child: Container(
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          plano.descricao,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: Colors.blue,
@@ -117,87 +98,103 @@ class PlanController {
                             fontSize: 20,
                           ),
                         ),
-                      ],
-                    ),
-                    Row(
+                      ),
+                      const Expanded(
+                        child: Divider(
+                          height: 1,
+                          thickness: 2,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      Text(
+                        "R\$ " + plano.valorMaximo.toString() + "0",
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: Text(
+                                "Tenha entre " +
+                                    plano.minTanque.toString() +
+                                    " e " +
+                                    plano.maxTanque.toString() +
+                                    " tanques!",
+                                style: const TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: Text(
+                                "Pague em " +
+                                    plano.qtdeParcela.toString() +
+                                    " parcelas!",
+                                style: const TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: Text(
+                                "Negocie conosco para preços de até R\$ " +
+                                    plano.valorMinimo.toString() +
+                                    "0",
+                                style: const TextStyle(fontSize: 15),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
+                        ElevatedButtonWidget(
+                          buttonText: "Entrar em contato",
+                          buttonColor: Colors.blue,
+                          radioBorder: 10,
+                          textSize: 17,
+                          textColor: Colors.white,
+                          onPressed: () => _enviarContato(context),
+                        ),
                         Container(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.only(bottom: 5),
-                                child: Text(
-                                  "Tenha entre " +
-                                      plano.minTanque.toString() +
-                                      " e " +
-                                      plano.maxTanque.toString() +
-                                      " tanques!",
-                                  style: const TextStyle(fontSize: 15),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.only(bottom: 5),
-                                child: Text(
-                                  "Pague em " +
-                                      plano.qtdeParcela.toString() +
-                                      " parcelas!",
-                                  style: const TextStyle(fontSize: 15),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.only(bottom: 5),
-                                child: Text(
-                                  "Negocie conosco para preços de até R\$ " +
-                                      plano.valorMinimo.toString() +
-                                      "0",
-                                  style: const TextStyle(fontSize: 15),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
+                          padding: const EdgeInsets.only(top: 20, bottom: 10),
+                          child: ElevatedButtonWidget(
+                            buttonText: "Assine já",
+                            buttonColor: Colors.green,
+                            radioBorder: 10,
+                            textSize: 17,
+                            textColor: Colors.white,
+                            onPressed: () {
+                              return _confirmarAssinatura(context, plano);
+                            },
                           ),
                         ),
                       ],
                     ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ElevatedButtonWidget(
-                            buttonText: "Entrar em contato",
-                            buttonColor: Colors.blue,
-                            radioBorder: 10,
-                            textSize: 17,
-                            textColor: Colors.white,
-                            onPressed: () => _enviarContato(context),
-                          ),
-                          Container(
-                            child: ElevatedButtonWidget(
-                              buttonText: "Assine já",
-                              buttonColor: Colors.green,
-                              radioBorder: 10,
-                              textSize: 17,
-                              textColor: Colors.white,
-                              onPressed: () {
-                                return _confirmarAssinatura(context, plano);
-                              },
-                            ),
-                            padding: const EdgeInsets.only(top: 20, bottom: 10),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -212,52 +209,67 @@ class PlanController {
         '\nValor total de $precoMax'
         '\nEm $qtdeParcela parcelas de R\$ $precoParcela';
 
+    bool loading = false;
+
     return showDialog<String>(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirmar Plano'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(description),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButtonWidget(
-                  buttonText: 'Cancelar',
-                  buttonColor: Colors.blue,
-                  onPressed: () => Navigator.of(context).pop(),
-                  textSize: 15,
-                  textColor: Colors.white,
-                  radioBorder: 10,
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: const Text('Confirmar Plano'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(description),
+                  ],
                 ),
-                ElevatedButtonWidget(
-                  buttonText: 'Confirmar',
-                  buttonColor: Colors.green,
-                  onPressed: () => _assinarPlano(plano, context),
-                  textSize: 15,
-                  textColor: Colors.white,
-                  radioBorder: 10,
-                )
+              ),
+              actions: <Widget>[
+                loading
+                    ? Center(
+                        child: Container(
+                          child: AnimationUtils.progressiveDots(size: 30.0),
+                        ),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          ElevatedButtonWidget(
+                            buttonText: 'Cancelar',
+                            buttonColor: Colors.blue,
+                            textSize: 15,
+                            textColor: Colors.white,
+                            radioBorder: 10,
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                          ElevatedButtonWidget(
+                            buttonText: 'Confirmar',
+                            buttonColor: Colors.green,
+                            textSize: 15,
+                            textColor: Colors.white,
+                            radioBorder: 10,
+                            onPressed: () => {
+                              setState(() => loading = true),
+                              _assinarPlano(plano, context)
+                            },
+                          )
+                        ],
+                      )
               ],
-            )
-          ],
+            );
+          },
         );
       },
     );
   }
 
   static _assinarPlano(PlanModel plano, BuildContext context) async {
-    final PaymentModel pagamentoModel = _gerarPagamentoFromPlano(plano);
+    final PaymentModel paymentModel = _gerarPagamentoFromPlano(plano);
 
     dynamic response =
-        await _pagamentoService.incluirAssinaturaPlano(pagamentoModel);
+        await _pagamentoService.incluirAssinaturaPlano(paymentModel);
     if (response is PaymentModel) {
       NavigatorUtils.pushReplacement(
           context,
@@ -321,6 +333,7 @@ class PlanController {
       0,
       0,
       plano.qtdeParcela,
+      "",
       plano,
       EnumTipoPagamento.PIX.name,
       EnumStatusPagamento.ANALISE.name,

@@ -12,33 +12,33 @@ import '../batch/BatchScreen.dart';
 import 'LoginService.dart';
 
 class LoginController {
-  void doLogin(BuildContext context, String email, String senha) async {
+  Future<dynamic> doLogin(BuildContext context, String email,
+      String senha) async {
     AuthUserModel userModel = AuthUserModel(email, senha);
-    ConnectionUtils().isConnected().then((isConnected) {
-      if (isConnected) {
-        loginWithApi(userModel, context);
-      } else {
-        loginLocal(context, email, senha);
-      }
-    });
+
+    bool isConnected = await ConnectionUtils().isConnected();
+    if (isConnected) {
+      dynamic result = await loginWithApi(userModel, context);
+      return result;
+    }
+    dynamic result = loginLocal(context, email, senha);
+    return result;
   }
 
-  void loginLocal(BuildContext context, String email, String senha) {
-    UsuarioRepository().login(context, email, senha);
+  dynamic loginLocal(BuildContext context, String email, String senha) {
+    return UsuarioRepository().login(context, email, senha);
   }
 
-  Future<dynamic> loginWithApi(
-      AuthUserModel userModel, BuildContext context) async {
+  Future<dynamic> loginWithApi(AuthUserModel userModel,
+      BuildContext context) async {
     dynamic response =
-        await LoginService().doLogin(userModel.username, userModel.password);
+    await LoginService().doLogin(userModel.username, userModel.password);
 
     if (response is AuthUserModel) {
-      NavigatorUtils.pushReplacementWithFadeAnimation(context, const BatchScreen());
+      return true;
     }
     if (response is ErrorModel) {
       return ErrorHandler.getDefaultErrorMessage(context, response.message);
     }
   }
-
-  void resolveToken(Response<dynamic> response, SharedPreferences prefs) {}
 }

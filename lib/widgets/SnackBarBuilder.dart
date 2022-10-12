@@ -17,6 +17,7 @@ class SnackBarBuilder {
   buildError(BuildContext context) {
     return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        behavior: SnackBarBehavior.floating,
         content: Text(text),
         backgroundColor: color,
         duration: const Duration(seconds: 2),

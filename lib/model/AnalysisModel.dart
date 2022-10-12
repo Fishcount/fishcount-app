@@ -1,35 +1,68 @@
 class AnalysisModel {
-  late int id;
+  late int? id;
 
-  late double foodAmount;
+  late double? avergageTankWeight;
 
-  late double averageWeight;
+  late String? foodType;
 
-  late double averageFoodAmount;
+  late double? dailyFoodAmount;
 
-  late DateTime analysisDate;
+  late int? fishAmount;
+
+  late String? unityWeitghDailyFood;
+
+  late double? mealFoodAmout;
+
+  late String? unityWeitghMealFood;
+
+  late int? dailyFoodFrequency;
+
+  late int? tankTemperature;
+
+  late String analysisStatus;
+
+  late String analysisDate;
 
   AnalysisModel(
-    this.id,
-    this.foodAmount,
-    this.averageWeight,
-    this.averageFoodAmount,
+    this.avergageTankWeight,
+    this.foodType,
+    this.fishAmount,
+    this.dailyFoodAmount,
+    this.unityWeitghDailyFood,
+    this.mealFoodAmout,
+    this.unityWeitghMealFood,
+    this.dailyFoodFrequency,
+    this.tankTemperature,
+    this.analysisStatus,
     this.analysisDate,
   );
 
   AnalysisModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    foodAmount = json['qtdeRacao'];
-    averageWeight = json['pesoMedio'];
-    averageFoodAmount = json['qtdeMediaRacao'];
+    avergageTankWeight = json['pesoMedioTanque'];
+    foodType = json['tipoRacao'];
+    fishAmount = json['qtdePeixe'];
+    dailyFoodAmount = json['qtdeRacaoDiaria'];
+    unityWeitghDailyFood = json['unidadePesoRacaoDiaria'];
+    mealFoodAmout = json['qtdeRacaoRefeicao'];
+    unityWeitghMealFood = json['unidadePesoRacaoRefeicao'];
+    dailyFoodFrequency = json['frequenciaAlimentacaoDiaria'];
+    tankTemperature = json['temperaturaAgua'];
+    analysisStatus = json['statusAnalise'];
     analysisDate = json['dataAnalise'];
   }
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "qtdeRacao": foodAmount,
-        "pesoMedio": averageWeight,
-        "qtdeMediaRacao": averageFoodAmount,
-        "dataAnalise": analysisDate
+        'id': id,
+        'pesoMedioTanque': avergageTankWeight,
+        'tipoRacao': foodType,
+        'qtdeRacaoDiaria': dailyFoodAmount,
+        'unidadePesoRacaoDiaria': unityWeitghDailyFood,
+        'qtdeRacaoRefeicao': mealFoodAmout,
+        'unidadePesoRacaoRefeicao': unityWeitghMealFood,
+        'frequenciaAlimentacaoDiaria': dailyFoodFrequency,
+        'temperaturaAgua': tankTemperature,
+        'statusAnalise': analysisStatus,
+        'dataAnalise': analysisDate,
       };
 }

@@ -9,4 +9,6 @@ class ErrorMessage {
       "Você não possui lotes cadastrados, tente cadastrar um novo!";
   static const usuarioSemTanque =
       "Você não possui tanques cadastrados, tente cadastrar um novo!";
+
+  static const tanqueSemAnalise = 'Ainda não foi realizado nenhuma análise nesse tanque';
 }

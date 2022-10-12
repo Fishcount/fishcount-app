@@ -8,7 +8,7 @@ import 'package:fishcount_app/service/generic/AbstractService.dart';
 import 'package:fishcount_app/utils/RequestBuilder.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 
-class PagamentoService extends AbstractService {
+class PaymentService extends AbstractService {
   static String url = ApiPessoa.baseUrl + "/{pessoaId}/pagamento";
 
   Future<dynamic> incluirAssinaturaPlano(PaymentModel pagamentoModel) async {

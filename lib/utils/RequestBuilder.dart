@@ -10,6 +10,8 @@ class RequestBuilder<T> {
 
   Map<String, dynamic>? _body;
 
+  bool _hasBody = true;
+
   RequestBuilder({
     required this.url,
   });
@@ -23,15 +25,21 @@ class RequestBuilder<T> {
   }
 
   Future<Response<dynamic>> post() async {
-    if (_body == null) {
+    if (_body == null && _hasBody) {
       throw Exception('Body was not set!');
+    }
+    if (!_hasBody){
+      return CustomDio().dioPostWithoutBody(url);
     }
     return CustomDio().dioPost(url, _body!);
   }
 
   Future<Response<void>> put() async {
-    if (_body == null) {
+    if (_body == null && _hasBody) {
       throw Exception('Body was not set!');
+    }
+    if (!_hasBody){
+      return CustomDio().dioPutWithoutBody(url);
     }
     return CustomDio().dioPut(url, _body!);
   }
@@ -68,6 +76,12 @@ class RequestBuilder<T> {
     if (_queryParam != null) {
       url = url + _queryParam!;
     }
+    return this;
+  }
+
+  RequestBuilder hasBody(bool hasBody){
+    _hasBody = hasBody;
+
     return this;
   }
 }
