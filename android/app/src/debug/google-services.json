@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "248907625910",
+    "project_id": "fish-count-app",
+    "storage_bucket": "fish-count-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248907625910:android:521ee1c845c452e7b2fd17",
+        "android_client_info": {
+          "package_name": "com.example.fishcount_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "248907625910-l1cooluk78hr5r790v721dp1sdjrjsq2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANyYy-tRA7M1h6Q9VS6ESqomgpqhq08UU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "248907625910-l1cooluk78hr5r790v721dp1sdjrjsq2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "248907625910-edd0opohcd4lbti03d5lkqcu2v4vtp1l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fishcountApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
