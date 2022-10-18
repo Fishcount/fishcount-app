@@ -50,9 +50,9 @@ class TankModel {
 
   TankModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    description = json['descricao'];
-    fishAmount = json['qtdePeixe'];
-    lastFishAmount = json['qtdUltimaAnalise'];
+    description = json['descricao'] ?? "";
+    fishAmount = json['qtdePeixe'] ?? 0;
+    lastFishAmount = json['qtdUltimaAnalise'] ?? 0;
     initialWeight = json['pesoUnitario'];
     weightUnity = json['unidadePeso'];
     analisyStatus = json['statusAnalise'];

@@ -2,6 +2,7 @@ import 'package:fishcount_app/constants/Formatters.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
+import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
@@ -28,10 +29,29 @@ class FinancialForm extends StatefulWidget {
 class _FinanceiroformState extends State<FinancialForm> {
   final TextEditingController _cpfController = TextEditingController();
 
+  bool loading = false;
+
+  String resolveOnChaged(
+      TextEditingController _controller, bool _submitted, String text) {
+    return _controller.text.isEmpty && _submitted
+        ? _controller.text = text
+        : _controller.text;
+  }
+
+  String? resolveErrorText({
+    controller = TextEditingController,
+    submitted = bool,
+    errorMessage = String,
+  }) {
+    return controller.text.isEmpty && submitted ? errorMessage : null;
+  }
+
+  bool _submitted = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  AppBarBuilder().build(),
+      appBar: AppBarBuilder().build(),
       body: Container(
         padding: const EdgeInsets.only(top: 50, right: 20, left: 20),
         child: Column(
@@ -48,7 +68,7 @@ class _FinanceiroformState extends State<FinancialForm> {
               paddingRight: 12,
             ),
             Container(
-              padding: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 30),
               child: TextFieldWidget(
                 controller: _cpfController,
                 hintText: "CPF",
@@ -57,36 +77,52 @@ class _FinanceiroformState extends State<FinancialForm> {
                 obscureText: false,
                 focusedBorderColor: Colors.blueGrey,
                 inputMask: Formatters.cpfFormat,
+                errorText: resolveErrorText(
+                  submitted: _submitted,
+                  controller: _cpfController,
+                  errorMessage: 'O campo nome não pode estar vazio.',
+                ),
+                onChanged: (text) => setState(
+                      () => resolveOnChaged(_cpfController, _submitted, text),
+                ),
               ),
             ),
             Container(
               padding: const EdgeInsets.only(top: 20),
-              child: ElevatedButtonWidget(
-                textSize: 18,
-                radioBorder: 20,
-                horizontalPadding: 30,
-                verticalPadding: 10,
-                textColor: Colors.white,
-                buttonColor: Colors.blue,
-                buttonText: "Salvar",
-                onPressed: () async {
-                  if (widget.pessoaModel == null) {
-                    return Text("");
-                  }
-                  widget.pessoaModel!.cpf = _cpfController.text;
-                  dynamic response = await PersonService()
-                      .saveOrUpdate(widget.pessoaModel!);
+              child: loading
+                  ? AnimationUtils.progressiveDots(size: 50.0)
+                  : ElevatedButtonWidget(
+                      textSize: 18,
+                      radioBorder: 20,
+                      horizontalPadding: 30,
+                      verticalPadding: 10,
+                      textColor: Colors.white,
+                      buttonColor: Colors.blue,
+                      buttonText: "Salvar",
+                      onPressed: () async {
+                        setState(() => _submitted = true);
+                        if (_cpfController.text.isEmpty) {
+                          return;
+                        }
+                        setState(() => loading = true);
+                        if (widget.pessoaModel == null) {
+                          return Text("");
+                        }
+                        widget.pessoaModel!.cpf = _cpfController.text;
+                        dynamic response = await PersonService()
+                            .saveOrUpdate(widget.pessoaModel!);
 
-                  if (response is PersonModel) {
-                    NavigatorUtils.pushReplacement(
-                        context, const FinancialScreen());
-                  }
-                  if (response is ErrorModel) {
-                    return ErrorHandler.getDefaultErrorMessage(
-                        context, response.message);
-                  }
-                },
-              ),
+                        if (response is PersonModel) {
+                          NavigatorUtils.pushReplacement(
+                              context, const FinancialScreen());
+                        }
+                        if (response is ErrorModel) {
+                          setState(() => loading = false);
+                          return ErrorHandler.getDefaultErrorMessage(
+                              context, response.message);
+                        }
+                      },
+                    ),
             ),
           ],
         ),

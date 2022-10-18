@@ -34,10 +34,10 @@ class PersonModel {
   );
 
   PersonModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['nome'];
-    password = json['senha'];
-    cpf = json['cpf'];
+    id = json['id'] ?? "";
+    name = json['nome'] ?? '';
+    password = json['senha'] ?? '';
+    cpf = json['cpf'] ?? "";
     phones = _convertPhoneList(json);
     emails = _convertEmailList(json);
     batches = _convertBatchesList(json);

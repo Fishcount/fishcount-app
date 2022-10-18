@@ -371,7 +371,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
     return SingleChildScrollView(
       child: SizedBox(
         height: MediaQuery.of(context).orientation == Orientation.portrait
-            ? MediaQuery.of(context).size.height / 1.5
+            ? MediaQuery.of(context).size.height / 1.6
             : MediaQuery.of(context).size.height / 2,
         child: ListView.builder(
           shrinkWrap: true,

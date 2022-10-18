@@ -13,7 +13,6 @@ class AuthUserModel {
   AuthUserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     username = json['username'];
-    password = json['password'];
     token = json['token'];
     personId = json['pessoaId'];
   }

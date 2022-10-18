@@ -4,16 +4,11 @@ import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:flutter/material.dart';
 
-import 'firebase_options.dart';
 import 'modules/batch/BatchScreen.dart';
 import 'modules/login/LoginScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
   String? token = await SharedPreferencesUtils.getStringVariableFromShared(
       EnumSharedPreferences.accessToken);

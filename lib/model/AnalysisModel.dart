@@ -17,7 +17,7 @@ class AnalysisModel {
 
   late int? dailyFoodFrequency;
 
-  late int? tankTemperature;
+  late double? tankTemperature;
 
   late String analysisStatus;
 
@@ -47,7 +47,7 @@ class AnalysisModel {
     mealFoodAmout = json['qtdeRacaoRefeicao'];
     unityWeitghMealFood = json['unidadePesoRacaoRefeicao'];
     dailyFoodFrequency = json['frequenciaAlimentacaoDiaria'];
-    tankTemperature = json['temperaturaAgua'];
+    tankTemperature = json['temperaturaAgua'] ?? 0;
     analysisStatus = json['statusAnalise'];
     analysisDate = json['dataAnalise'];
   }

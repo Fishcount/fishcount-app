@@ -26,14 +26,14 @@ import '../phone/PhoneForm.dart';
 import 'PessoaService.dart';
 
 class PessoaController extends AbstractController {
-  Future<dynamic> salvar(BuildContext context, String nome, String email,
+  dynamic salvar(BuildContext context, String nome, String email,
       String celular, String senha) async {
-    ConnectionUtils().isConnected().then((isConnected) {
-      if (isConnected) {
-        return saveWithApi(context, email, celular, nome, senha);
-      }
-      return saveLocal(context, email, celular, nome, senha);
-    });
+    bool isConnected = await ConnectionUtils().isConnected();
+
+    if (isConnected) {
+      return await saveWithApi(context, email, celular, nome, senha);
+    }
+    return await saveLocal(context, email, celular, nome, senha);
   }
 
   Future<dynamic> saveLocal(BuildContext context, String email, String celular,
