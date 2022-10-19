@@ -15,13 +15,13 @@ class EnumStatusPagamentoHandler {
   static Color getColorByStatus(String status){
     switch (status) {
       case 'ANALISE':
-        return Colors.purple;
+        return Colors.yellow.shade800;
 
       case 'ABERTO':
         return Colors.blue;
 
       case 'PAGAMENTO_PARCIAL':
-        return Colors.yellow;
+        return Colors.purple;
 
       case 'FINALIZADO':
         return Colors.green;

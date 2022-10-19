@@ -4,10 +4,10 @@ class UnidadePesoHandler {
   static String handle(String value) {
     switch (value) {
       case 'GRAMA':
-        return 'GR';
+        return 'Gr';
 
       case 'KILO':
-        return 'KG';
+        return 'Kg';
 
       default:
         return '';

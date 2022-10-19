@@ -111,6 +111,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
   }
 
   bool loading = false;
+  bool loadingButtonNew = false;
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +234,8 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                 builder: (context, AsyncSnapshot<List<TankModel>> snapshot) {
                   return AsyncSnapshotHandler(
                     asyncSnapshot: snapshot,
-                    widgetOnError: const Text(""),
+                    widgetOnError: const Text(
+                        "Não foi possível buscar os tanques desse lote."),
                     widgetOnWaiting: Container(
                       padding: const EdgeInsets.only(top: 30),
                       child: AnimationUtils.progressiveDots(size: 50.0),
@@ -280,28 +282,38 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
               ErrorMessage.usuarioSemTanque,
             ),
           ),
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(top: 50),
-            child: ElevatedButtonWidget(
-              buttonText: "Novo",
-              textSize: 18,
-              radioBorder: 20,
-              horizontalPadding: 30,
-              verticalPadding: 10,
-              textColor: Colors.white,
-              buttonColor: Colors.blue,
-              onPressed: () => _tankController.openTankRegisterModal(
-                context,
-                TextEditingController(),
-                TextEditingController(),
-                TextEditingController(),
-                "",
-                _animationController,
-                null,
-                widget.batch,
-              ),
-            ),
+          StatefulBuilder(
+            builder: (context, setState) {
+              return Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.only(top: 50),
+                child: loadingButtonNew
+                    ? AnimationUtils.progressiveDots(size: 50.0)
+                    : ElevatedButtonWidget(
+                        buttonText: "Novo",
+                        textSize: 18,
+                        radioBorder: 20,
+                        horizontalPadding: 30,
+                        verticalPadding: 10,
+                        textColor: Colors.white,
+                        buttonColor: Colors.blue,
+                        onPressed: () async {
+                          setState(() => loadingButtonNew = true);
+                          await _tankController.openTankRegisterModal(
+                            context,
+                            TextEditingController(),
+                            TextEditingController(),
+                            TextEditingController(),
+                            "",
+                            _animationController,
+                            null,
+                            widget.batch,
+                          );
+                          setState(() => loadingButtonNew = false);
+                        },
+                      ),
+              );
+            },
           ),
         ],
       ),
@@ -526,7 +538,9 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                     NavigatorUtils.pushReplacement(
                                       context,
                                       // AnalisysScreen(tankModel: tankModel),
-                                      AnalysisListScreen(tankModel: tankModel, batchId: widget.batch.id!),
+                                      AnalysisListScreen(
+                                          tankModel: tankModel,
+                                          batchId: widget.batch.id!),
                                     );
                                   },
                                 ),
@@ -594,10 +608,11 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                           StatusAnaliseHandler.handlerText(
                                               tankModel.analisyStatus!),
                                           style: TextStyle(
-                                              fontSize: 14,
-                                              color: StatusAnaliseHandler
-                                                  .handlerColor(tankModel
-                                                      .analisyStatus!),),
+                                            fontSize: 14,
+                                            color: StatusAnaliseHandler
+                                                .handlerColor(
+                                                    tankModel.analisyStatus!),
+                                          ),
                                         ),
                                       ],
                                     ),

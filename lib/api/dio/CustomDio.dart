@@ -7,7 +7,7 @@ class CustomDio<T> {
     Dio customDio = Dio();
     customDio.options.baseUrl = Environment.urlServer;
     customDio.interceptors.add(CustomInterceptors());
-    customDio.options.connectTimeout = 5000;
+    customDio.options.connectTimeout = 10000;
     customDio.options.receiveDataWhenStatusError = true;
     dio = customDio;
   }

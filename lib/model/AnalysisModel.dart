@@ -17,7 +17,7 @@ class AnalysisModel {
 
   late int? dailyFoodFrequency;
 
-  late double? tankTemperature;
+  late dynamic tankTemperature;
 
   late String analysisStatus;
 

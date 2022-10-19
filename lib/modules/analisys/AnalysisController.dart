@@ -204,25 +204,6 @@ class AnalysisController extends AbstractController {
                                 setState(() => loading = false);
                                 return;
                               }
-                              // if (tankModel.analisyStatus == EnumStatusAnalise.AGUARDANDO_ANALISE.name){
-                              //   _simulateAnalysis(
-                              //       tankModel,
-                              //       _temperatureController.text,
-                              //       _fishAmountController.text,
-                              //       analysisId,
-                              //       batchId,
-                              //       context);
-                              // } else {
-                              //   _initiateAnalysisAndUpdate(
-                              //     _temperatureController.text,
-                              //     _actualWeightController.text,
-                              //     tankModel,
-                              //     isGrams,
-                              //     batchId,
-                              //     context,
-                              //   );
-                              //
-                              // }
                               if (analysisId == null) {
                                 _initiateAnalysisAndUpdate(
                                   _temperatureController.text,
