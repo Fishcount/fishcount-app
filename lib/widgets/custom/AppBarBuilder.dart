@@ -18,20 +18,20 @@ class AppBarBuilder {
           width: 150,
           height: 70,
           decoration: const BoxDecoration(
-            shape: BoxShape.rectangle,
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(500),
-              bottomRight: Radius.circular(500),
+              bottomLeft: Radius.circular(80),
+              bottomRight: Radius.circular(80),
             ),
+            shape: BoxShape.rectangle,
             color: Colors.white,
             image: DecorationImage(
               image: AssetImage(ImagePaths.imageLogo),
-              scale: 2.5,
-              alignment: Alignment.center,
+              scale: 4.7,
+              alignment: Alignment.topCenter,
               fit: BoxFit.scaleDown,
             ),
           ),
-          padding: const EdgeInsets.only(top: 7),
+          padding: const EdgeInsets.only(top: 1),
         ),
       ),
     );
