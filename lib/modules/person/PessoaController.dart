@@ -26,6 +26,8 @@ import '../phone/PhoneForm.dart';
 import 'PessoaService.dart';
 
 class PessoaController extends AbstractController {
+  UsuarioRepository _usuarioRepository = UsuarioRepository();
+
   dynamic salvar(BuildContext context, String nome, String email,
       String celular, String senha) async {
     bool isConnected = await ConnectionUtils().isConnected();
@@ -40,7 +42,7 @@ class PessoaController extends AbstractController {
       String nome, String senha) async {
     PersonModel usuario = _createPessoaModel(email, celular, nome, senha);
 
-    return await UsuarioRepository().save(context, usuario);
+    return await _usuarioRepository.save(context, usuario);
   }
 
   Future<dynamic> saveWithApi(BuildContext context, String email,

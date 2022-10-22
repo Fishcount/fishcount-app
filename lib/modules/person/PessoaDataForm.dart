@@ -1,3 +1,4 @@
+import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/modules/batch/BatchController.dart';
@@ -54,12 +55,13 @@ class _PessoaDataFormState extends State<PessoaDataForm>
       appBar: AppBarBuilder().build(),
       bottomNavigationBar: CustomBottomSheet(
         context: context,
-        newFunction: () => _batchController.openBatchRegisterModal(
-            (text) => setState(() => _text),
-            context,
-            TextEditingController(),
-            _animationController,
-            null),
+        newFunction: () =>
+            _batchController.openBatchRegisterModal(
+                    (text) => setState(() => _text),
+                context,
+                TextEditingController(),
+                _animationController,
+                null),
       ).build(),
       body: SingleChildScrollView(
         child: Container(
@@ -67,8 +69,14 @@ class _PessoaDataFormState extends State<PessoaDataForm>
           child: FutureBuilder(
             future: buscarUsuario(),
             builder: (context, AsyncSnapshot<PersonModel?> snapshot) {
-              return PessoaController()
-                  .resolverDadosUsuario(context, snapshot, _nomeController);
+              return AsyncSnapshotHandler(asyncSnapshot: snapshot,
+                widgetOnError: Text(""),
+                widgetOnWaiting: Text(""),
+                widgetOnEmptyResponse: Text(""),
+                widgetOnSuccess: Text(""),)
+                  .handler();
+              // return PessoaController()
+              //     .resolverDadosUsuario(context, snapshot, _nomeController);
             },
           ),
         ),

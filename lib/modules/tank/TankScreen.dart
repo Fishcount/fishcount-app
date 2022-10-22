@@ -592,8 +592,11 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                   Container(
                                     padding: const EdgeInsets.only(top: 10),
                                     child: Text(
-                                      tankModel.lastFishAmount.toString() +
-                                          ' Peixes',
+                                      tankModel.lastFishAmount == null ||
+                                              tankModel.lastFishAmount == 0
+                                          ? tankModel.lastFishAmount.toString()
+                                          : tankModel.fishAmount.toString() +
+                                              ' Peixes',
                                       style: const TextStyle(
                                         fontSize: 12,
                                       ),
