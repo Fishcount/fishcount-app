@@ -35,7 +35,7 @@ class StatusAnaliseHandler {
   static dynamic handlerAnimation(String value) {
     switch (value) {
       case 'AGUARDANDO_ANALISE':
-        return LoadingAnimationWidget.hexagonDots(color: Colors.blue, size: 30.0);
+        return Container(padding: const EdgeInsets.only(top: 20), child: LoadingAnimationWidget.hexagonDots(color: Colors.blue, size: 30.0),);
       default:
         return null;
     }

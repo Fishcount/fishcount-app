@@ -17,7 +17,7 @@ class LoginService extends AbstractService {
 
       if (response.statusCode == 200) {
         AuthUserModel authUser = AuthUserModel.fromJson(response.data);
-        SharedPreferencesUtils.addSharedPreferences(authUser);
+        await SharedPreferencesUtils.addSharedPreferences(authUser);
         return authUser;
       }
       return ErrorModel.fromJson(response.data);

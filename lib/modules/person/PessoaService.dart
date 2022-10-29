@@ -30,7 +30,10 @@ class PersonService extends AbstractService {
       }
 
       Response<dynamic> response =
-          await RequestBuilder(url: '/pessoa').setBody(person.toJson()).post();
+          await RequestBuilder(url: '/pessoa')
+              .setBody(person.toJson())
+              .buildUrl()
+              .post();
 
       if (response.statusCode == 201) {
         LoginService().doLogin(

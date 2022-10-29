@@ -51,7 +51,7 @@ class PessoaController extends AbstractController {
 
     dynamic response = await PersonService().saveOrUpdate(pessoa);
     if (response is PersonModel) {
-      NavigatorUtils.pushReplacement(context, const BatchScreen());
+      return response;
     }
     if (response is ErrorModel) {
       return ErrorHandler.getDefaultErrorMessage(context, response.message);
