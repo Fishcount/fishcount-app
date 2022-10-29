@@ -61,11 +61,11 @@ class _AnalysisScreenState extends State<AnalysisScreen>
         : waitingSonar;
 
     final String dailyFoodAmount = isConcluded
-        ? _analysisModel.dailyFoodAmount.toString() + '0 KG'
+        ? _analysisModel.dailyFoodAmount.toString() + '0 Kg'
         : waitingSonar;
 
     final String mealFoodAmount = isConcluded
-        ? _analysisModel.mealFoodAmout.toString() + '0 KG'
+        ? _analysisModel.mealFoodAmout.toString() + '0 Kg'
         : waitingSonar;
 
     final String foodType =

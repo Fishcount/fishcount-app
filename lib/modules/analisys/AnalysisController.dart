@@ -127,7 +127,7 @@ class AnalysisController extends AbstractController {
                                     const EdgeInsets.only(top: 25, right: 15),
                                 width: 50,
                                 height: 40,
-                                child: const Center(child: Text("KG")),
+                                child: const Center(child: Text("Kg")),
                                 decoration: BoxDecoration(
                                   color:
                                       isGrams ? noSelectedColor : selectedColor,
@@ -143,7 +143,7 @@ class AnalysisController extends AbstractController {
                                 margin: const EdgeInsets.only(top: 25),
                                 width: 50,
                                 height: 40,
-                                child: const Center(child: Text("GR")),
+                                child: const Center(child: Text("Gr")),
                                 decoration: BoxDecoration(
                                   color: !isGrams
                                       ? noSelectedColor
