@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/model/AuthUserModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
@@ -17,7 +19,10 @@ class LoginService extends AbstractService {
 
       if (response.statusCode == 200) {
         AuthUserModel authUser = AuthUserModel.fromJson(response.data);
-        await SharedPreferencesUtils.addSharedPreferences(authUser);
+        SharedPreferences prefs = await SharedPreferencesUtils.addSharedPreferences(authUser);
+
+        assert(prefs.getString(EnumSharedPreferences.userEmail.name) == email);
+
         return authUser;
       }
       return ErrorModel.fromJson(response.data);

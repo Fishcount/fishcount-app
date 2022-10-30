@@ -131,6 +131,7 @@ class PessoaController extends AbstractController {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: const [
+
                             Icon(
                               Icons.add_box,
                               color: Colors.blue,

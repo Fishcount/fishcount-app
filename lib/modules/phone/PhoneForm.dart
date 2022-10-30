@@ -1,6 +1,10 @@
 import 'package:fishcount_app/constants/Formatters.dart';
+import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
+import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/PhoneModel.dart';
 import 'package:fishcount_app/model/enums/EnumTipoTelefone.dart';
+import 'package:fishcount_app/modules/person/PessoaDataForm.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
@@ -49,7 +53,7 @@ class _PhoneFormState extends State<PhoneForm> {
                 hintText: "Telefone",
                 labelText: widget.telefoneModel != null
                     ? widget.telefoneModel!.phoneNumber
-                    : "",
+                    : "Telefone",
                 prefixIcon: const Icon(Icons.account_balance_wallet_sharp),
                 focusedBorderColor: Colors.blueGrey,
                 iconColor: Colors.blueGrey,
@@ -87,14 +91,20 @@ class _PhoneFormState extends State<PhoneForm> {
   String _resolverSaveOrUpdate() =>
       widget.telefoneModel != null ? "Atualizar" : "Salvar";
 
-  void _saveTelefone(BuildContext context) {
+  _saveTelefone(BuildContext context) async {
     PhoneModel telefone = PhoneModel(
       widget.telefoneModel != null ? widget.telefoneModel!.id : null,
       _telefoneController.text,
       mainEnum.name,
     );
 
-    PhoneController().salvarTelefone(context, telefone);
+    dynamic response = await PhoneController().salvarTelefone(context, telefone);
+    if (response is PhoneModel) {
+      NavigatorUtils.pushReplacement(context, PessoaDataForm());
+    }
+    if (response is ErrorModel) {
+      return ErrorHandler.getDefaultErrorMessage(context, response.message);
+    }
   }
 
   DropdownButton<EnumTipoTelefone> getSelectTipoEmail(BuildContext context) {

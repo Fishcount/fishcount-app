@@ -88,7 +88,7 @@ class EmailController extends AbstractController {
       bool excluir, BuildContext context, int emailId) {
     return TextButton(
       onPressed: () =>
-          excluir ? _excluirEmail(context, emailId) : Navigator.pop(context, 'Voltar'),
+          excluir ? excluirEmail(context, emailId) : Navigator.pop(context, 'Voltar'),
       child: excluir ? const Text('Sim') : const Text('Voltar'),
     );
   }
@@ -143,7 +143,7 @@ class EmailController extends AbstractController {
     }
   }
 
-  Future<dynamic> _excluirEmail(BuildContext context, int emailId) async {
+  Future<dynamic> excluirEmail(BuildContext context, int emailId) async {
     int? userId = await _getUserId();
     if (userId == null) {
       return ErrorHandler.getDefaultErrorMessage(

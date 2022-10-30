@@ -2,6 +2,7 @@ import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/PhoneModel.dart';
+import 'package:fishcount_app/modules/phone/PhoneService.dart';
 import 'package:fishcount_app/repository/TelefoneRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
@@ -16,10 +17,13 @@ import 'PhoneForm.dart';
 
 class PhoneController extends AbstractController {
 
+  PhoneService _phoneService = PhoneService();
+
   Future<dynamic> salvarTelefone(BuildContext context, PhoneModel telefoneModel) async {
     bool isConnected = await ConnectionUtils().isConnected();
+    int? personId = await SharedPreferencesUtils.getIntVariableFromShared(EnumSharedPreferences.userId);
     if (isConnected) {
-      print("chamar api");
+      return _phoneService.save(telefoneModel, personId!);
     }
     return saveLocal(context, telefoneModel);
   }
