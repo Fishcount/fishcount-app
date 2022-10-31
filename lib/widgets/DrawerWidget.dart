@@ -1,5 +1,8 @@
+
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:fishcount_app/constants/AppImages.dart';
-import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/model/PaymentModel.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
@@ -7,10 +10,12 @@ import 'package:fishcount_app/modules/batch/BatchScreen.dart';
 import 'package:fishcount_app/modules/login/LoginScreen.dart';
 import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
+import 'package:fishcount_app/utils/PdfUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
-import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+
 
 import '../handler/AsyncSnapshotHander.dart';
 import '../modules/batch/BatchController.dart';
@@ -142,7 +147,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             horizontalTitleGap: 15,
             tileColor: loading ? Colors.blueGrey.shade50 : null,
             leading: const Icon(Icons.monetization_on),
-            trailing: loading ? AnimationUtils.progressiveDots(size: 30.0) : null,
+            trailing:
+                loading ? AnimationUtils.progressiveDots(size: 30.0) : null,
             title: const Text("Financeiro"),
             onTap: () {
               setState(() => loading = true);
@@ -156,12 +162,16 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             leading: Icon(Icons.support_agent),
             title: Text("Suporte"),
           ),
-          const ListTile(
+          ListTile(
             isThreeLine: false,
             minVerticalPadding: 15,
             horizontalTitleGap: 15,
-            leading: Icon(Icons.privacy_tip),
-            title: Text("Politica de privacidade"),
+            leading: const Icon(Icons.privacy_tip),
+            title: const Text("Politica de privacidade"),
+            onTap: () async {
+              File file = await PdfUtils.loadPdf();
+              PdfUtils.openPDF(context, file);
+            },
           ),
           ListTile(
             isThreeLine: false,
@@ -176,4 +186,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       ),
     );
   }
+
+
 }

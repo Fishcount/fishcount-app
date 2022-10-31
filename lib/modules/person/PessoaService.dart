@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
-import 'package:fishcount_app/constants/Responses.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
 import 'package:fishcount_app/utils/RequestBuilder.dart';
@@ -29,11 +28,10 @@ class PersonService extends AbstractService {
         return await update(person);
       }
 
-      Response<dynamic> response =
-          await RequestBuilder(url: '/pessoa')
-              .setBody(person.toJson())
-              .buildUrl()
-              .post();
+      Response<dynamic> response = await RequestBuilder(url: '/pessoa')
+          .setBody(person.toJson())
+          .buildUrl()
+          .post();
 
       if (response.statusCode == 201) {
         LoginService().doLogin(
