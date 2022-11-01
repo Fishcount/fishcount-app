@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fishcount_app/utils/PDFViewerPage.dart';
+import 'package:fishcount_app/utils/pdf/PDFViewerPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

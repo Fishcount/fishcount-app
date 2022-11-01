@@ -30,17 +30,13 @@ class PersonService extends AbstractService {
 
       Response<dynamic> response = await RequestBuilder(url: '/pessoa')
           .setBody(person.toJson())
-          .buildUrl()
           .post();
 
-      if (response.statusCode == 201) {
-        LoginService().doLogin(
-          person.emails.first.email,
-          person.password,
-        );
-        return PersonModel.fromJson(response.data);
-      }
-      return null;
+      await LoginService().doLogin(
+        person.emails.first.email,
+        person.password,
+      );
+      return PersonModel.fromJson(response.data);
     } on DioError catch (e) {
       return customDioError(e);
     }

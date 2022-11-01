@@ -1,6 +1,5 @@
 
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
@@ -10,7 +9,7 @@ import 'package:fishcount_app/modules/batch/BatchScreen.dart';
 import 'package:fishcount_app/modules/login/LoginScreen.dart';
 import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
-import 'package:fishcount_app/utils/PdfUtils.dart';
+import 'package:fishcount_app/utils/pdf/PdfUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -155,13 +154,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               _handlePermissions();
             },
           ),
-          const ListTile(
-            isThreeLine: false,
-            minVerticalPadding: 15,
-            horizontalTitleGap: 15,
-            leading: Icon(Icons.support_agent),
-            title: Text("Suporte"),
-          ),
+          // const ListTile(
+          //   isThreeLine: false,
+          //   minVerticalPadding: 15,
+          //   horizontalTitleGap: 15,
+          //   leading: Icon(Icons.support_agent),
+          //   title: Text("Suporte"),
+          // ),
           ListTile(
             isThreeLine: false,
             minVerticalPadding: 15,
