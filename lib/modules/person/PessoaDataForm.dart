@@ -59,7 +59,7 @@ class _PessoaDataFormState extends State<PessoaDataForm>
             builder: (context, AsyncSnapshot<PersonModel?> snapshot) {
               return AsyncSnapshotHandler(
                 asyncSnapshot: snapshot,
-                widgetOnError: Text(""),
+                widgetOnError: const Text("Ocorreu um erro nos nossos servidores, por favor, entre em contato."),
                 widgetOnEmptyResponse: Text(""),
                 widgetOnWaiting: Container(
                   padding: const EdgeInsets.only(top: 30),
