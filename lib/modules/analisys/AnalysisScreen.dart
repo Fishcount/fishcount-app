@@ -1,7 +1,11 @@
+import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/AnalysisModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
+import 'package:fishcount_app/model/enums/EnumStatusAnalise.dart';
 import 'package:fishcount_app/modules/analisys/AnalysisController.dart';
+import 'package:fishcount_app/modules/analisys/AnalysisListScreen.dart';
 import 'package:fishcount_app/modules/analisys/AnalysisService.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
 import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,12 +21,12 @@ class AnalysisScreen extends StatefulWidget {
   final AnalysisModel analysisModel;
   final int bacthId;
 
-  const AnalysisScreen(
-      {Key? key,
-      required this.tankModel,
-      required this.analysisModel,
-      required this.bacthId})
-      : super(key: key);
+  const AnalysisScreen({
+    Key? key,
+    required this.tankModel,
+    required this.analysisModel,
+    required this.bacthId,
+  }) : super(key: key);
 
   @override
   State<AnalysisScreen> createState() => _AnalysisScreenState();
@@ -129,31 +133,67 @@ class _AnalysisScreenState extends State<AnalysisScreen>
         );
     return Scaffold(
       appBar: AppBarBuilder().build(),
-      drawer: const DrawerWidget(),
       bottomSheet: CustomBottomSheet(
         newFunction: () {},
         context: context,
-        rightElement: Column(
+        centerElement: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             GestureDetector(
               child: const Icon(
-                LineIcons.syncIcon,
+                Icons.analytics_outlined,
                 size: 35,
                 color: Colors.white,
               ),
-              onTap: () => _analysisController.openAnalysisModal(
+              onTap: () => NavigatorUtils.pushReplacementWithFadeAnimation(
                 context,
-                _animationController,
-                widget.tankModel,
-                analysisId,
-                batchId,
+                AnalysisListScreen(
+                  tankModel: widget.tankModel,
+                  batchId: widget.bacthId,
+                ),
               ),
             ),
             const Text(
-              "Simular",
+              "Análises",
               style: TextStyle(
                 color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        rightElement: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              child: Icon(
+                LineIcons.syncIcon,
+                size: 35,
+                color: widget.analysisModel.analysisStatus ==
+                        EnumStatusAnalise.ANALISE_CONCLUIDA.name
+                    ? Colors.grey
+                    : Colors.white,
+              ),
+              onTap: () => widget.analysisModel.analysisStatus ==
+                      EnumStatusAnalise.ANALISE_CONCLUIDA.name
+                  ? ErrorHandler.getAlertDialogError(
+                      context,
+                      "Essa análise já esta concluída, você não pode mais realizar simulações.",
+                    )
+                  : _analysisController.openAnalysisModal(
+                      context,
+                      _animationController,
+                      widget.tankModel,
+                      analysisId,
+                      batchId,
+                    ),
+            ),
+            Text(
+              "Simular",
+              style: TextStyle(
+                color: widget.analysisModel.analysisStatus ==
+                        EnumStatusAnalise.ANALISE_CONCLUIDA.name
+                    ? Colors.grey
+                    : Colors.white,
               ),
             ),
           ],
@@ -566,59 +606,58 @@ class _AnalysisScreenState extends State<AnalysisScreen>
                             ),
                             _tankModel.hasTemperatureGauge
                                 ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      height: cardHeight,
-                                      width: cardWidth,
-                                      decoration: _getBoxDecoration(
-                                          backGroundColor,
-                                          borderColor,
-                                          true,
-                                          shadowCardColor),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                top: 20),
-                                            child: const Text(
-                                              "Temperatura da Água",
-                                              style: TextStyle(
-                                                  fontWeight:
-                                                      FontWeight.bold,
-                                                  fontSize: fontTitleSize),
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        height: cardHeight,
+                                        width: cardWidth,
+                                        decoration: _getBoxDecoration(
+                                            backGroundColor,
+                                            borderColor,
+                                            true,
+                                            shadowCardColor),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.only(
+                                                  top: 20),
+                                              child: const Text(
+                                                "Temperatura da Água",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: fontTitleSize),
+                                              ),
                                             ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                top: 10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  tankTemperature,
-                                                  style: const TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                const Icon(
-                                                  LineIcons.highTemperature,
-                                                  color: Colors.blueGrey,
-                                                  size: 30,
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )
+                                            Container(
+                                              padding: const EdgeInsets.only(
+                                                  top: 10),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    tankTemperature,
+                                                    style: const TextStyle(
+                                                        fontSize: 15),
+                                                  ),
+                                                  const Icon(
+                                                    LineIcons.highTemperature,
+                                                    color: Colors.blueGrey,
+                                                    size: 30,
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  )
                                 : Container(),
                           ],
                         ),

@@ -233,7 +233,7 @@ class _PessoaDataFormState extends State<PessoaDataForm>
                               leading: const Icon(Icons.mail),
                               trailing: GestureDetector(
                                 child: const Icon(Icons.edit),
-                                onTap: () => NavigatorUtils.push(
+                                onTap: () => NavigatorUtils.pushWithFadeAnimation(
                                   context,
                                   EmailForm(
                                     emailModel: emails[index],
@@ -273,7 +273,7 @@ class _PessoaDataFormState extends State<PessoaDataForm>
                   textColor: Colors.green,
                   textSize: 16,
                   onPressed: () =>
-                      NavigatorUtils.push(context, const EmailForm()),
+                      NavigatorUtils.pushWithFadeAnimation(context, const EmailForm()),
                 ),
               )
             ],
@@ -393,7 +393,7 @@ class _PessoaDataFormState extends State<PessoaDataForm>
                             child: ExpansionTile(
                               trailing: GestureDetector(
                                 child: const Icon(Icons.edit),
-                                onTap: () => NavigatorUtils.push(
+                                onTap: () => NavigatorUtils.pushWithFadeAnimation(
                                   context,
                                   PhoneForm(
                                     telefoneModel: phones[index],
@@ -435,7 +435,7 @@ class _PessoaDataFormState extends State<PessoaDataForm>
                   textColor: Colors.green,
                   textSize: 16,
                   onPressed: () =>
-                      NavigatorUtils.push(context, const PhoneForm()),
+                      NavigatorUtils.pushWithFadeAnimation(context, const PhoneForm()),
                 ),
               )
             ],

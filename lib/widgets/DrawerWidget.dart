@@ -42,14 +42,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       final List<PaymentModel> pagamentos =
           await _paymentService.buscarPagamentos();
 
-      NavigatorUtils.push(
+      NavigatorUtils.pushWithFadeAnimation(
           context,
           FinancialScreen(
             pagamentos: pagamentos,
           ));
       return;
     }
-    NavigatorUtils.push(context, FinancialForm(pessoaModel: people));
+    NavigatorUtils.pushWithFadeAnimation(context, FinancialForm(pessoaModel: people));
   }
 
   bool _personHasCpf(PersonModel pessoa) =>
@@ -130,7 +130,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             horizontalTitleGap: 15,
             leading: const Icon(Icons.home),
             title: const Text("Home"),
-            onTap: () => NavigatorUtils.push(context, const BatchScreen()),
+            onTap: () => NavigatorUtils.pushWithFadeAnimation(context, const BatchScreen()),
           ),
           ListTile(
             isThreeLine: false,
@@ -138,7 +138,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             horizontalTitleGap: 15,
             leading: const Icon(Icons.person),
             title: const Text("Meus dados"),
-            onTap: () => NavigatorUtils.push(context, const PessoaDataForm()),
+            onTap: () => NavigatorUtils.pushWithFadeAnimation(context, const PessoaDataForm()),
           ),
           ListTile(
             isThreeLine: false,
@@ -179,7 +179,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             leading: const Icon(Icons.exit_to_app_outlined),
             title: const Text("Sair"),
             onTap: () =>
-                NavigatorUtils.pushReplacement(context, const LoginScreen()),
+                NavigatorUtils.pushReplacementWithFadeAnimation(context, const LoginScreen()),
           ),
         ],
       ),

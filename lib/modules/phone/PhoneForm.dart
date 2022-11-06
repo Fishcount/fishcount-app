@@ -100,10 +100,10 @@ class _PhoneFormState extends State<PhoneForm> {
 
     dynamic response = await PhoneController().salvarTelefone(context, telefone);
     if (response is PhoneModel) {
-      NavigatorUtils.pushReplacement(context, PessoaDataForm());
+      NavigatorUtils.pushReplacementWithFadeAnimation(context, PessoaDataForm());
     }
     if (response is ErrorModel) {
-      return ErrorHandler.getDefaultErrorMessage(context, response.message);
+      return ErrorHandler.getSnackBarError(context, response.message);
     }
   }
 

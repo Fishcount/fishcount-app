@@ -54,7 +54,7 @@ class PessoaController extends AbstractController {
       return response;
     }
     if (response is ErrorModel) {
-      return ErrorHandler.getDefaultErrorMessage(context, response.message);
+      return ErrorHandler.getSnackBarError(context, response.message);
     }
   }
 
@@ -140,7 +140,7 @@ class PessoaController extends AbstractController {
                           ],
                         ),
                         onTap: () =>
-                            NavigatorUtils.push(context, const EmailForm()),
+                            NavigatorUtils.pushWithFadeAnimation(context, const EmailForm()),
                       )
                     ],
                   ),
@@ -177,7 +177,7 @@ class PessoaController extends AbstractController {
                             ),
                           ],
                         ),
-                        onTap: () => NavigatorUtils.push(
+                        onTap: () => NavigatorUtils.pushWithFadeAnimation(
                           context,
                           const PhoneForm(),
                         ),

@@ -28,9 +28,8 @@ class PersonService extends AbstractService {
         return await update(person);
       }
 
-      Response<dynamic> response = await RequestBuilder(url: '/pessoa')
-          .setBody(person.toJson())
-          .post();
+      Response<dynamic> response =
+          await RequestBuilder(url: '/pessoa').setBody(person.toJson()).post();
 
       await LoginService().doLogin(
         person.emails.first.email,
@@ -47,7 +46,10 @@ class PersonService extends AbstractService {
       int? personId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
 
-      Response<void> response = await RequestBuilder(url: '/pessoa/$personId')
+      Response<void> response = await RequestBuilder(url: '/pessoa')
+          .addQueryParam("cpf", person.cpf.toString())
+          .addQueryParam("pessoaId", personId.toString())
+          .buildUrl()
           .setBody(person.toJson())
           .put();
 

@@ -19,7 +19,7 @@ class UsuarioRepository {
       int idUsuario = await db.insert("usuario", usuarioModel.toLocalDataBase(),
           conflictAlgorithm: ConflictAlgorithm.replace);
       if (idUsuario == 0) {
-        return ErrorHandler.getDefaultErrorMessage(
+        return ErrorHandler.getSnackBarError(
             context, ErrorMessage.serverError);
       }
       TelefoneRepository()
@@ -28,9 +28,9 @@ class UsuarioRepository {
 
       SharedPreferencesUtils.addLocalSharedPreferences(idUsuario, usuarioModel);
 
-      NavigatorUtils.pushReplacement(context, const BatchScreen());
+      NavigatorUtils.pushReplacementWithFadeAnimation(context, const BatchScreen());
     } on Exception catch (e) {
-      return ErrorHandler.getDefaultErrorMessage(
+      return ErrorHandler.getSnackBarError(
           context, ErrorMessage.serverError);
     }
   }
@@ -42,16 +42,16 @@ class UsuarioRepository {
           where: "email = ? and senha = ?", whereArgs: [email, senha]);
 
       if (login.isEmpty) {
-        return ErrorHandler.getDefaultErrorMessage(
+        return ErrorHandler.getSnackBarError(
             context, ErrorMessage.loginInvalido);
       }
-      NavigatorUtils.pushReplacement(context, const BatchScreen());
+      NavigatorUtils.pushReplacementWithFadeAnimation(context, const BatchScreen());
 
       PersonModel usuarioModel = PersonModel.fromDatabase(login.first);
       SharedPreferencesUtils.addLocalSharedPreferences(
           usuarioModel.id!, usuarioModel);
     } on Exception catch (e) {
-      return ErrorHandler.getDefaultErrorMessage(
+      return ErrorHandler.getSnackBarError(
           context, ErrorMessage.serverError);
     }
   }
@@ -61,7 +61,7 @@ class UsuarioRepository {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
       if (userId == null) {
-        ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+        ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
       }
       final db = await DBProvider().init();
       List<Map<String, Object?>> maps =
@@ -73,7 +73,7 @@ class UsuarioRepository {
       });
       return people.first;
     } on Exception catch (e) {
-      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
       return null;
     }
   }

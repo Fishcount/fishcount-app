@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               return result;
                             }
                             if (result is bool) {
-                              NavigatorUtils.pushReplacement(
+                              NavigatorUtils.pushReplacementWithFadeAnimation(
                                   context, const BatchScreen());
                             }
                           },

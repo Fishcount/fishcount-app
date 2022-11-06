@@ -47,7 +47,7 @@ class CustomBottomSheet {
                               color: iconColor,
                             ),
                             onTap: () {
-                              NavigatorUtils.pushReplacement(
+                              NavigatorUtils.pushReplacementWithFadeAnimation(
                                 context,
                                 const BatchScreen(),
                               );

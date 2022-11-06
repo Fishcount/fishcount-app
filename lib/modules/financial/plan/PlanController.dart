@@ -271,14 +271,14 @@ class PlanController {
     dynamic response =
         await _pagamentoService.incluirAssinaturaPlano(paymentModel);
     if (response is PaymentModel) {
-      NavigatorUtils.pushReplacement(
+      NavigatorUtils.pushReplacementWithFadeAnimation(
           context,
           FinancialScreen(
             pagamentos: [response],
           ));
     }
     if (response is ErrorModel) {
-      return ErrorHandler.getDefaultErrorMessage(context, response.message);
+      return ErrorHandler.getSnackBarError(context, response.message);
     }
   }
 

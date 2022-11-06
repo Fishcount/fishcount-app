@@ -104,7 +104,7 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
                             dynamic response =
                                 await _batchService.findBatch(widget.batchId);
                             if (response is BatchModel) {
-                              NavigatorUtils.pushReplacement(
+                              NavigatorUtils.pushReplacementWithFadeAnimation(
                                   context, TankScreen(batch: response));
                               setState(() => loading = false);
                             }
@@ -535,7 +535,7 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
                               ),
                             ],
                           ),
-                          onPressed: () => NavigatorUtils.push(
+                          onPressed: () => NavigatorUtils.pushWithFadeAnimation(
                             context,
                             AnalysisScreen(
                                 tankModel: widget.tankModel,

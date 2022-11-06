@@ -236,14 +236,12 @@ class AnalysisController extends AbstractController {
 
   _simulateAnalysis(TankModel tankModel, String temperature, String fishAmount,
       int analysisId, int? batchId, BuildContext context) async {
-    await _analisysService.simulateAnalysis(
+    dynamic response = await _analisysService.simulateAnalysis(
         tankModel.id!, analysisId, temperature, fishAmount);
-    NavigatorUtils.pushReplacement(
-      context,
-      AnalysisListScreen(
-        tankModel: tankModel,
-        batchId: batchId!,
-      ),
+    afterRequestAlertDialog(
+      response: response,
+      redirect: AnalysisListScreen(tankModel: tankModel, batchId: batchId!),
+      context: context
     );
   }
 
@@ -254,14 +252,13 @@ class AnalysisController extends AbstractController {
       bool isGrams,
       int? batchId,
       BuildContext context) async {
-    await _analisysService.initiateAnalisys(
+    dynamic response = await _analisysService.initiateAnalisys(
         tankModel.id!, actualWeight, isGrams ? 'GRAMA' : 'KILO', temperature);
-    NavigatorUtils.pushReplacement(
-      context,
-      AnalysisListScreen(
-        tankModel: tankModel,
-        batchId: batchId!,
-      ),
+
+    afterRequestAlertDialog(
+      response: response,
+      context: context,
+      redirect: AnalysisListScreen(tankModel: tankModel, batchId: batchId!)
     );
   }
 }

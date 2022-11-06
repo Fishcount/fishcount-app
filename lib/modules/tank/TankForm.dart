@@ -201,7 +201,7 @@ class _TankFormState extends State<TankForm> {
               textColor: Colors.white,
               buttonColor: Colors.blue,
               onPressed: () {
-                NavigatorUtils.push(context, TankForm(batch: widget.batch));
+                NavigatorUtils.pushWithFadeAnimation(context, TankForm(batch: widget.batch));
               },
             ),
           ),

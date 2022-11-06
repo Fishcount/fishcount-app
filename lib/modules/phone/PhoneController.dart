@@ -32,7 +32,7 @@ class PhoneController extends AbstractController {
     int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
         EnumSharedPreferences.userId);
     if (userId == null){
-      return ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      return ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
     }
 
     if(telefoneModel.id == null){
@@ -41,7 +41,7 @@ class PhoneController extends AbstractController {
       await TelefoneRepository().update(context, telefoneModel, userId);
     }
 
-    NavigatorUtils.pushReplacement(context, const PessoaDataForm());
+    NavigatorUtils.pushReplacementWithFadeAnimation(context, const PessoaDataForm());
   }
 
   Widget getPhoneList(BuildContext context, List<PhoneModel> telefones) {
@@ -72,7 +72,7 @@ class PhoneController extends AbstractController {
             titles: telefones[index].phoneNumber,
             subTitles: telefones[index].phoneType,
             prefixIcon: const Icon(Icons.phone_android),
-            onChange: () => NavigatorUtils.push(
+            onChange: () => NavigatorUtils.pushWithFadeAnimation(
               context,
               PhoneForm(telefoneModel: telefones[index]),
             ),

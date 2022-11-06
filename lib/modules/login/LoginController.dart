@@ -38,7 +38,7 @@ class LoginController {
       return true;
     }
     if (response is ErrorModel) {
-      return ErrorHandler.getDefaultErrorMessage(context, response.message);
+      return ErrorHandler.getSnackBarError(context, response.message);
     }
   }
 }

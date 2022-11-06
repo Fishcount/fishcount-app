@@ -17,7 +17,7 @@ class EspecieRepository {
         return SpeciesModel.fromJson(maps[index]);
       });
     } on Exception catch (e) {
-      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
       return [];
     }
   }

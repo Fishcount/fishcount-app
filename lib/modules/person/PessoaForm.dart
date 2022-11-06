@@ -188,7 +188,7 @@ class _PessoaFormState extends State<PessoaForm> {
                               _telefoneController.text,
                               _senhaController.text);
                           if (result is PersonModel) {
-                            NavigatorUtils.pushReplacement(
+                            NavigatorUtils.pushReplacementWithFadeAnimation(
                                 context, const BatchScreen());
                           }
                           if (result is ScaffoldFeatureController) {
