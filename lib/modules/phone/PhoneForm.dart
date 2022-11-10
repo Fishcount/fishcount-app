@@ -34,55 +34,57 @@ class _PhoneFormState extends State<PhoneForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarBuilder().build(),
-      body: Container(
-        alignment: Alignment.bottomCenter,
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 30),
-              child: const Text(
-                "Telefone",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      body: SingleChildScrollView(
+        child: Container(
+          alignment: Alignment.bottomCenter,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(top: 30),
+                child: const Text(
+                  "Telefone",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(top: 50),
-              child: TextFieldWidget(
-                controller: _telefoneController,
-                hintText: "Telefone",
-                labelText: widget.telefoneModel != null
-                    ? widget.telefoneModel!.phoneNumber
-                    : "Telefone",
-                prefixIcon: const Icon(Icons.account_balance_wallet_sharp),
-                focusedBorderColor: Colors.blueGrey,
-                iconColor: Colors.blueGrey,
-                obscureText: false,
-                inputMask: Formatters.phoneMask,
+              Container(
+                padding: const EdgeInsets.only(top: 50),
+                child: TextFieldWidget(
+                  controller: _telefoneController,
+                  hintText: "Telefone",
+                  labelText: widget.telefoneModel != null
+                      ? widget.telefoneModel!.phoneNumber
+                      : "Telefone",
+                  prefixIcon: const Icon(Icons.account_balance_wallet_sharp),
+                  focusedBorderColor: Colors.blueGrey,
+                  iconColor: Colors.blueGrey,
+                  obscureText: false,
+                  inputMask: Formatters.phoneMask,
+                ),
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 5, top: 20),
-              alignment: Alignment.centerLeft,
-              child: const Text("Tipo do Telefone:"),
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 5),
-              child: getSelectTipoEmail(context),
-            ),
-            Container(
-              padding: const EdgeInsets.only(top: 40),
-              child: ElevatedButtonWidget(
-                  textSize: 18,
-                  radioBorder: 20,
-                  horizontalPadding: 30,
-                  verticalPadding: 10,
-                  textColor: Colors.white,
-                  buttonColor: Colors.blue,
-                  buttonText: _resolverSaveOrUpdate(),
-                  onPressed: () => _saveTelefone(context)),
-            ),
-          ],
+              Container(
+                padding: const EdgeInsets.only(left: 5, top: 20),
+                alignment: Alignment.centerLeft,
+                child: const Text("Tipo do Telefone:"),
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 5),
+                child: getSelectTipoEmail(context),
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 40),
+                child: ElevatedButtonWidget(
+                    textSize: 18,
+                    radioBorder: 20,
+                    horizontalPadding: 30,
+                    verticalPadding: 10,
+                    textColor: Colors.white,
+                    buttonColor: Colors.blue,
+                    buttonText: _resolverSaveOrUpdate(),
+                    onPressed: () => _saveTelefone(context)),
+              ),
+            ],
+          ),
         ),
       ),
     );
