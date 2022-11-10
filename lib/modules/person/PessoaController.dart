@@ -17,7 +17,6 @@ import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../batch/BatchScreen.dart';
 import '../email/EmailController.dart';
 import '../email/EmailForm.dart';
 import '../generic/AbstractController.dart';

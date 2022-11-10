@@ -8,8 +8,8 @@ import 'package:fishcount_app/modules/batch/BatchScreen.dart';
 import 'package:fishcount_app/modules/login/LoginScreen.dart';
 import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
-import 'package:fishcount_app/utils/pdf/PdfUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
+import 'package:fishcount_app/utils/pdf/PdfUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

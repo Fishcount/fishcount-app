@@ -1,5 +1,4 @@
 import 'package:fishcount_app/model/TankModel.dart';
-import 'package:fishcount_app/modules/analisys/AnalysisListScreen.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
