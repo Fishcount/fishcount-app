@@ -1,6 +1,5 @@
-import 'dart:ui';
+import 'dart:io';
 
-import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/EmailModel.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
@@ -17,11 +16,13 @@ import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/buttons/TextButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
-import 'package:fishcount_app/widgets/custom/BottomSheetBuilder.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/FireBaseUtils.dart';
 import 'PessoaService.dart';
 
 class PessoaDataForm extends StatefulWidget {
@@ -33,6 +34,11 @@ class PessoaDataForm extends StatefulWidget {
 
 class _PessoaDataFormState extends State<PessoaDataForm>
     with TickerProviderStateMixin {
+  final FirebaseStorage storage = FirebaseStorage.instance;
+  bool uploading = false;
+  bool loading = false;
+  late String urlperfilPhoto;
+
   final PersonService _personService = PersonService();
   final EmailService _emailService = EmailService();
   final PhoneService _phoneService = PhoneService();
@@ -59,8 +65,9 @@ class _PessoaDataFormState extends State<PessoaDataForm>
             builder: (context, AsyncSnapshot<PersonModel?> snapshot) {
               return AsyncSnapshotHandler(
                 asyncSnapshot: snapshot,
-                widgetOnError: const Text("Ocorreu um erro nos nossos servidores, por favor, entre em contato."),
-                widgetOnEmptyResponse: Text(""),
+                widgetOnError: const Text(
+                    "Ocorreu um erro nos nossos servidores, por favor, entre em contato."),
+                widgetOnEmptyResponse: CircleAvatar(),
                 widgetOnWaiting: Container(
                   padding: const EdgeInsets.only(top: 30),
                   child: AnimationUtils.progressiveDots(size: 50.0),
@@ -98,48 +105,37 @@ class _PessoaDataFormState extends State<PessoaDataForm>
 
     return Column(
       children: [
-        GestureDetector(
-          child: Container(
-            alignment: Alignment.center,
-            child: DividerWidget(
-              widgetBetween: CircleAvatar(
-                maxRadius: 70,
-                minRadius: 50,
-                child: Image.asset(ImagePaths.imageLogo),
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-              ),
-              thikness: 2,
-              paddingRight: 10,
-              paddingLeft: 10,
-              height: 1,
-              color: Colors.blue,
-              isBold: false,
-            ),
-          ),
-          // onTap: ,
-        ),
         Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.only(top: 25),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(right: 15),
-                child: Text(
-                  "Emails".toUpperCase(),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 16),
-                ),
+          child: DividerWidget(
+            widgetBetween: SizedBox(
+              width: 115,
+              height: 115,
+              child: Stack(
+                children: [
+                  FutureBuilder(
+                    future: FireBaseUtils.loadImage(person.id!),
+                    builder: (context, AsyncSnapshot<String> snapshot) {
+                      return AsyncSnapshotHandler(
+                        asyncSnapshot: snapshot,
+                        widgetOnError: _onEmptyOrOnErrorImage(person.id),
+                        widgetOnEmptyResponse:
+                            _onEmptyOrOnErrorImage(person.id),
+                        widgetOnWaiting:
+                            AnimationUtils.progressiveDots(size: 40.0),
+                        widgetOnSuccess: _imageOnSuccess(snapshot, person.id),
+                      ).handler();
+                    },
+                  ),
+                ],
               ),
-              const Expanded(
-                child: Divider(
-                  height: 2,
-                  thickness: 1,
-                  color: Colors.blue,
-                ),
-              ),
-            ],
+            ),
+            thikness: 2,
+            paddingRight: 10,
+            paddingLeft: 10,
+            height: 1,
+            color: Colors.blue,
+            isBold: false,
           ),
         ),
         Container(
@@ -233,7 +229,8 @@ class _PessoaDataFormState extends State<PessoaDataForm>
                               leading: const Icon(Icons.mail),
                               trailing: GestureDetector(
                                 child: const Icon(Icons.edit),
-                                onTap: () => NavigatorUtils.pushWithFadeAnimation(
+                                onTap: () =>
+                                    NavigatorUtils.pushWithFadeAnimation(
                                   context,
                                   EmailForm(
                                     emailModel: emails[index],
@@ -272,8 +269,8 @@ class _PessoaDataFormState extends State<PessoaDataForm>
                   buttonText: "Adicionar Email",
                   textColor: Colors.green,
                   textSize: 16,
-                  onPressed: () =>
-                      NavigatorUtils.pushWithFadeAnimation(context, const EmailForm()),
+                  onPressed: () => NavigatorUtils.pushWithFadeAnimation(
+                      context, const EmailForm()),
                 ),
               )
             ],
@@ -393,7 +390,8 @@ class _PessoaDataFormState extends State<PessoaDataForm>
                             child: ExpansionTile(
                               trailing: GestureDetector(
                                 child: const Icon(Icons.edit),
-                                onTap: () => NavigatorUtils.pushWithFadeAnimation(
+                                onTap: () =>
+                                    NavigatorUtils.pushWithFadeAnimation(
                                   context,
                                   PhoneForm(
                                     telefoneModel: phones[index],
@@ -434,14 +432,55 @@ class _PessoaDataFormState extends State<PessoaDataForm>
                   buttonText: "Adicionar Telefone",
                   textColor: Colors.green,
                   textSize: 16,
-                  onPressed: () =>
-                      NavigatorUtils.pushWithFadeAnimation(context, const PhoneForm()),
+                  onPressed: () => NavigatorUtils.pushWithFadeAnimation(
+                      context, const PhoneForm()),
                 ),
               )
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _onEmptyOrOnErrorImage(int? personId) {
+    if (personId == null) {
+      return AnimationUtils.progressiveDots(size: 40.0);
+    }
+    return GestureDetector(
+      onTap: () => FireBaseUtils.pickAndUploadImage(
+          personId,
+          () => setState(() => uploading = true),
+          () => setState(() => uploading = false)),
+      child: const CircleAvatar(
+        maxRadius: 70,
+        minRadius: 50,
+        child: Icon(Icons.person_add_alt_1, size: 50),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+      ),
+    );
+  }
+
+  Widget _imageOnSuccess(AsyncSnapshot<String> snapshot, int? personId) {
+    if (!snapshot.hasData || personId == null) {
+      return AnimationUtils.progressiveDots(size: 40.0);
+    }
+    return GestureDetector(
+      onTap: () => FireBaseUtils.pickAndUploadImage(
+          personId,
+          () => setState(() => uploading = true),
+          () => setState(() => uploading = false)),
+      child: CircleAvatar(
+        radius: 70,
+        child: Image.network(
+          snapshot.data!,
+          width: 100,
+          height: 100,
+        ),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+      ),
     );
   }
 

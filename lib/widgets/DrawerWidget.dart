@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:fishcount_app/constants/AppImages.dart';
@@ -14,8 +13,6 @@ import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-
 import '../handler/AsyncSnapshotHander.dart';
 import '../modules/batch/BatchController.dart';
 import '../modules/financial/FinancialForm.dart';
@@ -23,6 +20,7 @@ import '../modules/financial/FinancialScreen.dart';
 import '../modules/financial/payment/PaymentService.dart';
 import '../modules/person/PessoaDataForm.dart';
 import '../modules/person/PessoaService.dart';
+import '../utils/FireBaseUtils.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({Key? key}) : super(key: key);
@@ -34,11 +32,21 @@ class DrawerWidget extends StatefulWidget {
 class _DrawerWidgetState extends State<DrawerWidget> {
   final PaymentService _paymentService = PaymentService();
   final PersonService _personService = PersonService();
+  int? person;
+  bool uploading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferencesUtils.getIntVariableFromShared(
+            EnumSharedPreferences.userId)
+        .then((value) => setState(() => person = value));
+  }
 
   Future<void> _handlePermissions() async {
-    final PersonModel people = await _personService.findById();
+    final PersonModel person = await _personService.findById();
 
-    if (_personHasCpf(people)) {
+    if (_personHasCpf(person)) {
       final List<PaymentModel> pagamentos =
           await _paymentService.buscarPagamentos();
 
@@ -49,13 +57,51 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ));
       return;
     }
-    NavigatorUtils.pushWithFadeAnimation(context, FinancialForm(pessoaModel: people));
+    NavigatorUtils.pushWithFadeAnimation(
+        context, FinancialForm(pessoaModel: person));
   }
 
   bool _personHasCpf(PersonModel pessoa) =>
       pessoa.cpf != null && pessoa.cpf!.isNotEmpty;
 
   bool loading = false;
+
+  Widget _onEmptyOrOnErrorImage(int? personId) {
+    if (personId == null) {
+      return AnimationUtils.progressiveDots(size: 40.0);
+    }
+    return GestureDetector(
+      onTap: () => FireBaseUtils.pickAndUploadImage(
+          personId,
+          () => setState(() => uploading = true),
+          () => setState(() => uploading = false)),
+      child: const CircleAvatar(
+        maxRadius: 70,
+        minRadius: 50,
+        child: Icon(Icons.person_add_alt_1, size: 50),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+      ),
+    );
+  }
+
+  Widget _imageOnSuccess(AsyncSnapshot<String> snapshot, int? personId) {
+    if (!snapshot.hasData || personId == null) {
+      return AnimationUtils.progressiveDots(size: 40.0);
+    }
+    return GestureDetector(
+      onTap: () => FireBaseUtils.pickAndUploadImage(
+          personId,
+          () => setState(() => uploading = true),
+          () => setState(() => uploading = false)),
+      child: Image.network(
+          snapshot.data!,
+          fit: BoxFit.fitWidth,
+          height: 70,
+          width: 60,
+        ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,13 +122,29 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     ),
                   ),
                   padding: const EdgeInsets.only(left: 85, right: 85),
-                  child: CircleAvatar(
-                    maxRadius: 70,
-                    minRadius: 50,
-                    child: Image.asset(ImagePaths.imageLogo),
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                  ),
+                  child: person == null
+                      ? CircleAvatar(
+                          maxRadius: 70,
+                          minRadius: 50,
+                          child: Image.asset(ImagePaths.imageLogo),
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                        )
+                      : FutureBuilder(
+                          future: FireBaseUtils.loadImage(person!),
+                          builder: (context, AsyncSnapshot<String> snapshot) {
+                            return AsyncSnapshotHandler(
+                              asyncSnapshot: snapshot,
+                              widgetOnError: _onEmptyOrOnErrorImage(person!),
+                              widgetOnEmptyResponse:
+                                  _onEmptyOrOnErrorImage(person!),
+                              widgetOnWaiting:
+                                  AnimationUtils.progressiveDots(size: 40.0),
+                              widgetOnSuccess:
+                                  _imageOnSuccess(snapshot, person!),
+                            ).handler();
+                          },
+                        ),
                 )
               : Container(),
           MediaQuery.of(context).orientation == Orientation.portrait
@@ -130,7 +192,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             horizontalTitleGap: 15,
             leading: const Icon(Icons.home),
             title: const Text("Home"),
-            onTap: () => NavigatorUtils.pushWithFadeAnimation(context, const BatchScreen()),
+            onTap: () => NavigatorUtils.pushWithFadeAnimation(
+                context, const BatchScreen()),
           ),
           ListTile(
             isThreeLine: false,
@@ -138,7 +201,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             horizontalTitleGap: 15,
             leading: const Icon(Icons.person),
             title: const Text("Meus dados"),
-            onTap: () => NavigatorUtils.pushWithFadeAnimation(context, const PessoaDataForm()),
+            onTap: () => NavigatorUtils.pushWithFadeAnimation(
+                context, const PessoaDataForm()),
           ),
           ListTile(
             isThreeLine: false,
@@ -178,13 +242,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             horizontalTitleGap: 15,
             leading: const Icon(Icons.exit_to_app_outlined),
             title: const Text("Sair"),
-            onTap: () =>
-                NavigatorUtils.pushReplacementWithFadeAnimation(context, const LoginScreen()),
+            onTap: () => NavigatorUtils.pushReplacementWithFadeAnimation(
+                context, const LoginScreen()),
           ),
         ],
       ),
     );
   }
-
-
 }
