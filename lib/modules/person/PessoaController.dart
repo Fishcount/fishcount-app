@@ -51,10 +51,10 @@ class PessoaController extends AbstractController {
 
     dynamic response = await PersonService().saveOrUpdate(pessoa);
     if (response is PersonModel) {
-      NavigatorUtils.pushReplacement(context, const BatchScreen());
+      return response;
     }
     if (response is ErrorModel) {
-      return ErrorHandler.getDefaultErrorMessage(context, response.message);
+      return ErrorHandler.getSnackBarError(context, response.message);
     }
   }
 
@@ -131,6 +131,7 @@ class PessoaController extends AbstractController {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: const [
+
                             Icon(
                               Icons.add_box,
                               color: Colors.blue,
@@ -139,7 +140,7 @@ class PessoaController extends AbstractController {
                           ],
                         ),
                         onTap: () =>
-                            NavigatorUtils.push(context, const EmailForm()),
+                            NavigatorUtils.pushWithFadeAnimation(context, const EmailForm()),
                       )
                     ],
                   ),
@@ -176,7 +177,7 @@ class PessoaController extends AbstractController {
                             ),
                           ],
                         ),
-                        onTap: () => NavigatorUtils.push(
+                        onTap: () => NavigatorUtils.pushWithFadeAnimation(
                           context,
                           const PhoneForm(),
                         ),

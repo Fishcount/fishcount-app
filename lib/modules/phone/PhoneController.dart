@@ -2,6 +2,7 @@ import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/model/PhoneModel.dart';
+import 'package:fishcount_app/modules/phone/PhoneService.dart';
 import 'package:fishcount_app/repository/TelefoneRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
@@ -16,10 +17,13 @@ import 'PhoneForm.dart';
 
 class PhoneController extends AbstractController {
 
+  PhoneService _phoneService = PhoneService();
+
   Future<dynamic> salvarTelefone(BuildContext context, PhoneModel telefoneModel) async {
     bool isConnected = await ConnectionUtils().isConnected();
+    int? personId = await SharedPreferencesUtils.getIntVariableFromShared(EnumSharedPreferences.userId);
     if (isConnected) {
-      print("chamar api");
+      return _phoneService.save(telefoneModel, personId!);
     }
     return saveLocal(context, telefoneModel);
   }
@@ -28,7 +32,7 @@ class PhoneController extends AbstractController {
     int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
         EnumSharedPreferences.userId);
     if (userId == null){
-      return ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      return ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
     }
 
     if(telefoneModel.id == null){
@@ -37,7 +41,7 @@ class PhoneController extends AbstractController {
       await TelefoneRepository().update(context, telefoneModel, userId);
     }
 
-    NavigatorUtils.pushReplacement(context, const PessoaDataForm());
+    NavigatorUtils.pushReplacementWithFadeAnimation(context, const PessoaDataForm());
   }
 
   Widget getPhoneList(BuildContext context, List<PhoneModel> telefones) {
@@ -68,7 +72,7 @@ class PhoneController extends AbstractController {
             titles: telefones[index].phoneNumber,
             subTitles: telefones[index].phoneType,
             prefixIcon: const Icon(Icons.phone_android),
-            onChange: () => NavigatorUtils.push(
+            onChange: () => NavigatorUtils.pushWithFadeAnimation(
               context,
               PhoneForm(telefoneModel: telefones[index]),
             ),

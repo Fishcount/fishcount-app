@@ -99,15 +99,17 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
       final List<PaymentModel> pagamentos =
           await _paymentService.buscarPagamentos();
 
-      NavigatorUtils.push(
+      NavigatorUtils.pushWithFadeAnimation(
         context,
         FinancialScreen(
           pagamentos: pagamentos,
         ),
       );
+      setState(() => loading = false);
       return;
     }
-    NavigatorUtils.push(context, FinancialForm(pessoaModel: people));
+    NavigatorUtils.pushWithFadeAnimation(context, FinancialForm(pessoaModel: people));
+    setState(() => loading = false);
   }
 
   bool loading = false;
@@ -535,7 +537,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                     ],
                                   ),
                                   onPressed: () {
-                                    NavigatorUtils.pushReplacement(
+                                    NavigatorUtils.pushReplacementWithFadeAnimation(
                                       context,
                                       // AnalisysScreen(tankModel: tankModel),
                                       AnalysisListScreen(
@@ -594,8 +596,9 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                     child: Text(
                                       tankModel.lastFishAmount == null ||
                                               tankModel.lastFishAmount == 0
-                                          ? tankModel.lastFishAmount.toString()
-                                          : tankModel.fishAmount.toString() +
+                                          ? tankModel.fishAmount.toString()
+                                          : tankModel.lastFishAmount
+                                                  .toString() +
                                               ' Peixes',
                                       style: const TextStyle(
                                         fontSize: 12,

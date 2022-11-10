@@ -15,19 +15,19 @@ class LoteRepository {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
       if (userId == null) {
-        return ErrorHandler.getDefaultErrorMessage(
+        return ErrorHandler.getSnackBarError(
             context, ErrorMessage.serverError);
       }
 
       final db = await DBProvider().init();
       int idlote = await db.insert("lote", loteModel.toLocalDatabase(userId));
       if (idlote == 0) {
-        return ErrorHandler.getDefaultErrorMessage(
+        return ErrorHandler.getSnackBarError(
             context, ErrorMessage.serverError);
       }
-      NavigatorUtils.pushReplacement(context, const BatchScreen());
+      NavigatorUtils.pushReplacementWithFadeAnimation(context, const BatchScreen());
     } on Exception catch (e) {
-      return ErrorHandler.getDefaultErrorMessage(
+      return ErrorHandler.getSnackBarError(
           context, ErrorMessage.serverError);
     }
   }
@@ -37,7 +37,7 @@ class LoteRepository {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
       if (userId == null) {
-        return ErrorHandler.getDefaultErrorMessage(
+        return ErrorHandler.getSnackBarError(
             context, ErrorMessage.serverError);
       }
 
@@ -49,12 +49,12 @@ class LoteRepository {
         whereArgs: [loteModel.id],
       );
       if (idlote == 0) {
-        return ErrorHandler.getDefaultErrorMessage(
+        return ErrorHandler.getSnackBarError(
             context, ErrorMessage.serverError);
       }
-      NavigatorUtils.pushReplacement(context, const BatchScreen());
+      NavigatorUtils.pushReplacementWithFadeAnimation(context, const BatchScreen());
     } on Exception catch (e) {
-      return ErrorHandler.getDefaultErrorMessage(
+      return ErrorHandler.getSnackBarError(
           context, ErrorMessage.serverError);
     }
   }
@@ -64,7 +64,7 @@ class LoteRepository {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
       if (userId == null) {
-        ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+        ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
         return [];
       }
 
@@ -85,7 +85,7 @@ class LoteRepository {
         return BatchModel.fromJson(maps[index]);
       });
     } on Exception catch (e) {
-      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
       return [];
     }
   }

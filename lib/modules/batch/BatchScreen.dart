@@ -93,7 +93,7 @@ class _BatchScreenState extends State<BatchScreen>
       final List<PaymentModel> pagamentos =
           await _paymentService.buscarPagamentos();
 
-      NavigatorUtils.push(
+      NavigatorUtils.pushWithFadeAnimation(
         context,
         FinancialScreen(
           pagamentos: pagamentos,
@@ -101,7 +101,7 @@ class _BatchScreenState extends State<BatchScreen>
       );
       return;
     }
-    NavigatorUtils.push(context, FinancialForm(pessoaModel: people));
+    NavigatorUtils.pushWithFadeAnimation(context, FinancialForm(pessoaModel: people));
   }
 
   bool loading = false;
@@ -396,7 +396,7 @@ class _BatchScreenState extends State<BatchScreen>
                             ),
                           ),
                           onTap: () {
-                            NavigatorUtils.pushReplacement(
+                            NavigatorUtils.pushReplacementWithFadeAnimation(
                               context,
                               TankScreen(
                                 batch: batch,

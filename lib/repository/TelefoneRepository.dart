@@ -15,10 +15,10 @@ class TelefoneRepository {
           await db.insert("telefone", telefoneModel.toLocalDataBase(idUsuario));
 
       if (idTelefone == 0) {
-        ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+        ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
       }
     } on Exception catch (e) {
-      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
     }
   }
 
@@ -27,7 +27,7 @@ class TelefoneRepository {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
       if (userId == null) {
-        ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+        ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
         return [];
       }
       final db = await DBProvider().init();
@@ -44,7 +44,7 @@ class TelefoneRepository {
         return PhoneModel.fromJson(maps[index]);
       });
     } on Exception catch (e) {
-      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
       return [];
     }
   }
@@ -60,10 +60,10 @@ class TelefoneRepository {
       );
 
       if (idTelefone == 0){
-        ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+        ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
       }
     } on Exception catch (e){
-      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
     }
   }
 }

@@ -18,10 +18,10 @@ class StatusAnaliseHandler {
         return 'Analise não realizada';
 
       case 'AGUARDANDO_ANALISE':
-        return 'Aguardando';
+        return 'Aguardando análise';
 
       case 'ANALISE_CONCLUIDA':
-        return 'Concluida';
+        return 'Análise concluida';
 
       case 'FALHA_ANALISE':
         return 'Falha na análise';
@@ -35,7 +35,7 @@ class StatusAnaliseHandler {
   static dynamic handlerAnimation(String value) {
     switch (value) {
       case 'AGUARDANDO_ANALISE':
-        return LoadingAnimationWidget.hexagonDots(color: Colors.blue, size: 30.0);
+        return Container(padding: const EdgeInsets.only(top: 20), child: LoadingAnimationWidget.hexagonDots(color: Colors.blue, size: 30.0),);
       default:
         return null;
     }

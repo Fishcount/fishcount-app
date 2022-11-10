@@ -33,7 +33,7 @@ class TankController extends AbstractController {
       BuildContext context, TankModel tank, BatchModel batch) async {
     dynamic response = await _tankService.saveTank(tank, batch.id!);
 
-    return validateResponse(
+    return afterRequestAlertDialog(
       context: context,
       response: response,
       redirect: TankScreen(batch: batch),
@@ -45,7 +45,7 @@ class TankController extends AbstractController {
     dynamic response =
         await TankService().updateTank(tank, tank.id!, batch.id!);
 
-    return validateResponse(
+    return afterRequestAlertDialog(
       context: context,
       response: response,
       redirect: TankScreen(batch: batch),
@@ -415,7 +415,7 @@ class TankController extends AbstractController {
                 textColor: Colors.white,
                 buttonColor: Colors.blue,
                 onPressed: () {
-                  NavigatorUtils.push(context, TankForm(batch: batch));
+                  NavigatorUtils.pushWithFadeAnimation(context, TankForm(batch: batch));
                 },
               ),
             ),

@@ -22,27 +22,30 @@ abstract class AbstractController {
     );
   }
 
-  dynamic _responseIsErrorModel(BuildContext context, dynamic response) {
-    if (response is ErrorModel) {
-      return ErrorHandler.getDefaultErrorMessage(context, response.message);
-    }
-    return true;
-  }
-
-  dynamic validateResponse({
+  dynamic afterRequestAlertDialog({
     context = BuildContext,
     response = dynamic,
     redirect = Widget,
   }) {
-    dynamic validationResult = _responseIsErrorModel(context, response);
-    if (validationResult == true) {
-      NavigatorUtils.pushReplacement(context, redirect);
+    if (response is ErrorModel) {
+      return ErrorHandler.getAlertDialogError(context, response.message);
     }
-    return validationResult;
+    NavigatorUtils.pushReplacementWithFadeAnimation(context, redirect);
   }
 
-  String resolveOnChaged(
-      TextEditingController _controller, bool _submitted, String text) {
+  dynamic afterRequestSnackBar({
+    context = BuildContext,
+    response = dynamic,
+    redirect = Widget,
+  }) {
+    if ( response is ErrorModel) {
+      return ErrorHandler.getSnackBarError(context, response.message);
+    }
+    NavigatorUtils.pushReplacementWithFadeAnimation(context, redirect);
+  }
+
+  String resolveOnChaged(TextEditingController _controller, bool _submitted,
+      String text) {
     return _controller.text.isEmpty && _submitted
         ? _controller.text = text
         : _controller.text;
@@ -53,13 +56,11 @@ abstract class AbstractController {
     submitted = bool,
     errorMessage = String,
   }) {
-    return controller.text.isEmpty && submitted
-        ? errorMessage
-        : null;
+    return controller.text.isEmpty && submitted ? errorMessage : null;
   }
 
-  Widget notFoundWidgetRedirect(
-      BuildContext context, String message, String nextScreen) {
+  Widget notFoundWidgetRedirect(BuildContext context, String message,
+      String nextScreen) {
     return Container(
       padding: const EdgeInsets.only(top: 30),
       child: Column(
@@ -119,7 +120,7 @@ abstract class AbstractController {
           size: 30,
         ),
         onTap: () {
-          NavigatorUtils.push(context, editScreen);
+          NavigatorUtils.pushWithFadeAnimation(context, editScreen);
         },
       ),
     );
@@ -147,10 +148,10 @@ abstract class AbstractController {
     );
   }
 
-  GestureDetector getDescricao(
-      BuildContext context, Widget nextScreen, String descricao) {
+  GestureDetector getDescricao(BuildContext context, Widget nextScreen,
+      String descricao) {
     return GestureDetector(
-      onTap: () => NavigatorUtils.push(context, nextScreen),
+      onTap: () => NavigatorUtils.pushWithFadeAnimation(context, nextScreen),
       child: Text(
         descricao.toUpperCase(),
         style: const TextStyle(
@@ -175,7 +176,7 @@ abstract class AbstractController {
             return Text("0 $qtdeText");
           }
           if (onError(snapshot)) {
-            return ErrorHandler.getDefaultErrorMessage(
+            return ErrorHandler.getSnackBarError(
                 context, ErrorMessage.serverError);
           }
           return Text("");

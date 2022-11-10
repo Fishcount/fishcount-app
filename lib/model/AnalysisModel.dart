@@ -56,6 +56,7 @@ class AnalysisModel {
         'id': id,
         'pesoMedioTanque': avergageTankWeight,
         'tipoRacao': foodType,
+        'qtdePeixe': fishAmount,
         'qtdeRacaoDiaria': dailyFoodAmount,
         'unidadePesoRacaoDiaria': unityWeitghDailyFood,
         'qtdeRacaoRefeicao': mealFoodAmout,

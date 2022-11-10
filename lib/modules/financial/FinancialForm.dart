@@ -110,15 +110,15 @@ class _FinanceiroformState extends State<FinancialForm> {
                         }
                         widget.pessoaModel!.cpf = _cpfController.text;
                         dynamic response = await PersonService()
-                            .saveOrUpdate(widget.pessoaModel!);
+                            .update(widget.pessoaModel!);
 
                         if (response is PersonModel) {
-                          NavigatorUtils.pushReplacement(
+                          NavigatorUtils.pushReplacementWithFadeAnimation(
                               context, const FinancialScreen());
                         }
                         if (response is ErrorModel) {
                           setState(() => loading = false);
-                          return ErrorHandler.getDefaultErrorMessage(
+                          return ErrorHandler.getSnackBarError(
                               context, response.message);
                         }
                       },

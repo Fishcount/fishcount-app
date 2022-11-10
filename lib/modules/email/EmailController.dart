@@ -57,7 +57,7 @@ class EmailController extends AbstractController {
             titles: emails[index].email,
             subTitles: emails[index].emailType,
             prefixIcon: const Icon(Icons.email),
-            onChange: () => NavigatorUtils.push(
+            onChange: () => NavigatorUtils.pushWithFadeAnimation(
               context,
               EmailForm(
                 emailModel: emails[index],
@@ -88,7 +88,7 @@ class EmailController extends AbstractController {
       bool excluir, BuildContext context, int emailId) {
     return TextButton(
       onPressed: () =>
-          excluir ? _excluirEmail(context, emailId) : Navigator.pop(context, 'Voltar'),
+          excluir ? excluirEmail(context, emailId) : Navigator.pop(context, 'Voltar'),
       child: excluir ? const Text('Sim') : const Text('Voltar'),
     );
   }
@@ -110,12 +110,12 @@ class EmailController extends AbstractController {
       BuildContext context, EmailModel emailModel) async {
     int? userId = await _getUserId();
     if (userId == null) {
-      return ErrorHandler.getDefaultErrorMessage(
+      return ErrorHandler.getSnackBarError(
           context, ErrorMessage.serverError);
     }
     await _resolverSaveOrUpdateLocal(emailModel, context, userId);
 
-    NavigatorUtils.pushReplacement(context, const PessoaDataForm());
+    NavigatorUtils.pushReplacementWithFadeAnimation(context, const PessoaDataForm());
   }
 
   Future<void> _resolverSaveOrUpdateLocal(
@@ -131,30 +131,30 @@ class EmailController extends AbstractController {
       BuildContext context, EmailModel emailModel) async {
     int? userId = await _getUserId();
     if (userId == null) {
-      return ErrorHandler.getDefaultErrorMessage(
+      return ErrorHandler.getSnackBarError(
           context, ErrorMessage.serverError);
     }
     dynamic response = await _resolverSaveOrUpdate(emailModel, userId);
     if (response is EmailModel) {
-      NavigatorUtils.pushReplacement(context, const PessoaDataForm());
+      NavigatorUtils.pushReplacementWithFadeAnimation(context, const PessoaDataForm());
     }
     if (response is ErrorModel) {
-      return ErrorHandler.getDefaultErrorMessage(context, response.message);
+      return ErrorHandler.getSnackBarError(context, response.message);
     }
   }
 
-  Future<dynamic> _excluirEmail(BuildContext context, int emailId) async {
+  Future<dynamic> excluirEmail(BuildContext context, int emailId) async {
     int? userId = await _getUserId();
     if (userId == null) {
-      return ErrorHandler.getDefaultErrorMessage(
+      return ErrorHandler.getSnackBarError(
           context, ErrorMessage.serverError);
     }
     dynamic response = await EmailService().deleteEmail(emailId, userId);
     if (response == emailId) {
-      NavigatorUtils.pushReplacement(context, const PessoaDataForm());
+      NavigatorUtils.pushReplacementWithFadeAnimation(context, const PessoaDataForm());
     }
     if (response is ErrorModel) {
-      return ErrorHandler.getDefaultErrorMessage(context, response.message);
+      return ErrorHandler.getSnackBarError(context, response.message);
     }
   }
 

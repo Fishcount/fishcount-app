@@ -1,8 +1,10 @@
+import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/modules/batch/BatchScreen.dart';
 import 'package:fishcount_app/repository/LoteRepository.dart';
 import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/TextFieldWidget.dart';
@@ -19,9 +21,9 @@ class BatchController extends AbstractController {
     final isConnected = await _connectionUtils.isConnected();
     BatchModel batchModel = _createBatchModel(nomeLote);
     if (isConnected) {
-      return apiSave(context, batchModel);
+      return await apiSave(context, batchModel);
     }
-    return localSave(batchModel, context);
+    return await localSave(batchModel, context);
   }
 
   Future<dynamic> updateBatch(
@@ -39,8 +41,7 @@ class BatchController extends AbstractController {
 
   Future<dynamic> apiSave(BuildContext context, BatchModel managedLote) async {
     dynamic response = await _batchService.save(managedLote);
-
-    return validateResponse(
+    return await afterRequestAlertDialog(
       context: context,
       response: response,
       redirect: const BatchScreen(),
@@ -50,8 +51,7 @@ class BatchController extends AbstractController {
   Future<dynamic> apiUpdate(
       BuildContext context, BatchModel managedLote) async {
     dynamic response = await _batchService.update(managedLote);
-
-    return validateResponse(
+    return afterRequestAlertDialog(
       context: context,
       response: response,
       redirect: const BatchScreen(),
@@ -159,8 +159,11 @@ class BatchController extends AbstractController {
                                       updateBatch(context, batchModel);
                                       return;
                                     }
-                                    saveBatch(
+                                    await saveBatch(
                                         context, _batchNameController.text);
+                                    setState(() {
+                                      loading = false;
+                                    });
                                   }
                                 },
                                 textSize: 15,

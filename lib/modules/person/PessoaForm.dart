@@ -1,6 +1,5 @@
 import 'package:fishcount_app/constants/Formatters.dart';
-import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
-import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
+import 'package:fishcount_app/modules/batch/BatchScreen.dart';
 import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
@@ -9,6 +8,8 @@ import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../model/PersonModel.dart';
+import '../../utils/NavigatorUtils.dart';
 import 'PessoaController.dart';
 
 class PessoaForm extends StatefulWidget {
@@ -186,6 +187,10 @@ class _PessoaFormState extends State<PessoaForm> {
                               _emailController.text,
                               _telefoneController.text,
                               _senhaController.text);
+                          if (result is PersonModel) {
+                            NavigatorUtils.pushReplacementWithFadeAnimation(
+                                context, const BatchScreen());
+                          }
                           if (result is ScaffoldFeatureController) {
                             setState(() => loading = false);
                           }

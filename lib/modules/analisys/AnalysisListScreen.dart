@@ -104,7 +104,7 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
                             dynamic response =
                                 await _batchService.findBatch(widget.batchId);
                             if (response is BatchModel) {
-                              NavigatorUtils.pushReplacement(
+                              NavigatorUtils.pushReplacementWithFadeAnimation(
                                   context, TankScreen(batch: response));
                               setState(() => loading = false);
                             }
@@ -288,7 +288,7 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
             final dailyFoodAmount =
                 analysis.dailyFoodAmount ?? _waitingAnalysis;
             final mealFoodAmount = analysis.mealFoodAmout ?? _waitingAnalysis;
-            final foodType = analysis.foodType ?? _waitingAnalysis;
+            final foodType = analysis.foodType.toString();
             final avergageTankWeight =
                 analysis.avergageTankWeight ?? _waitingAnalysis;
 
@@ -361,10 +361,12 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                  margin: const EdgeInsets.only(top: 20),
-                                  child:
-                                      Text('Quantidade: $fishAmount peixes')),
-                              Container(
+                                margin: const EdgeInsets.only(top: 20),
+                                child: fishAmount == "null"
+                                    ? const Text("Aguardando análise..")
+                                    : Text('Quantidade: $fishAmount peixes'),
+                              ),
+                              foodType == "null" ? Container() : Container(
                                 margin: const EdgeInsets.only(top: 10),
                                 child: Text("Tipo ração: $foodType"),
                               )
@@ -372,7 +374,10 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
                           ),
                           StatusAnaliseHandler.handlerAnimation(
                                   analysis.analysisStatus) ??
-                              Icon(Icons.check, color: Colors.green,),
+                              const Icon(
+                                Icons.check,
+                                color: Colors.green,
+                              ),
                         ],
                       ),
                     ],
@@ -498,7 +503,7 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
                                   child: Text(
                                     avergageTankWeight == _waitingAnalysis
                                         ? avergageTankWeight.toString()
-                                        : avergageTankWeight.toString() + ' KG',
+                                        : avergageTankWeight.toString() + ' Kg',
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -530,13 +535,12 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
                               ),
                             ],
                           ),
-                          onPressed: () => NavigatorUtils.push(
+                          onPressed: () => NavigatorUtils.pushWithFadeAnimation(
                             context,
                             AnalysisScreen(
-                              tankModel: widget.tankModel,
-                              analysisModel: analysis,
-                                bacthId: widget.batchId
-                            ),
+                                tankModel: widget.tankModel,
+                                analysisModel: analysis,
+                                bacthId: widget.batchId),
                           ),
                         ),
                       ),

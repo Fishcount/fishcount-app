@@ -27,8 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _emailController.text = "admin@admin.com";
-    _senhaController.text = "admin";
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -104,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               return result;
                             }
                             if (result is bool) {
-                              NavigatorUtils.pushReplacement(
+                              NavigatorUtils.pushReplacementWithFadeAnimation(
                                   context, const BatchScreen());
                             }
                           },

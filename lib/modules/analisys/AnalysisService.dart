@@ -62,7 +62,7 @@ class AnalysisService extends AbstractService {
           .addQueryParam('qtdePeixes', fishAmount)
           .addQueryParam('tanqueId', tankId.toString());
 
-      if (temperature != null) {
+      if (temperature != null && temperature.isNotEmpty) {
         request.addQueryParam('temperatura', temperature);
       }
       Response<dynamic> response =

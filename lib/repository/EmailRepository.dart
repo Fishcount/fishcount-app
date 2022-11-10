@@ -15,10 +15,10 @@ class EmailRepository {
           await db.insert("email", emailModel.toLocalDatabase(idUsuario));
 
       if (idEmail == 0) {
-        ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+        ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
       }
     } on Exception catch (e) {
-      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
     }
   }
 
@@ -34,10 +34,10 @@ class EmailRepository {
       );
 
       if (idEmail == 0) {
-        ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+        ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
       }
     } on Exception catch (e) {
-      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
     }
   }
 
@@ -46,7 +46,7 @@ class EmailRepository {
       int? userId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
       if (userId == null) {
-        ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+        ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
         return [];
       }
       final db = await DBProvider().init();
@@ -63,7 +63,7 @@ class EmailRepository {
         return EmailModel.fromJson(maps[index]);
       });
     } on Exception catch (e) {
-      ErrorHandler.getDefaultErrorMessage(context, ErrorMessage.serverError);
+      ErrorHandler.getSnackBarError(context, ErrorMessage.serverError);
       return [];
     }
   }

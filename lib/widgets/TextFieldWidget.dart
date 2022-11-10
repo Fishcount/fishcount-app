@@ -45,7 +45,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
       inputFormatters: [
         widget.inputMask != null
             ? widget.inputMask!
-            : FilteringTextInputFormatter.singleLineFormatter
+            : FilteringTextInputFormatter(RegExp(r'[a-zA-Z0-9.@_-]'), allow: true)
       ],
       controller: widget.controller,
       obscureText: widget.isPassword != null && widget.isPassword!

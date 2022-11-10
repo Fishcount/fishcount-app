@@ -12,11 +12,12 @@ class SharedPreferencesUtils {
         EnumSharedPreferences.userEmail.name, usuario.emails.first.email);
   }
 
-  static Future<void> addSharedPreferences(AuthUserModel auth) async {
+  static Future<SharedPreferences> addSharedPreferences(AuthUserModel auth) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(EnumSharedPreferences.accessToken.name, auth.token);
     prefs.setInt(EnumSharedPreferences.userId.name, auth.personId);
     prefs.setString(EnumSharedPreferences.userEmail.name, auth.username);
+    return prefs;
   }
 
   static Future<int?> getIntVariableFromShared(

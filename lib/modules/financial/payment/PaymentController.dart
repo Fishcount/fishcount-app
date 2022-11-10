@@ -191,7 +191,7 @@ class PagamentoController {
 
   static _toParcelasList(
       BuildContext context, int pagamentoId, PlanModel plano) {
-    NavigatorUtils.push(
+    NavigatorUtils.pushWithFadeAnimation(
       context,
       PaymentInstallmentScreen(pagamentId: pagamentoId, plano: plano),
     );

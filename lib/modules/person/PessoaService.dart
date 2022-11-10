@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
-import 'package:fishcount_app/constants/Responses.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
 import 'package:fishcount_app/utils/RequestBuilder.dart';
@@ -32,14 +31,11 @@ class PersonService extends AbstractService {
       Response<dynamic> response =
           await RequestBuilder(url: '/pessoa').setBody(person.toJson()).post();
 
-      if (response.statusCode == 201) {
-        LoginService().doLogin(
-          person.emails.first.email,
-          person.password,
-        );
-        return PersonModel.fromJson(response.data);
-      }
-      return null;
+      await LoginService().doLogin(
+        person.emails.first.email,
+        person.password,
+      );
+      return PersonModel.fromJson(response.data);
     } on DioError catch (e) {
       return customDioError(e);
     }
@@ -50,7 +46,10 @@ class PersonService extends AbstractService {
       int? personId = await SharedPreferencesUtils.getIntVariableFromShared(
           EnumSharedPreferences.userId);
 
-      Response<void> response = await RequestBuilder(url: '/pessoa/$personId')
+      Response<void> response = await RequestBuilder(url: '/pessoa')
+          .addQueryParam("cpf", person.cpf.toString())
+          .addQueryParam("pessoaId", personId.toString())
+          .buildUrl()
           .setBody(person.toJson())
           .put();
 

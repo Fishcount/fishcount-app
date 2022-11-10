@@ -11,7 +11,7 @@ class TankModel {
 
   late SpeciesModel species;
 
-  late double initialWeight;
+  late double? initialWeight;
 
   late String? weightUnity;
 
