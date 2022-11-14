@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
 import 'package:fishcount_app/model/EmailModel.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
@@ -16,9 +15,6 @@ import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/buttons/TextButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

@@ -10,7 +10,6 @@ import 'package:fishcount_app/widgets/custom/AlertDialogBuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 import '../../../utils/AnimationUtils.dart';
 import '../../generic/AbstractController.dart';
 import 'PaymentInstallmentService.dart';
