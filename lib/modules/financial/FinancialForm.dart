@@ -71,6 +71,7 @@ class _FinanceiroformState extends State<FinancialForm> {
               padding: const EdgeInsets.only(top: 30),
               child: TextFieldWidget(
                 controller: _cpfController,
+                keyBoardType: TextInputType.number,
                 hintText: "CPF",
                 labelText: "Informe seu cpf",
                 iconColor: Colors.blueGrey,

@@ -5,11 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesUtils {
   static Future<void> addLocalSharedPreferences(
-      int idUsuario, PersonModel usuario) async {
+      int personId, PersonModel person) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt(EnumSharedPreferences.userId.name, idUsuario);
+    prefs.setInt(EnumSharedPreferences.userId.name, personId);
     prefs.setString(
-        EnumSharedPreferences.userEmail.name, usuario.emails.first.email);
+        EnumSharedPreferences.userEmail.name, person.emails.first.email);
   }
 
   static Future<SharedPreferences> addSharedPreferences(AuthUserModel auth) async {

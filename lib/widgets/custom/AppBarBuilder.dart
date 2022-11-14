@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class AppBarBuilder {
 
   final Color backGroundColor = Colors.blue[700]!;
+  final double borderRadius = 80;
 
   AppBarBuilder();
 
@@ -17,14 +18,14 @@ class AppBarBuilder {
         title: Container(
           width: 150,
           height: 70,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(80),
-              bottomRight: Radius.circular(80),
+              bottomLeft: Radius.circular(borderRadius),
+              bottomRight: Radius.circular(borderRadius),
             ),
             shape: BoxShape.rectangle,
             color: Colors.white,
-            image: DecorationImage(
+            image: const DecorationImage(
               image: AssetImage(ImagePaths.imageLogo),
               scale: 4.7,
               alignment: Alignment.topCenter,

@@ -6,6 +6,7 @@ import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/modules/financial/FinancialForm.dart';
 import 'package:fishcount_app/modules/financial/FinancialScreen.dart';
 import 'package:fishcount_app/modules/financial/payment/PaymentService.dart';
+import 'package:fishcount_app/modules/person/PessoaDataForm.dart';
 import 'package:fishcount_app/modules/person/PessoaService.dart';
 import 'package:fishcount_app/repository/LoteRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
@@ -101,7 +102,8 @@ class _BatchScreenState extends State<BatchScreen>
       );
       return;
     }
-    NavigatorUtils.pushWithFadeAnimation(context, FinancialForm(pessoaModel: people));
+    NavigatorUtils.pushWithFadeAnimation(
+        context, FinancialForm(pessoaModel: people));
   }
 
   bool loading = false;
@@ -113,13 +115,31 @@ class _BatchScreenState extends State<BatchScreen>
       drawer: const DrawerWidget(),
       bottomNavigationBar: CustomBottomSheet(
         context: context,
-        newFunction: () => _batchController.openBatchRegisterModal(
-            (text) => setState(() => _text),
+        centerElement: GestureDetector(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(
+                  Icons.person,
+                  size: 35,
+                  color: Colors.white,
+                ),
+                Text(
+                  "Meus Dados",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          onTap: () => NavigatorUtils.pushWithFadeAnimation(
             context,
-            TextEditingController(),
-            _animationController,
-            null),
-        centerElement: Center(
+            const PessoaDataForm(),
+          ),
+        ),
+        leftElement: Center(
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return loading
@@ -147,6 +167,12 @@ class _BatchScreenState extends State<BatchScreen>
             },
           ),
         ),
+        newFunction: () => _batchController.openBatchRegisterModal(
+            (text) => setState(() => _text),
+            context,
+            TextEditingController(),
+            _animationController,
+            null),
       ).build(),
       body: Container(
         padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
@@ -357,7 +383,8 @@ class _BatchScreenState extends State<BatchScreen>
                               .buildInfo(context),
                         ),
                         GestureDetector(
-                          child: SizedBox(
+                          child: Container(
+                            alignment: Alignment.centerLeft,
                             width: MediaQuery.of(context).size.width / 1.7,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,

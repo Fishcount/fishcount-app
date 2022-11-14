@@ -37,7 +37,7 @@ void main() async {
       debugShowCheckedModeBanner: false,
       checkerboardOffscreenLayers: false,
       color: Colors.white,
-      home: await hanldeInitScreen(),
+      home:  const LoginScreen(),
     ),
   );
 }

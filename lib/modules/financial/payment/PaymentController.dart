@@ -33,11 +33,11 @@ class PagamentoController {
   }
 
   static _onEmptyResponse() =>
-      const Text("Não foi possível encontrar nenhum pagamento para você.");
+      const Text("Não foi possível encontrar nenhum pagamento para o seu usuário, por favor, entre em contato.");
 
   static _onWaitingResponse() => Container(
         padding: const EdgeInsets.only(top: 100),
-        child: AnimationUtils.bouncingBall(size: 50.0),
+        child: AnimationUtils.progressiveDots(size: 50.0),
       );
 
   static SingleChildScrollView _onSuccessfulRequest(

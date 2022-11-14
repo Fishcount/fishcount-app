@@ -1,6 +1,7 @@
 import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/modules/batch/BatchScreen.dart';
+import 'package:fishcount_app/modules/person/PessoaForm.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/IconWidget.dart';
@@ -24,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool loading = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
+  final LoginController _loginController = LoginController();
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           buttonText: "Entrar".toUpperCase(),
                           onPressed: () async {
                             setState(() => loading = true);
-                            dynamic result = await LoginController().doLogin(
+                            dynamic result = await _loginController.doLogin(
                               context,
                               _emailController.text,
                               _senhaController.text,
@@ -114,10 +116,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     textColor: Colors.black54,
                     textSize: 20,
                     buttonText: "Criar Conta".toUpperCase(),
-                    onPressed: () {
-                      Navigator.pushNamed(
-                          context, AppPaths.cadastroUsuarioPath);
-                    },
+                    onPressed: () => NavigatorUtils.pushWithFadeAnimation(
+                      context,
+                      const PessoaForm(),
+                    ),
                   ),
                 ),
                 Container(

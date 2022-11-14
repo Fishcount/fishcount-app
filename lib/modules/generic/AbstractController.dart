@@ -38,14 +38,14 @@ abstract class AbstractController {
     response = dynamic,
     redirect = Widget,
   }) {
-    if ( response is ErrorModel) {
+    if (response is ErrorModel) {
       return ErrorHandler.getSnackBarError(context, response.message);
     }
     NavigatorUtils.pushReplacementWithFadeAnimation(context, redirect);
   }
 
-  String resolveOnChaged(TextEditingController _controller, bool _submitted,
-      String text) {
+  String resolveOnChaged(
+      TextEditingController _controller, bool _submitted, String text) {
     return _controller.text.isEmpty && _submitted
         ? _controller.text = text
         : _controller.text;
@@ -59,8 +59,8 @@ abstract class AbstractController {
     return controller.text.isEmpty && submitted ? errorMessage : null;
   }
 
-  Widget notFoundWidgetRedirect(BuildContext context, String message,
-      String nextScreen) {
+  Widget notFoundWidgetRedirect(
+      BuildContext context, String message, String nextScreen) {
     return Container(
       padding: const EdgeInsets.only(top: 30),
       child: Column(
@@ -148,8 +148,8 @@ abstract class AbstractController {
     );
   }
 
-  GestureDetector getDescricao(BuildContext context, Widget nextScreen,
-      String descricao) {
+  GestureDetector getDescricao(
+      BuildContext context, Widget nextScreen, String descricao) {
     return GestureDetector(
       onTap: () => NavigatorUtils.pushWithFadeAnimation(context, nextScreen),
       child: Text(

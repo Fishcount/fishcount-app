@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
+import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
+import 'package:fishcount_app/model/AuthUserModel.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
 import 'package:fishcount_app/utils/RequestBuilder.dart';
@@ -8,6 +10,8 @@ import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import '../login/LoginService.dart';
 
 class PersonService extends AbstractService {
+  LoginService _loginService = LoginService();
+
   Future<PersonModel> findById() async {
     try {
       final int? id = await SharedPreferencesUtils.getIntVariableFromShared(
@@ -31,10 +35,6 @@ class PersonService extends AbstractService {
       Response<dynamic> response =
           await RequestBuilder(url: '/pessoa').setBody(person.toJson()).post();
 
-      await LoginService().doLogin(
-        person.emails.first.email,
-        person.password,
-      );
       return PersonModel.fromJson(response.data);
     } on DioError catch (e) {
       return customDioError(e);

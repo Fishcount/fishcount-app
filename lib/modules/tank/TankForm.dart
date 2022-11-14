@@ -1,257 +1,474 @@
-import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
+import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
+import 'package:fishcount_app/handler/ErrorHandler.dart';
+import 'package:fishcount_app/model/BatchModel.dart';
 import 'package:fishcount_app/model/SpeciesModel.dart';
 import 'package:fishcount_app/model/TankModel.dart';
+import 'package:fishcount_app/modules/species/SpecieService.dart';
+import 'package:fishcount_app/modules/tank/TankScreen.dart';
+import 'package:fishcount_app/modules/tank/TankService.dart';
+import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
-import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import '../../model/BatchModel.dart';
-import '../species/SpecieService.dart';
-import 'TankController.dart';
+class TankForm {
+  BuildContext context;
 
-class TankForm extends StatefulWidget {
-  final TankModel? tank;
-  final BatchModel batch;
+  TankModel? tankModel;
 
-  const TankForm({
-    Key? key,
-    this.tank,
-    required this.batch,
-  }) : super(key: key);
+  BatchModel batchModel;
 
-  @override
-  State<TankForm> createState() => _TankFormState();
-}
+  String tankSpecie;
 
+  AnimationController animationController;
 
-class _TankFormState extends State<TankForm> {
-  final TextEditingController _nomeTanqueController = TextEditingController();
-  final TextEditingController _qtdePeixesController = TextEditingController();
+  TextEditingController tankNameController;
 
-  String descricaoEspecie = "";
-  SpeciesModel? especieModel;
+  TextEditingController fishAmounController;
 
-  @override
-  Widget build(BuildContext context) {
-    _nomeTanqueController.text = widget.tank != null
-        ? widget.tank!.description
-        : _nomeTanqueController.text;
+  TextEditingController initialWeightController;
 
-    _qtdePeixesController.text = widget.tank != null
-        ? widget.tank!.fishAmount.toString()
-        : _qtdePeixesController.text;
-    return Scaffold(
-      appBar:  AppBarBuilder().build(),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(
-                  top: 10,
-                ),
-                child: Text(
-                  widget.tank != null
-                      ? widget.tank!.description
-                      : "Novo Tanque",
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 20),
-                child: TextFieldWidget(
-                  controller: _nomeTanqueController,
-                  hintText: "Nome do Tanque",
-                  prefixIcon: const Icon(Icons.account_balance_wallet_sharp),
-                  focusedBorderColor: Colors.blueGrey,
-                  iconColor: Colors.blueGrey,
-                  obscureText: false,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 20),
-                child: TextFieldWidget(
-                  controller: _qtdePeixesController,
-                  hintText: "Quantidade inicial de peixes",
-                  prefixIcon: const Icon(Icons.numbers),
-                  focusedBorderColor: Colors.blueGrey,
-                  iconColor: Colors.blueGrey,
-                  obscureText: false,
-                ),
-              ),
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: TextFieldWidget(
-                      controller: _qtdePeixesController,
-                      hintText: "Peso inicial",
-                      prefixIcon: const Icon(Icons.numbers),
-                      focusedBorderColor: Colors.blueGrey,
-                      iconColor: Colors.blueGrey,
-                      obscureText: false,
+  final TankService _tankService = TankService();
+
+  final SpeciesService _speciesService = SpeciesService();
+
+  TankForm(
+    this.context,
+    this.tankModel,
+    this.batchModel,
+    this.tankSpecie,
+    this.animationController,
+    this.tankNameController,
+    this.fishAmounController,
+    this.initialWeightController,
+  );
+
+  Future<void> openRegisterModal() async {
+    final bool _isUpdate = tankModel != null;
+    final List<SpeciesModel> _species = await _speciesService.listarEspecies(context);
+
+    bool? _hasTemperature = false;
+    bool _submitted = false;
+    bool _loading = false;
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      transitionAnimationController: animationController,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      builder: (BuildContext context) {
+        bool isGrams = false;
+
+        final Color selectedColor = Colors.grey.shade600;
+        final Color noSelectedColor = Colors.grey.shade300;
+        const Color borderColor = Colors.black;
+        const Border border = Border(
+          right: BorderSide(
+            color: borderColor,
+          ),
+          left: BorderSide(
+            color: borderColor,
+          ),
+          top: BorderSide(
+            color: borderColor,
+          ),
+          bottom: BorderSide(
+            color: borderColor,
+          ),
+        );
+
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).orientation ==
+                              Orientation.portrait
+                          ? 100
+                          : 30,
+                      bottom: 20),
+                  child: Text(
+                    _isUpdate ? "Atualizar Tanque" : "Cadastrar novo Tanque",
+                    style: const TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
                     ),
                   ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 10),
-                child: FutureBuilder(
-                  future: TankController().resolverListaEspecie(context),
-                  builder:
-                      (context, AsyncSnapshot<List<SpeciesModel>> snapshot) {
-                    return AsyncSnapshotHandler(
-                      asyncSnapshot: snapshot,
-                      widgetOnError: const Text("Erro"),
-                      widgetOnWaiting: const CircularProgressIndicator(),
-                      widgetOnEmptyResponse: _onEmptyResponse(context),
-                      widgetOnSuccess: speciesList(context, snapshot),
-                    ).handler();
-                  },
                 ),
-              ),
-              descricaoEspecie == ""
-                  ? FutureBuilder(
-                      future: SpeciesService().findFirst(),
-                      builder: (context, AsyncSnapshot<SpeciesModel> snapshot) {
-                        especieModel = snapshot.data;
-                        return TankController().resolveSpecieData(
-                            snapshot, widget.batch, context);
-                      },
-                    )
-                  : FutureBuilder(
-                      future:
-                          SpeciesService().findByDescricao(descricaoEspecie),
-                      builder: (context, AsyncSnapshot<SpeciesModel> snapshot) {
-                        especieModel = snapshot.data;
-                        return TankController().resolveSpecieData(
-                            snapshot, widget.batch, context);
-                      },
+                Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: TextFieldWidget(
+                    controller: tankNameController,
+                    hintText: 'Nome do tanque',
+                    focusedBorderColor: Colors.blueGrey,
+                    iconColor: Colors.blueGrey,
+                    obscureText: false,
+                    keyBoardType: TextInputType.streetAddress,
+                    labelText: 'Nome do tanque',
+                    errorText: resolveErrorText(
+                      controller: tankNameController,
+                      submitted: _submitted,
+                      errorMessage: 'O nome do tanque não pode estar vazio.',
                     ),
-              Container(
-                padding: const EdgeInsets.only(top: 30),
-                child: ElevatedButtonWidget(
-                  buttonText: "Cadastrar",
-                  textSize: 20,
-                  radioBorder: 20,
-                  horizontalPadding: 30,
-                  verticalPadding: 20,
-                  textColor: Colors.white,
-                  buttonColor: Colors.blue,
-                  onPressed: () async => await _saveTank(context, widget.tank),
+                    onChanged: (text) => setState(() =>
+                        resolveOnChaged(tankNameController, _submitted, text)),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _saveTank(BuildContext context, TankModel? tanqueModel) async {
-    int? id;
-    if (tanqueModel != null){
-      id = tanqueModel.id;
-    }
-    final TankModel tanque = TankModel(
-        id,
-        _nomeTanqueController.text,
-        int.parse(_qtdePeixesController.text),
-        int.parse(_qtdePeixesController.text),
-        especieModel!,
-        20.0,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        false);
-
-    await TankController().saveTank(context, tanque, widget.batch);
-  }
-
-  Widget _onEmptyResponse(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 30),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(top: 30),
-            alignment: Alignment.center,
-            child: const Text(
-              "Você não possui nenhum lote cadastrado ainda!",
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(top: 50),
-            child: ElevatedButtonWidget(
-              buttonText: "Novo",
-              textSize: 18,
-              radioBorder: 20,
-              horizontalPadding: 30,
-              verticalPadding: 10,
-              textColor: Colors.white,
-              buttonColor: Colors.blue,
-              onPressed: () {
-                NavigatorUtils.pushWithFadeAnimation(context, TankForm(batch: widget.batch));
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget speciesList(
-      BuildContext context, AsyncSnapshot<List<SpeciesModel>> snapshot) {
-    if (snapshot.data == null) {
-      return Text("");
-    }
-    String firstValue = _resolveFirstValue(snapshot);
-    return Container(
-      height: 60,
-      alignment: Alignment.center,
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(232, 232, 232, 232),
-        borderRadius: BorderRadius.all(
-          Radius.circular(10),
-        ),
-      ),
-      width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.only(top: 20),
-      padding: const EdgeInsets.only(left: 10, right: 10),
-      child: DropdownButton<String>(
-          value: firstValue,
-          isExpanded: true,
-          items: snapshot.data!
-              .map(
-                (especie) => DropdownMenuItem(
-                  value: especie.description,
-                  child: Text(especie.description),
+                Container(
+                  padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  child: TextFormField(
+                    onChanged: (text) => setState(() =>
+                        resolveOnChaged(tankNameController, _submitted, text)),
+                    inputFormatters: [
+                      FilteringTextInputFormatter(RegExp(r'[0-9]'), allow: true)
+                    ],
+                    controller: fishAmounController,
+                    keyboardType: TextInputType.number,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      errorText: resolveErrorText(
+                        controller: fishAmounController,
+                        submitted: _submitted,
+                        errorMessage:
+                            'A quantidade de peixes não deve estar vazia.',
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                            style: BorderStyle.solid, color: Colors.red),
+                      ),
+                      labelText: 'Quantidade inicial de peixes',
+                      filled: true,
+                      hintText: 'Quantidade de peixes',
+                      prefixIconColor: Colors.blueGrey,
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          style: BorderStyle.none,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          color: Colors.black,
+                          style: BorderStyle.none,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          color: Colors.blueGrey,
+                          style: BorderStyle.solid,
+                        ),
+                      ),
+                    ),
+                  ),
+                  // TextFieldWidget(
+                  //   controller: fishAmounController,
+                  //   hintText: 'Quantidade de peixes',
+                  //   focusedBorderColor: Colors.blueGrey,
+                  //   iconColor: Colors.blueGrey,
+                  //   obscureText: false,
+                  //   labelText: 'Quantidade inicial de peixes',
+                  //   keyBoardType: TextInputType.number,
+                  //   errorText:
+                  //       resolverFishAmount(fishAmounController, _submitted),
+                  //   onChanged: (text) => setState(
+                  //     () => resolverFishAmountOnChange(
+                  //         fishAmounController, _submitted, text),
+                  //   ),
+                  // ),
                 ),
-              )
-              .toList(),
-          onChanged: (String? novoItemSelecionado) {
-            setState(() {
-              descricaoEspecie = novoItemSelecionado ?? "";
-            });
-          }),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      padding:
+                          const EdgeInsets.only(top: 20, left: 20, right: 20),
+                      child: TextFieldWidget(
+                        controller: initialWeightController,
+                        hintText: 'Peso Inicial',
+                        focusedBorderColor: Colors.blueGrey,
+                        iconColor: Colors.blueGrey,
+                        obscureText: false,
+                        labelText: 'Peso unitário inicial',
+                        keyBoardType: TextInputType.phone,
+                        errorText: resolveErrorText(
+                            controller: initialWeightController,
+                            submitted: _submitted,
+                            errorMessage:
+                                ' O peso inicial dos peixes não pode estar vazio.'),
+                        onChanged: (text) => setState(
+                          () => resolveOnChaged(
+                              fishAmounController, _submitted, text),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => setState(() => isGrams = true),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 25),
+                        width: 50,
+                        height: 40,
+                        child: const Center(child: Text("Gr")),
+                        decoration: BoxDecoration(
+                          color: !isGrams ? noSelectedColor : selectedColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: border,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => setState(() => isGrams = false),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 25, left: 15),
+                        width: 50,
+                        height: 40,
+                        child: const Center(child: Text("Kg")),
+                        decoration: BoxDecoration(
+                          color: isGrams ? noSelectedColor : selectedColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: border,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  height: 60,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(232, 232, 232, 232),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                  child: DropdownButton<String>(
+                    value: tankSpecie != ""
+                        ? tankSpecie
+                        : _species.first.description,
+                    isExpanded: true,
+                    items: _species
+                        .map(
+                          (specie) => DropdownMenuItem(
+                            value: specie.description,
+                            child: Text(specie.description),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (String? newValue) {
+                      setState(
+                        () {
+                          tankSpecie = newValue ?? "";
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  child: CheckboxListTile(
+                    title: const Text("Possui medidor temperatura"),
+                    value: _hasTemperature,
+                    onChanged: (newValue) {
+                      setState(() => _hasTemperature = newValue);
+                    },
+                    controlAffinity: ListTileControlAffinity
+                        .leading, //  <-- leading Checkbox
+                  ),
+                ),
+                _loading
+                    ? Container(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: AnimationUtils.progressiveDots(size: 50.0),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: ElevatedButtonWidget(
+                              buttonText: "Cancelar",
+                              buttonColor: Colors.blue,
+                              onPressed: () => Navigator.pop(context),
+                              textSize: 15,
+                              textColor: Colors.white,
+                              radioBorder: 10,
+                              horizontalPadding: 20,
+                              verticalPadding: 10,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: ElevatedButtonWidget(
+                              buttonText: "Confirmar",
+                              buttonColor: Colors.green,
+                              textSize: 15,
+                              textColor: Colors.white,
+                              radioBorder: 10,
+                              horizontalPadding: 20,
+                              verticalPadding: 10,
+                              onPressed: () async {
+                                setState(() => _submitted = true);
+                                if (isInvalid(initialWeightController,
+                                    fishAmounController, tankNameController)) {
+                                  return;
+                                }
+                                setState(() => _loading = true);
+                                return await _confirmTank(
+                                  tankSpecie,
+                                  _species,
+                                  _isUpdate,
+                                  tankModel,
+                                  batchModel,
+                                  tankNameController,
+                                  fishAmounController,
+                                  initialWeightController,
+                                  isGrams ? 'GRAMA' : 'KILO',
+                                  context,
+                                  _hasTemperature!,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
-  String _resolveFirstValue(AsyncSnapshot<List<SpeciesModel>> snapshot) {
-    return descricaoEspecie != ""
-        ? descricaoEspecie
-        : snapshot.data != null
-            ? snapshot.data!.first.description
-            : "";
+  Future<dynamic> _confirmTank(
+      String tankSpecie,
+      List<SpeciesModel> species,
+      bool _isUpdate,
+      TankModel? tankModel,
+      BatchModel batchModel,
+      TextEditingController tankNameController,
+      TextEditingController fishAmounController,
+      TextEditingController initialWeightController,
+      String weitghUnity,
+      BuildContext context,
+      bool hasTemperature) async {
+    final String speciesDescription =
+        tankSpecie != "" ? tankSpecie : species.first.description;
+    final TankModel tank = tankModel ?? TankModel.empty(null);
+
+    tankModel = await _generateTank(
+        tank,
+        tankNameController,
+        fishAmounController,
+        speciesDescription,
+        double.parse(initialWeightController.text),
+        weitghUnity,
+        hasTemperature);
+    if (_isUpdate) {
+      return updateTank(context, tankModel, batchModel);
+    }
+    return saveTank(context, tankModel, batchModel);
   }
+
+  Future<dynamic> saveTank(
+      BuildContext context, TankModel tank, BatchModel batch) async {
+    dynamic response = await _tankService.saveTank(tank, batch.id!);
+
+    return afterRequestAlertDialog(
+      context: context,
+      response: response,
+      redirect: TankScreen(batch: batch),
+    );
+  }
+
+  dynamic afterRequestAlertDialog({
+    context = BuildContext,
+    response = dynamic,
+    redirect = Widget,
+  }) {
+    if (response is ErrorModel) {
+      return ErrorHandler.getAlertDialogError(context, response.message);
+    }
+    NavigatorUtils.pushReplacementWithFadeAnimation(context, redirect);
+  }
+
+  dynamic afterRequestSnackBar({
+    context = BuildContext,
+    response = dynamic,
+    redirect = Widget,
+  }) {
+    if (response is ErrorModel) {
+      return ErrorHandler.getSnackBarError(context, response.message);
+    }
+    NavigatorUtils.pushReplacementWithFadeAnimation(context, redirect);
+  }
+
+  Future<dynamic> updateTank(
+      BuildContext context, TankModel tank, BatchModel batch) async {
+    dynamic response =
+        await TankService().updateTank(tank, tank.id!, batch.id!);
+
+    return afterRequestAlertDialog(
+      context: context,
+      response: response,
+      redirect: TankScreen(batch: batch),
+    );
+  }
+
+  Future<TankModel> _generateTank(
+      TankModel tankModel,
+      tankNameController,
+      fishAmounController,
+      String speciesDescription,
+      double initialWeigth,
+      String weitghUnity,
+      bool hasTemperature) async {
+    tankModel.description = tankNameController.text;
+    tankModel.fishAmount = int.parse(fishAmounController.text);
+    tankModel.weightUnity = weitghUnity;
+    tankModel.initialWeight = initialWeigth;
+    tankModel.species =
+        await _speciesService.findByDescricao(speciesDescription);
+    tankModel.hasTemperatureGauge = hasTemperature;
+
+    return tankModel;
+  }
+
+  String resolveOnChaged(
+      TextEditingController _controller, bool _submitted, String text) {
+    return _controller.text.isEmpty && _submitted
+        ? _controller.text = text
+        : _controller.text;
+  }
+
+  String? resolveErrorText({
+    controller = TextEditingController,
+    submitted = bool,
+    errorMessage = String,
+  }) {
+    return controller.text.isEmpty && submitted ? errorMessage : null;
+  }
+
+  bool isInvalid(
+          TextEditingController initialWeightController,
+          TextEditingController fishAmounController,
+          TextEditingController tankNameController) =>
+      initialWeightController.text.isEmpty ||
+      fishAmounController.text.isEmpty ||
+      tankNameController.text.isEmpty;
 }

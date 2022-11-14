@@ -1,4 +1,5 @@
 import 'package:fishcount_app/constants/AppImages.dart';
+import 'package:fishcount_app/constants/Formatters.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/handler/AsyncSnapshotHander.dart';
@@ -12,6 +13,7 @@ import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../utils/AnimationUtils.dart';
 import '../generic/AbstractController.dart';
@@ -125,6 +127,7 @@ class TankController extends AbstractController {
                     focusedBorderColor: Colors.blueGrey,
                     iconColor: Colors.blueGrey,
                     obscureText: false,
+                    keyBoardType: TextInputType.streetAddress,
                     labelText: 'Nome do tanque',
                     errorText: resolveErrorText(
                       controller: _tankNameController,
@@ -137,24 +140,68 @@ class TankController extends AbstractController {
                 ),
                 Container(
                   padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                  child: TextFieldWidget(
+                  child: TextFormField(
+                    onChanged: (text) => setState(() =>
+                        resolveOnChaged(_tankNameController, _submitted, text)),
+                    inputFormatters: [
+                      FilteringTextInputFormatter(RegExp(r'[0-9]'), allow: true)
+                    ],
                     controller: fishAmounController,
-                    hintText: 'Quantidade de peixes',
-                    focusedBorderColor: Colors.blueGrey,
-                    iconColor: Colors.blueGrey,
-                    obscureText: false,
-                    labelText: 'Quantidade inicial de peixes',
-                    keyBoardType: TextInputType.number,
-                    errorText: resolveErrorText(
+                    keyboardType: TextInputType.number,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      errorText: resolveErrorText(
                         controller: fishAmounController,
                         submitted: _submitted,
                         errorMessage:
-                            'A quantidade de peixes não pode estar vazia.'),
-                    onChanged: (text) => setState(
-                      () => resolveOnChaged(
-                          fishAmounController, _submitted, text),
+                            'A quantidade de peixes não deve estar vazia.',
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                            style: BorderStyle.solid, color: Colors.red),
+                      ),
+                      labelText: 'Quantidade inicial de peixes',
+                      filled: true,
+                      hintText: 'Quantidade de peixes',
+                      prefixIconColor: Colors.blueGrey,
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          style: BorderStyle.none,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          color: Colors.black,
+                          style: BorderStyle.none,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          color: Colors.blueGrey,
+                          style: BorderStyle.solid,
+                        ),
+                      ),
                     ),
                   ),
+                  // TextFieldWidget(
+                  //   controller: fishAmounController,
+                  //   hintText: 'Quantidade de peixes',
+                  //   focusedBorderColor: Colors.blueGrey,
+                  //   iconColor: Colors.blueGrey,
+                  //   obscureText: false,
+                  //   labelText: 'Quantidade inicial de peixes',
+                  //   keyBoardType: TextInputType.number,
+                  //   errorText:
+                  //       resolverFishAmount(fishAmounController, _submitted),
+                  //   onChanged: (text) => setState(
+                  //     () => resolverFishAmountOnChange(
+                  //         fishAmounController, _submitted, text),
+                  //   ),
+                  // ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -170,8 +217,8 @@ class TankController extends AbstractController {
                         focusedBorderColor: Colors.blueGrey,
                         iconColor: Colors.blueGrey,
                         obscureText: false,
-                        labelText: 'Peso inicial dos peixes',
-                        keyBoardType: TextInputType.number,
+                        labelText: 'Peso unitário inicial',
+                        keyBoardType: TextInputType.phone,
                         errorText: resolveErrorText(
                             controller: initialWeightController,
                             submitted: _submitted,
@@ -184,21 +231,6 @@ class TankController extends AbstractController {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => setState(() => isGrams = false),
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 25, right: 15),
-                        width: 50,
-                        height: 40,
-                        child: const Center(child: Text("Kg")),
-                        decoration: BoxDecoration(
-                          color: isGrams ? noSelectedColor : selectedColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          border: border,
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
                       onTap: () => setState(() => isGrams = true),
                       child: Container(
                         margin: const EdgeInsets.only(top: 25),
@@ -207,6 +239,21 @@ class TankController extends AbstractController {
                         child: const Center(child: Text("Gr")),
                         decoration: BoxDecoration(
                           color: !isGrams ? noSelectedColor : selectedColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: border,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => setState(() => isGrams = false),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 25, left: 15),
+                        width: 50,
+                        height: 40,
+                        child: const Center(child: Text("Kg")),
+                        decoration: BoxDecoration(
+                          color: isGrams ? noSelectedColor : selectedColor,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(10)),
                           border: border,
@@ -292,7 +339,7 @@ class TankController extends AbstractController {
                               verticalPadding: 10,
                               onPressed: () async {
                                 setState(() => _submitted = true);
-                                if (!_isFormValid(initialWeightController,
+                                if (isInvalid(initialWeightController,
                                     fishAmounController, _tankNameController)) {
                                   return;
                                 }
@@ -322,14 +369,6 @@ class TankController extends AbstractController {
       },
     );
   }
-
-  bool _isFormValid(
-          TextEditingController initialWeightController,
-          TextEditingController fishAmounController,
-          TextEditingController tankNameController) =>
-      initialWeightController.text.isNotEmpty &&
-          fishAmounController.text.isNotEmpty ||
-      tankNameController.text.isNotEmpty;
 
   Future<dynamic> _confirmTank(
       String tankSpecie,
@@ -387,7 +426,7 @@ class TankController extends AbstractController {
     _qtdeMediaRacaoController.text = _resolverQtdeMediaRacao(snapshot);
     return AsyncSnapshotHandler(
       asyncSnapshot: snapshot,
-      widgetOnError: const Text("Erro"),
+      widgetOnError: const Text("Ocorreu um erro nos nossos servidores, por favor, entre em contato."),
       widgetOnWaiting: Container(
         padding: const EdgeInsets.only(top: 30),
         child: AnimationUtils.progressiveDots(size: 50.0),
@@ -414,9 +453,7 @@ class TankController extends AbstractController {
                 verticalPadding: 10,
                 textColor: Colors.white,
                 buttonColor: Colors.blue,
-                onPressed: () {
-                  NavigatorUtils.pushWithFadeAnimation(context, TankForm(batch: batch));
-                },
+                onPressed: () {},
               ),
             ),
           ],
@@ -567,9 +604,11 @@ class TankController extends AbstractController {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
+  bool isInvalid(
+          TextEditingController initialWeightController,
+          TextEditingController fishAmounController,
+          TextEditingController tankNameController) =>
+      initialWeightController.text.isEmpty ||
+      fishAmounController.text.isEmpty ||
+      tankNameController.text.isEmpty;
 }
