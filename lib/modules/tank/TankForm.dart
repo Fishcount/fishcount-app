@@ -329,7 +329,7 @@ class TankForm {
                                   return;
                                 }
                                 setState(() => _loading = true);
-                                return await _confirmTank(
+                                await _confirmTank(
                                   tankSpecie,
                                   _species,
                                   _isUpdate,
@@ -342,6 +342,7 @@ class TankForm {
                                   context,
                                   _hasTemperature!,
                                 );
+                                setState(() => _loading = false);
                               },
                             ),
                           ),

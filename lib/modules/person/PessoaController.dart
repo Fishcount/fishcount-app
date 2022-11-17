@@ -9,6 +9,7 @@ import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/model/PhoneModel.dart';
 import 'package:fishcount_app/model/enums/EnumTipoEmail.dart';
 import 'package:fishcount_app/model/enums/EnumTipoTelefone.dart';
+import 'package:fishcount_app/modules/batch/BatchScreen.dart';
 import 'package:fishcount_app/modules/login/LoginService.dart';
 import 'package:fishcount_app/repository/UsuarioRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
