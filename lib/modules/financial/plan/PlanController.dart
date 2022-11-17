@@ -109,7 +109,7 @@ class PlanController {
                         ),
                       ),
                       Text(
-                        "R\$ " + plano.valorMaximo.toString() + "0",
+                        "R\$ " + plano.valorMaximo.toString().replaceAll('.', ',') + "0",
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: Colors.blue,
@@ -151,7 +151,7 @@ class PlanController {
                               padding: const EdgeInsets.only(bottom: 5),
                               child: Text(
                                 "Negocie conosco para preços de até R\$ " +
-                                    plano.valorMinimo.toString() +
+                                    plano.valorMinimo.toString().replaceAll('.', ',') +
                                     "0",
                                 style: const TextStyle(fontSize: 15),
                                 overflow: TextOverflow.ellipsis,
@@ -205,11 +205,15 @@ class PlanController {
       BuildContext context, PlanModel plano) async {
     final String descricaoPlano = plano.descricao;
     final String qtdeParcela = plano.qtdeParcela.toString();
-    final String precoMax = plano.valorMaximo.toString();
-    final double precoParcela = plano.valorParcelaMaximo;
+    try {
+    } catch (e, s) {
+      print(s);
+    }
+    final String precoMax = plano.valorMaximo.toString().replaceAll('.',',');
+    final String precoParcela = plano.valorParcelaMaximo.toString().replaceAll('.',',');
     final String description = 'Você selecionou o plano "$descricaoPlano"'
-        '\nValor total de $precoMax'
-        '\nEm $qtdeParcela parcelas de R\$ $precoParcela';
+        '\nValor total de R\$ $precoMax\0'
+        '\nEm $qtdeParcela parcelas de R\$ $precoParcela\0';
 
     bool loading = false;
 
@@ -274,10 +278,11 @@ class PlanController {
         await _pagamentoService.incluirAssinaturaPlano(paymentModel);
     if (response is PaymentModel) {
       NavigatorUtils.pushReplacementWithFadeAnimation(
-          context,
-          FinancialScreen(
-            pagamentos: [response],
-          ));
+        context,
+        FinancialScreen(
+          pagamentos: [response],
+        ),
+      );
     }
     if (response is ErrorModel) {
       return ErrorHandler.getSnackBarError(context, response.message);

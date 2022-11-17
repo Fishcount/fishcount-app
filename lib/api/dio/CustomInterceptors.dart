@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
+import 'package:fishcount_app/handler/ErrorHandler.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 
 class CustomInterceptors extends Interceptor {
