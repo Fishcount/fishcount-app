@@ -23,8 +23,10 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool loading = false;
-  final TextEditingController _emailController = TextEditingController(text: 'admin@admin.com');
-  final TextEditingController _senhaController = TextEditingController(text: 'admin');
+  final TextEditingController _emailController =
+      TextEditingController(text: 'admin@admin.com');
+  final TextEditingController _senhaController =
+      TextEditingController(text: 'admin');
   final LoginController _loginController = LoginController();
 
   @override
@@ -38,10 +40,8 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Center(
                   child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacementNamed(
-                          context, AppPaths.lotesPath);
-                    },
+                    onTap: () => Navigator.pushReplacementNamed(
+                        context, AppPaths.lotesPath),
                     child: SizedBox(
                       width: 150,
                       height: 150,

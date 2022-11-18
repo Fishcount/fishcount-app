@@ -63,7 +63,6 @@ class PlanController {
           return Container(
             margin: const EdgeInsets.only(top: 10),
             alignment: Alignment.center,
-            height: 200,
             decoration: BoxDecoration(
               color: backGroundColor,
               borderRadius: BorderRadius.circular(10),
@@ -109,7 +108,9 @@ class PlanController {
                         ),
                       ),
                       Text(
-                        "R\$ " + plano.valorMaximo.toString().replaceAll('.', ',') + "0",
+                        "R\$ " +
+                            plano.valorMaximo.toString().replaceAll('.', ',') +
+                            "0",
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: Colors.blue,
@@ -149,12 +150,17 @@ class PlanController {
                             ),
                             Container(
                               padding: const EdgeInsets.only(bottom: 5),
-                              child: Text(
-                                "Negocie conosco para preços de até R\$ " +
-                                    plano.valorMinimo.toString().replaceAll('.', ',') +
-                                    "0",
-                                style: const TextStyle(fontSize: 15),
-                                overflow: TextOverflow.ellipsis,
+                              width: MediaQuery.of(context).size.width - 75,
+                              child: Flexible(
+                                child: Text(
+                                  "Negocie conosco para preços de até R\$ " +
+                                      plano.valorMinimo
+                                          .toString()
+                                          .replaceAll('.', ',') +
+                                      "0",
+                                  style: const TextStyle(fontSize: 15),
+                                  overflow: TextOverflow.fade,
+                                ),
                               ),
                             ),
                           ],
@@ -164,6 +170,7 @@ class PlanController {
                   ),
                   Container(
                     alignment: Alignment.center,
+                    padding: const EdgeInsets.only(top: 20, bottom: 10),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -177,16 +184,14 @@ class PlanController {
                           onPressed: () => _enviarContato(context),
                         ),
                         Container(
-                          padding: const EdgeInsets.only(top: 20, bottom: 10),
                           child: ElevatedButtonWidget(
                             buttonText: "Assine já",
                             buttonColor: Colors.green,
                             radioBorder: 10,
                             textSize: 17,
                             textColor: Colors.white,
-                            onPressed: () {
-                              return _confirmarAssinatura(context, plano);
-                            },
+                            onPressed: () =>
+                                _confirmarAssinatura(context, plano),
                           ),
                         ),
                       ],
@@ -205,12 +210,12 @@ class PlanController {
       BuildContext context, PlanModel plano) async {
     final String descricaoPlano = plano.descricao;
     final String qtdeParcela = plano.qtdeParcela.toString();
-    try {
-    } catch (e, s) {
+    try {} catch (e, s) {
       print(s);
     }
-    final String precoMax = plano.valorMaximo.toString().replaceAll('.',',');
-    final String precoParcela = plano.valorParcelaMaximo.toString().replaceAll('.',',');
+    final String precoMax = plano.valorMaximo.toString().replaceAll('.', ',');
+    final String precoParcela =
+        plano.valorParcelaMaximo.toString().replaceAll('.', ',');
     final String description = 'Você selecionou o plano "$descricaoPlano"'
         '\nValor total de R\$ $precoMax\0'
         '\nEm $qtdeParcela parcelas de R\$ $precoParcela\0';
