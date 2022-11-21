@@ -122,52 +122,52 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.only(top: 60, left: 30, right: 30),
-                  child: const DividerWidget(
-                    textBetween: "Entrar com rede social",
-                    height: 10,
-                    thikness: 2,
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    color: Colors.black26,
-                    textColor: Colors.black26,
-                    isBold: false,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(top: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(right: 30),
-                        child: IconWidget(
-                          iconColor: Colors.deepOrange.shade700,
-                          icon: LineIcons.instagram,
-                          iconSize: 50,
-                          gestureDetectorFunction: () {},
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(right: 30),
-                        child: IconWidget(
-                          iconColor: Colors.blue.shade700,
-                          icon: LineIcons.facebook,
-                          iconSize: 50,
-                          gestureDetectorFunction: () {},
-                        ),
-                      ),
-                      IconWidget(
-                        iconColor: Colors.amber.shade700,
-                        icon: LineIcons.googleLogo,
-                        iconSize: 50,
-                        gestureDetectorFunction: () {},
-                      ),
-                    ],
-                  ),
-                ),
+                // Container(
+                //   padding: const EdgeInsets.only(top: 60, left: 30, right: 30),
+                //   child: const DividerWidget(
+                //     textBetween: "Entrar com rede social",
+                //     height: 10,
+                //     thikness: 2,
+                //     paddingLeft: 10,
+                //     paddingRight: 10,
+                //     color: Colors.black26,
+                //     textColor: Colors.black26,
+                //     isBold: false,
+                //   ),
+                // ),
+                // Container(
+                //   padding: const EdgeInsets.only(top: 30),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     crossAxisAlignment: CrossAxisAlignment.center,
+                //     children: [
+                //       Container(
+                //         padding: const EdgeInsets.only(right: 30),
+                //         child: IconWidget(
+                //           iconColor: Colors.deepOrange.shade700,
+                //           icon: LineIcons.instagram,
+                //           iconSize: 50,
+                //           gestureDetectorFunction: () {},
+                //         ),
+                //       ),
+                //       Container(
+                //         padding: const EdgeInsets.only(right: 30),
+                //         child: IconWidget(
+                //           iconColor: Colors.blue.shade700,
+                //           icon: LineIcons.facebook,
+                //           iconSize: 50,
+                //           gestureDetectorFunction: () {},
+                //         ),
+                //       ),
+                //       IconWidget(
+                //         iconColor: Colors.amber.shade700,
+                //         icon: LineIcons.googleLogo,
+                //         iconSize: 50,
+                //         gestureDetectorFunction: () {},
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           );
