@@ -8,8 +8,8 @@ import 'package:fishcount_app/modules/batch/BatchScreen.dart';
 import 'package:fishcount_app/modules/login/LoginScreen.dart';
 import 'package:fishcount_app/utils/AnimationUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
-import 'package:fishcount_app/utils/pdf/PdfUtils.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
+import 'package:fishcount_app/utils/pdf/PdfUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -150,15 +150,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           MediaQuery.of(context).orientation == Orientation.portrait
               ? Container(
                   alignment: Alignment.center,
-                  child: SizedBox(
-                    child: BatchController().getUserEmail(),
-                    height: 20,
-                  ),
-                )
-              : Container(),
-          MediaQuery.of(context).orientation == Orientation.portrait
-              ? Container(
-                  alignment: Alignment.center,
                   padding: const EdgeInsets.only(top: 5, bottom: 30),
                   child: SizedBox(
                     child: FutureBuilder(
@@ -213,9 +204,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             trailing:
                 loading ? AnimationUtils.progressiveDots(size: 30.0) : null,
             title: const Text("Financeiro"),
-            onTap: () {
+            onTap: () async {
               setState(() => loading = true);
-              _handlePermissions();
+              await _handlePermissions();
+              setState(() => loading = false);
             },
           ),
           // const ListTile(

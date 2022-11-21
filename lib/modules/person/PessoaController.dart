@@ -3,21 +3,24 @@ import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/constants/exceptions/ErrorMessage.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/handler/ErrorHandler.dart';
+import 'package:fishcount_app/model/AuthUserModel.dart';
 import 'package:fishcount_app/model/EmailModel.dart';
 import 'package:fishcount_app/model/PersonModel.dart';
 import 'package:fishcount_app/model/PhoneModel.dart';
 import 'package:fishcount_app/model/enums/EnumTipoEmail.dart';
 import 'package:fishcount_app/model/enums/EnumTipoTelefone.dart';
+import 'package:fishcount_app/modules/batch/BatchScreen.dart';
+import 'package:fishcount_app/modules/login/LoginService.dart';
 import 'package:fishcount_app/repository/UsuarioRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
+import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../batch/BatchScreen.dart';
 import '../email/EmailController.dart';
 import '../email/EmailForm.dart';
 import '../generic/AbstractController.dart';
@@ -26,7 +29,9 @@ import '../phone/PhoneForm.dart';
 import 'PessoaService.dart';
 
 class PessoaController extends AbstractController {
-  UsuarioRepository _usuarioRepository = UsuarioRepository();
+  final UsuarioRepository _usuarioRepository = UsuarioRepository();
+  final PersonService _personService = PersonService();
+  final LoginService _loginService = LoginService();
 
   dynamic salvar(BuildContext context, String nome, String email,
       String celular, String senha) async {
@@ -49,12 +54,24 @@ class PessoaController extends AbstractController {
       String celular, String nome, String senha) async {
     PersonModel pessoa = _createPessoaModel(email, celular, nome, senha);
 
-    dynamic response = await PersonService().saveOrUpdate(pessoa);
-    if (response is PersonModel) {
-      return response;
-    }
+    dynamic response = await _personService.saveOrUpdate(pessoa);
     if (response is ErrorModel) {
       return ErrorHandler.getSnackBarError(context, response.message);
+    }
+    if (response is PersonModel) {
+      await SharedPreferencesUtils.addLocalSharedPreferences(
+          response.id!, response);
+
+      dynamic loginResponse = await _loginService.doLogin(
+          response.emails.first.email, response.password);
+      if (loginResponse is AuthUserModel) {
+        NavigatorUtils.pushReplacementWithFadeAnimation(
+            context, const BatchScreen()); 
+      }
+      if (loginResponse is ErrorModel) {
+        return ErrorHandler.getSnackBarError(context, loginResponse.message);
+      }
+
     }
   }
 
@@ -65,7 +82,8 @@ class PessoaController extends AbstractController {
     PhoneModel telefoneModel =
         PhoneModel(null, celular, EnumTipoTelefone.PRINCIPAL.name);
 
-    return PersonModel(null, nome, senha, null, [telefoneModel], [emailModel], [], []);
+    return PersonModel(
+        null, nome, senha, null, [telefoneModel], [emailModel], [], []);
   }
 
   Widget resolverDadosUsuario(
@@ -131,7 +149,6 @@ class PessoaController extends AbstractController {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: const [
-
                             Icon(
                               Icons.add_box,
                               color: Colors.blue,
@@ -139,8 +156,8 @@ class PessoaController extends AbstractController {
                             ),
                           ],
                         ),
-                        onTap: () =>
-                            NavigatorUtils.pushWithFadeAnimation(context, const EmailForm()),
+                        onTap: () => NavigatorUtils.pushWithFadeAnimation(
+                            context, const EmailForm()),
                       )
                     ],
                   ),

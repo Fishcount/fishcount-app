@@ -8,11 +8,13 @@ import 'package:fishcount_app/model/TankModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusAnalise.dart';
 import 'package:fishcount_app/model/enums/EnumUnidadeAumento.dart';
 import 'package:fishcount_app/modules/analisys/AnalysisListScreen.dart';
+import 'package:fishcount_app/modules/analisys/AnalysisScreen.dart';
 import 'package:fishcount_app/modules/financial/FinancialForm.dart';
 import 'package:fishcount_app/modules/financial/FinancialScreen.dart';
 import 'package:fishcount_app/modules/financial/payment/PaymentService.dart';
 import 'package:fishcount_app/modules/person/PessoaService.dart';
 import 'package:fishcount_app/modules/tank/TankController.dart';
+import 'package:fishcount_app/modules/tank/TankForm.dart';
 import 'package:fishcount_app/repository/TanqueRepository.dart';
 import 'package:fishcount_app/utils/ConnectionUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
@@ -108,7 +110,8 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
       setState(() => loading = false);
       return;
     }
-    NavigatorUtils.pushWithFadeAnimation(context, FinancialForm(pessoaModel: people));
+    NavigatorUtils.pushWithFadeAnimation(
+        context, FinancialForm(pessoaModel: people));
     setState(() => loading = false);
   }
 
@@ -150,16 +153,16 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
             },
           ),
         ),
-        newFunction: () => _tankController.openTankRegisterModal(
+        newFunction: () async => await TankForm(
           context,
-          TextEditingController(),
-          TextEditingController(),
-          TextEditingController(),
-          "",
-          _animationController,
           null,
           widget.batch,
-        ),
+          "",
+          _animationController,
+          TextEditingController(),
+          TextEditingController(),
+          TextEditingController(),
+        ).openRegisterModal(),
       ).build(),
       body: Center(
         child: Container(
@@ -187,17 +190,16 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                               Container(
                                 margin: const EdgeInsets.only(right: 10),
                                 child: FilterOptionWidget(
-                                  onTap: () =>
-                                      _tankController.openTankRegisterModal(
+                                  onTap: () async => await TankForm(
                                     context,
-                                    TextEditingController(),
-                                    TextEditingController(),
-                                    TextEditingController(),
-                                    "",
-                                    _animationController,
                                     null,
                                     widget.batch,
-                                  ),
+                                    "",
+                                    _animationController,
+                                    TextEditingController(),
+                                    TextEditingController(),
+                                    TextEditingController(),
+                                  ).openRegisterModal(),
                                   text: 'Novo Tanque',
                                   icon: const Icon(Icons.add),
                                 ),
@@ -301,16 +303,16 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                         buttonColor: Colors.blue,
                         onPressed: () async {
                           setState(() => loadingButtonNew = true);
-                          await _tankController.openTankRegisterModal(
+                          await TankForm(
                             context,
-                            TextEditingController(),
-                            TextEditingController(),
-                            TextEditingController(),
-                            "",
-                            _animationController,
                             null,
                             widget.batch,
-                          );
+                            "",
+                            _animationController,
+                            TextEditingController(),
+                            TextEditingController(),
+                            TextEditingController(),
+                          ).openRegisterModal();
                           setState(() => loadingButtonNew = false);
                         },
                       ),
@@ -537,7 +539,8 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                     ],
                                   ),
                                   onPressed: () {
-                                    NavigatorUtils.pushReplacementWithFadeAnimation(
+                                    NavigatorUtils
+                                        .pushReplacementWithFadeAnimation(
                                       context,
                                       // AnalisysScreen(tankModel: tankModel),
                                       AnalysisListScreen(
@@ -574,7 +577,8 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                 .buildInfo(context),
                           ),
                           GestureDetector(
-                            child: SizedBox(
+                            child: Container(
+                              alignment: Alignment.centerLeft,
                               width: MediaQuery.of(context).size.width / 1.9,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -626,11 +630,12 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                 ],
                               ),
                             ),
-                            onTap: () => {},
-                            //     NavigatorUtils.pushReplacement(
-                            //   context,
-                            //   AnalisysScreen(),
-                            // ),
+                            onTap: () =>
+                                NavigatorUtils.pushReplacementWithFadeAnimation(
+                              context,
+                              AnalysisListScreen(
+                                  tankModel: tankModel, batchId: batch.id!),
+                            ),
                           ),
                         ],
                       ),

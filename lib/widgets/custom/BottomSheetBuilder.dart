@@ -1,5 +1,4 @@
 import 'package:fishcount_app/model/TankModel.dart';
-import 'package:fishcount_app/modules/analisys/AnalysisListScreen.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,11 +34,11 @@ class CustomBottomSheet {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      leftElement ??
+                leftElement ??
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           GestureDetector(
                             child: Icon(
                               Icons.line_style_outlined,
@@ -53,15 +52,15 @@ class CustomBottomSheet {
                               );
                             },
                           ),
-                      Text(
-                        "Lotes",
-                        style: TextStyle(
-                          color: textColor,
-                        ),
+                          Text(
+                            "Lotes",
+                            style: TextStyle(
+                              color: textColor,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
                 centerElement ??
                     Center(
                       child: Column(
@@ -74,8 +73,8 @@ class CustomBottomSheet {
                               color: iconColor,
                             ),
                             onTap: () => {},
-                                // NavigatorUtils.pushReplacement(context,
-                                // AnalysisListScreen(tankModel: tankModel)),
+                            // NavigatorUtils.pushReplacement(context,
+                            // AnalysisListScreen(tankModel: tankModel)),
                           ),
                           Text(
                             "Análises",
@@ -86,9 +85,9 @@ class CustomBottomSheet {
                         ],
                       ),
                     ),
-                Center(
-                  child: rightElement ??
-                      Column(
+                rightElement ??
+                    Center(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
@@ -107,7 +106,7 @@ class CustomBottomSheet {
                           ),
                         ],
                       ),
-                ),
+                    ),
               ],
             ),
           );

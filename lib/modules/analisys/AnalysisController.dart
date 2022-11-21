@@ -3,7 +3,6 @@ import 'package:fishcount_app/modules/analisys/AnalysisListScreen.dart';
 import 'package:fishcount_app/modules/analisys/AnalysisService.dart';
 import 'package:fishcount_app/modules/generic/AbstractController.dart';
 import 'package:fishcount_app/utils/AnimationUtils.dart';
-import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/TextFieldWidget.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:flutter/cupertino.dart';

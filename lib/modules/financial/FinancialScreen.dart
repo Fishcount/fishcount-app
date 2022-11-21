@@ -1,10 +1,14 @@
 import 'package:fishcount_app/model/PaymentModel.dart';
 import 'package:fishcount_app/modules/financial/payment/PaymentController.dart';
 import 'package:fishcount_app/modules/financial/plan/PlanController.dart';
+import 'package:fishcount_app/modules/person/PessoaDataForm.dart';
+import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/DrawerWidget.dart';
+import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
 import 'package:fishcount_app/widgets/custom/AppBarBuilder.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../widgets/custom/BottomSheetBuilder.dart';
 
@@ -43,7 +47,7 @@ class _FinancialScreenState extends State<FinancialScreen> {
                   size: 35,
                   color: Colors.white,
                 ),
-                onTap: () {},
+                onTap: () => _enviarContato(context),
               ),
               const Text(
                 "Suporte",
@@ -64,7 +68,7 @@ class _FinancialScreenState extends State<FinancialScreen> {
                   size: 35,
                   color: Colors.white,
                 ),
-                onTap: () {},
+                onTap: () => NavigatorUtils.pushWithFadeAnimation(context, const PessoaDataForm()),
               ),
               const Text(
                 "Meus Dados",
@@ -101,5 +105,58 @@ class _FinancialScreenState extends State<FinancialScreen> {
         ),
       ),
     );
+  }
+
+  static Future<String?> _enviarContato(BuildContext context) async {
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Escolha sua preferência'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text(
+                    'Selecione o meio de comunicação de sua preferência para que possamos entrar em contato.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButtonWidget(
+                  buttonText: 'Enviar E-mail',
+                  buttonColor: Colors.blue,
+                  onPressed: () => Navigator.of(context).pop(),
+                  textSize: 15,
+                  textColor: Colors.white,
+                  radioBorder: 10,
+                ),
+                ElevatedButtonWidget(
+                  buttonText: 'Whatsapp',
+                  buttonColor: Colors.green,
+                  onPressed: () => _launchWhatsApp(),
+                  textSize: 15,
+                  textColor: Colors.white,
+                  radioBorder: 10,
+                )
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  static _launchWhatsApp() async {
+    const String phoneNumber = '554598281323';
+    const String message = 'Olá, poderia me auxiliar com os meus planos contratados da fishcount?';
+
+    final Uri url =
+    Uri.parse('whatsapp://send?phone=$phoneNumber&text=$message');
+
+    await launchUrl(url);
   }
 }

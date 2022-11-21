@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fishcount_app/exceptionHandler/ErrorModel.dart';
 import 'package:fishcount_app/model/AuthUserModel.dart';
 import 'package:fishcount_app/service/generic/AbstractService.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/RequestBuilder.dart';
 

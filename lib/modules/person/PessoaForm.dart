@@ -24,7 +24,6 @@ class _PessoaFormState extends State<PessoaForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _telefoneController = TextEditingController();
-  final TextEditingController _cpfController = TextEditingController();
   final PessoaController _pessoaController = PessoaController();
   bool loading = false;
 
@@ -159,7 +158,7 @@ class _PessoaFormState extends State<PessoaForm> {
               ),
               loading
                   ? Container(
-                      padding: EdgeInsets.only(top: 50),
+                      padding: const EdgeInsets.only(top: 50),
                       child: AnimationUtils.progressiveDots(size: 50.0),
                     )
                   : Container(
@@ -191,9 +190,7 @@ class _PessoaFormState extends State<PessoaForm> {
                             NavigatorUtils.pushReplacementWithFadeAnimation(
                                 context, const BatchScreen());
                           }
-                          if (result is ScaffoldFeatureController) {
-                            setState(() => loading = false);
-                          }
+                          setState(() => loading = false);
                         },
                       ),
                     ),

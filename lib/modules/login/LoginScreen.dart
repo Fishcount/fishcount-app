@@ -1,6 +1,7 @@
 import 'package:fishcount_app/constants/AppImages.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/modules/batch/BatchScreen.dart';
+import 'package:fishcount_app/modules/person/PessoaForm.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/DividerWidget.dart';
 import 'package:fishcount_app/widgets/IconWidget.dart';
@@ -22,8 +23,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool loading = false;
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _senhaController = TextEditingController();
+  final TextEditingController _emailController =
+      TextEditingController(text: 'admin@admin.com');
+  final TextEditingController _senhaController =
+      TextEditingController(text: 'admin');
+  final LoginController _loginController = LoginController();
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +40,8 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Center(
                   child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacementNamed(
-                          context, AppPaths.lotesPath);
-                    },
+                    onTap: () => Navigator.pushReplacementNamed(
+                        context, AppPaths.lotesPath),
                     child: SizedBox(
                       width: 150,
                       height: 150,
@@ -92,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           buttonText: "Entrar".toUpperCase(),
                           onPressed: () async {
                             setState(() => loading = true);
-                            dynamic result = await LoginController().doLogin(
+                            dynamic result = await _loginController.doLogin(
                               context,
                               _emailController.text,
                               _senhaController.text,
@@ -114,58 +116,58 @@ class _LoginScreenState extends State<LoginScreen> {
                     textColor: Colors.black54,
                     textSize: 20,
                     buttonText: "Criar Conta".toUpperCase(),
-                    onPressed: () {
-                      Navigator.pushNamed(
-                          context, AppPaths.cadastroUsuarioPath);
-                    },
+                    onPressed: () => NavigatorUtils.pushWithFadeAnimation(
+                      context,
+                      const PessoaForm(),
+                    ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.only(top: 60, left: 30, right: 30),
-                  child: const DividerWidget(
-                    textBetween: "Entrar com rede social",
-                    height: 10,
-                    thikness: 2,
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    color: Colors.black26,
-                    textColor: Colors.black26,
-                    isBold: false,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(top: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(right: 30),
-                        child: IconWidget(
-                          iconColor: Colors.deepOrange.shade700,
-                          icon: LineIcons.instagram,
-                          iconSize: 50,
-                          gestureDetectorFunction: () {},
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(right: 30),
-                        child: IconWidget(
-                          iconColor: Colors.blue.shade700,
-                          icon: LineIcons.facebook,
-                          iconSize: 50,
-                          gestureDetectorFunction: () {},
-                        ),
-                      ),
-                      IconWidget(
-                        iconColor: Colors.amber.shade700,
-                        icon: LineIcons.googleLogo,
-                        iconSize: 50,
-                        gestureDetectorFunction: () {},
-                      ),
-                    ],
-                  ),
-                ),
+                // Container(
+                //   padding: const EdgeInsets.only(top: 60, left: 30, right: 30),
+                //   child: const DividerWidget(
+                //     textBetween: "Entrar com rede social",
+                //     height: 10,
+                //     thikness: 2,
+                //     paddingLeft: 10,
+                //     paddingRight: 10,
+                //     color: Colors.black26,
+                //     textColor: Colors.black26,
+                //     isBold: false,
+                //   ),
+                // ),
+                // Container(
+                //   padding: const EdgeInsets.only(top: 30),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     crossAxisAlignment: CrossAxisAlignment.center,
+                //     children: [
+                //       Container(
+                //         padding: const EdgeInsets.only(right: 30),
+                //         child: IconWidget(
+                //           iconColor: Colors.deepOrange.shade700,
+                //           icon: LineIcons.instagram,
+                //           iconSize: 50,
+                //           gestureDetectorFunction: () {},
+                //         ),
+                //       ),
+                //       Container(
+                //         padding: const EdgeInsets.only(right: 30),
+                //         child: IconWidget(
+                //           iconColor: Colors.blue.shade700,
+                //           icon: LineIcons.facebook,
+                //           iconSize: 50,
+                //           gestureDetectorFunction: () {},
+                //         ),
+                //       ),
+                //       IconWidget(
+                //         iconColor: Colors.amber.shade700,
+                //         icon: LineIcons.googleLogo,
+                //         iconSize: 50,
+                //         gestureDetectorFunction: () {},
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           );

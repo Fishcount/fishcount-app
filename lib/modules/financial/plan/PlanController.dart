@@ -7,7 +7,6 @@ import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
 import 'package:fishcount_app/model/enums/EnumTipoPagamento.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:fishcount_app/widgets/buttons/ElevatedButtonWidget.dart';
-import 'package:fishcount_app/widgets/custom/AlertDialogBuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -28,7 +27,10 @@ class PlanController {
         builder: (context, AsyncSnapshot<List<PlanModel>> snapshot) {
           return AsyncSnapshotHandler(
             asyncSnapshot: snapshot,
-            widgetOnError: const Text("Error"),
+            widgetOnError: const Center(
+              child: Text(
+                  "Ocorreu um erro nos nossos servidores, por favor entre em contato"),
+            ),
             widgetOnWaiting: Container(
               padding: const EdgeInsets.only(top: 30),
               child: AnimationUtils.progressiveDots(size: 50.0),
@@ -61,7 +63,6 @@ class PlanController {
           return Container(
             margin: const EdgeInsets.only(top: 10),
             alignment: Alignment.center,
-            height: 200,
             decoration: BoxDecoration(
               color: backGroundColor,
               borderRadius: BorderRadius.circular(10),
@@ -107,7 +108,9 @@ class PlanController {
                         ),
                       ),
                       Text(
-                        "R\$ " + plano.valorMaximo.toString() + "0",
+                        "R\$ " +
+                            plano.valorMaximo.toString().replaceAll('.', ',') +
+                            "0",
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: Colors.blue,
@@ -147,12 +150,17 @@ class PlanController {
                             ),
                             Container(
                               padding: const EdgeInsets.only(bottom: 5),
-                              child: Text(
-                                "Negocie conosco para preços de até R\$ " +
-                                    plano.valorMinimo.toString() +
-                                    "0",
-                                style: const TextStyle(fontSize: 15),
-                                overflow: TextOverflow.ellipsis,
+                              width: MediaQuery.of(context).size.width - 75,
+                              child: Flexible(
+                                child: Text(
+                                  "Negocie conosco para preços de até R\$ " +
+                                      plano.valorMinimo
+                                          .toString()
+                                          .replaceAll('.', ',') +
+                                      "0",
+                                  style: const TextStyle(fontSize: 15),
+                                  overflow: TextOverflow.fade,
+                                ),
                               ),
                             ),
                           ],
@@ -162,6 +170,7 @@ class PlanController {
                   ),
                   Container(
                     alignment: Alignment.center,
+                    padding: const EdgeInsets.only(top: 20, bottom: 10),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -175,16 +184,14 @@ class PlanController {
                           onPressed: () => _enviarContato(context),
                         ),
                         Container(
-                          padding: const EdgeInsets.only(top: 20, bottom: 10),
                           child: ElevatedButtonWidget(
                             buttonText: "Assine já",
                             buttonColor: Colors.green,
                             radioBorder: 10,
                             textSize: 17,
                             textColor: Colors.white,
-                            onPressed: () {
-                              return _confirmarAssinatura(context, plano);
-                            },
+                            onPressed: () =>
+                                _confirmarAssinatura(context, plano),
                           ),
                         ),
                       ],
@@ -203,11 +210,15 @@ class PlanController {
       BuildContext context, PlanModel plano) async {
     final String descricaoPlano = plano.descricao;
     final String qtdeParcela = plano.qtdeParcela.toString();
-    final String precoMax = plano.valorMaximo.toString();
-    final double precoParcela = plano.valorParcelaMaximo;
+    try {} catch (e, s) {
+      print(s);
+    }
+    final String precoMax = plano.valorMaximo.toString().replaceAll('.', ',');
+    final String precoParcela =
+        plano.valorParcelaMaximo.toString().replaceAll('.', ',');
     final String description = 'Você selecionou o plano "$descricaoPlano"'
-        '\nValor total de $precoMax'
-        '\nEm $qtdeParcela parcelas de R\$ $precoParcela';
+        '\nValor total de R\$ $precoMax\0'
+        '\nEm $qtdeParcela parcelas de R\$ $precoParcela\0';
 
     bool loading = false;
 
@@ -272,10 +283,11 @@ class PlanController {
         await _pagamentoService.incluirAssinaturaPlano(paymentModel);
     if (response is PaymentModel) {
       NavigatorUtils.pushReplacementWithFadeAnimation(
-          context,
-          FinancialScreen(
-            pagamentos: [response],
-          ));
+        context,
+        FinancialScreen(
+          pagamentos: [response],
+        ),
+      );
     }
     if (response is ErrorModel) {
       return ErrorHandler.getSnackBarError(context, response.message);

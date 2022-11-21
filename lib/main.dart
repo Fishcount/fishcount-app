@@ -1,12 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:fishcount_app/constants/AppPaths.dart';
 import 'package:fishcount_app/constants/EnumSharedPreferences.dart';
 import 'package:fishcount_app/utils/SharedPreferencesUtils.dart';
 import 'package:flutter/material.dart';
+
+import 'firebase_options.dart';
 import 'modules/batch/BatchScreen.dart';
 import 'modules/login/LoginScreen.dart';
-
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 
 void main() async {
@@ -37,7 +37,7 @@ void main() async {
       debugShowCheckedModeBanner: false,
       checkerboardOffscreenLayers: false,
       color: Colors.white,
-      home: await hanldeInitScreen(),
+      home:  const LoginScreen(),
     ),
   );
 }

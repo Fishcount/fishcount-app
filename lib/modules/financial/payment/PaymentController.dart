@@ -4,7 +4,6 @@ import 'package:fishcount_app/model/PlanModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusPagamento.dart';
 import 'package:fishcount_app/utils/NavigatorUtils.dart';
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../../utils/AnimationUtils.dart';
 import '../installment/PaymentInstallmentScreen.dart';
@@ -32,12 +31,12 @@ class PagamentoController {
     );
   }
 
-  static _onEmptyResponse() =>
-      const Text("Não foi possível encontrar nenhum pagamento para você.");
+  static _onEmptyResponse() => const Text(
+      "Não foi possível encontrar nenhum pagamento para o seu usuário, por favor, entre em contato.");
 
   static _onWaitingResponse() => Container(
         padding: const EdgeInsets.only(top: 100),
-        child: AnimationUtils.bouncingBall(size: 50.0),
+        child: AnimationUtils.progressiveDots(size: 50.0),
       );
 
   static SingleChildScrollView _onSuccessfulRequest(
@@ -46,7 +45,7 @@ class PagamentoController {
     final Color? backGroundColor = Colors.grey[100];
     return SingleChildScrollView(
       child: SizedBox(
-        height:MediaQuery.of(context).orientation == Orientation.portrait
+        height: MediaQuery.of(context).orientation == Orientation.portrait
             ? MediaQuery.of(context).size.height / 1.3
             : MediaQuery.of(context).size.height / 2,
         child: ListView.builder(
@@ -55,8 +54,11 @@ class PagamentoController {
           itemBuilder: (context, index) {
             final PaymentModel pagamento = snapshot.data![index];
             return GestureDetector(
-              onTap: () =>
-                  _toParcelasList(context, pagamento.id!, pagamento.plan),
+              onTap: () => NavigatorUtils.pushWithFadeAnimation(
+                context,
+                PaymentInstallmentScreen(
+                    pagamentId: pagamento.id!, plano: pagamento.plan),
+              ),
               child: Container(
                 margin: const EdgeInsets.only(top: 20),
                 alignment: Alignment.center,
@@ -150,7 +152,9 @@ class PagamentoController {
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Text(
                                     'Multa por atraso: R\$ ' +
-                                        pagamento.increase.toString() +
+                                        pagamento.increase
+                                            .toString()
+                                            .replaceAll('.', ',') +
                                         '0',
                                     style: const TextStyle(fontSize: 15),
                                   ),
@@ -159,7 +163,9 @@ class PagamentoController {
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Text(
                                     'Desconto: R\$ ' +
-                                        pagamento.discount.toString() +
+                                        pagamento.discount
+                                            .toString()
+                                            .replaceAll('.', ',') +
                                         '0',
                                     style: const TextStyle(fontSize: 15),
                                   ),
@@ -168,7 +174,9 @@ class PagamentoController {
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Text(
                                     'Valor Total: R\$ ' +
-                                        pagamento.value.toString() +
+                                        pagamento.value
+                                            .toString()
+                                            .replaceAll('.', ',') +
                                         '0',
                                     style: const TextStyle(fontSize: 15),
                                   ),
@@ -186,14 +194,6 @@ class PagamentoController {
           },
         ),
       ),
-    );
-  }
-
-  static _toParcelasList(
-      BuildContext context, int pagamentoId, PlanModel plano) {
-    NavigatorUtils.pushWithFadeAnimation(
-      context,
-      PaymentInstallmentScreen(pagamentId: pagamentoId, plano: plano),
     );
   }
 }
