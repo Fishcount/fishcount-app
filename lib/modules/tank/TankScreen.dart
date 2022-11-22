@@ -481,7 +481,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                     child: Text(
                                       "Peso Médio: " +
                                           tankModel.species.averageWeight
-                                              .toString() +
+                                              .toString().replaceAll('.', ',') +
                                           '0 ' +
                                           tankModel.species.unidadePesoMedio
                                               .toLowerCase() +
@@ -507,7 +507,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                     child: Text(
                                       "Tamanho médio: " +
                                           tankModel.species.tamanhoMedio
-                                              .toString() +
+                                              .toString().replaceAll('.', ',') +
                                           '0 ' +
                                           UnidadeAumentoHandler.getLowerCase(
                                               tankModel.species.unidadeTamanho),
