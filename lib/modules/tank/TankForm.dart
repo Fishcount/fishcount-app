@@ -48,11 +48,14 @@ class TankForm {
 
   Future<void> openRegisterModal() async {
     final bool _isUpdate = tankModel != null;
-    final List<SpeciesModel> _species = await _speciesService.listarEspecies(context);
+    final List<SpeciesModel> _species =
+        await _speciesService.listarEspecies(context);
 
     bool? _hasTemperature = false;
     bool _submitted = false;
     bool _loading = false;
+    bool isGrams = false;
+
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -64,7 +67,6 @@ class TankForm {
         ),
       ),
       builder: (BuildContext context) {
-        bool isGrams = false;
 
         final Color selectedColor = Colors.grey.shade600;
         final Color noSelectedColor = Colors.grey.shade300;
@@ -172,21 +174,6 @@ class TankForm {
                       ),
                     ),
                   ),
-                  // TextFieldWidget(
-                  //   controller: fishAmounController,
-                  //   hintText: 'Quantidade de peixes',
-                  //   focusedBorderColor: Colors.blueGrey,
-                  //   iconColor: Colors.blueGrey,
-                  //   obscureText: false,
-                  //   labelText: 'Quantidade inicial de peixes',
-                  //   keyBoardType: TextInputType.number,
-                  //   errorText:
-                  //       resolverFishAmount(fishAmounController, _submitted),
-                  //   onChanged: (text) => setState(
-                  //     () => resolverFishAmountOnChange(
-                  //         fishAmounController, _submitted, text),
-                  //   ),
-                  // ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -215,35 +202,47 @@ class TankForm {
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () => setState(() => isGrams = true),
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 25),
-                        width: 50,
-                        height: 40,
-                        child: const Center(child: Text("Gr")),
-                        decoration: BoxDecoration(
-                          color: !isGrams ? noSelectedColor : selectedColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          border: border,
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => setState(() => isGrams = false),
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 25, left: 15),
-                        width: 50,
-                        height: 40,
-                        child: const Center(child: Text("Kg")),
-                        decoration: BoxDecoration(
-                          color: isGrams ? noSelectedColor : selectedColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          border: border,
-                        ),
-                      ),
+                    StatefulBuilder(
+                      builder: (BuildContext context, StateSetter setState) {
+                        return Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () => setState(() => isGrams = true),
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 25),
+                                width: 50,
+                                height: 40,
+                                child: const Center(child: Text("Gr")),
+                                decoration: BoxDecoration(
+                                  color: !isGrams
+                                      ? noSelectedColor
+                                      : selectedColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  border: border,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => setState(() => isGrams = false),
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.only(top: 25, left: 15),
+                                width: 50,
+                                height: 40,
+                                child: const Center(child: Text("Kg")),
+                                decoration: BoxDecoration(
+                                  color:
+                                      isGrams ? noSelectedColor : selectedColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  border: border,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),
