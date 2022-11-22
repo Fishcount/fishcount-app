@@ -285,9 +285,12 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
             final AnalysisModel analysis = analysisList[index];
 
             final String fishAmount = analysis.fishAmount.toString();
-            final dailyFoodAmount =
-                analysis.dailyFoodAmount ?? _waitingAnalysis;
-            final mealFoodAmount = analysis.mealFoodAmout ?? _waitingAnalysis;
+            final dailyFoodAmount = analysis.dailyFoodAmount != null
+                ? analysis.dailyFoodAmount.toString().replaceAll('.', ',')
+                : _waitingAnalysis;
+            final mealFoodAmount = analysis.mealFoodAmout != null
+                ? analysis.mealFoodAmout.toString().replaceAll('.', ',')
+                : _waitingAnalysis;
             final foodType = analysis.foodType.toString();
             final avergageTankWeight =
                 analysis.avergageTankWeight ?? _waitingAnalysis;
@@ -366,10 +369,12 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
                                     ? const Text("Aguardando análise..")
                                     : Text('Quantidade: $fishAmount peixes'),
                               ),
-                              foodType == "null" ? Container() : Container(
-                                margin: const EdgeInsets.only(top: 10),
-                                child: Text("Tipo ração: $foodType"),
-                              )
+                              foodType == "null"
+                                  ? Container()
+                                  : Container(
+                                      margin: const EdgeInsets.only(top: 10),
+                                      child: Text("Tipo ração: $foodType"),
+                                    )
                             ],
                           ),
                           StatusAnaliseHandler.handlerAnimation(
@@ -503,7 +508,10 @@ class _AnalysisListScreenState extends State<AnalysisListScreen>
                                   child: Text(
                                     avergageTankWeight == _waitingAnalysis
                                         ? avergageTankWeight.toString()
-                                        : avergageTankWeight.toString() + ' Kg',
+                                        : avergageTankWeight
+                                                .toString()
+                                                .replaceAll('.', ',') +
+                                            '0 Kg',
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
