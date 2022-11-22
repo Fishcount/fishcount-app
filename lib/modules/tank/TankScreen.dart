@@ -499,6 +499,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                           tankModel.species.unidadePesoRacao
                                               .toLowerCase() +
                                           's',
+
                                       style: const TextStyle(fontSize: 15),
                                     ),
                                   ),
