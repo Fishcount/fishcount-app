@@ -8,7 +8,6 @@ import 'package:fishcount_app/model/TankModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusAnalise.dart';
 import 'package:fishcount_app/model/enums/EnumUnidadeAumento.dart';
 import 'package:fishcount_app/modules/analisys/AnalysisListScreen.dart';
-import 'package:fishcount_app/modules/analisys/AnalysisScreen.dart';
 import 'package:fishcount_app/modules/financial/FinancialForm.dart';
 import 'package:fishcount_app/modules/financial/FinancialScreen.dart';
 import 'package:fishcount_app/modules/financial/payment/PaymentService.dart';
