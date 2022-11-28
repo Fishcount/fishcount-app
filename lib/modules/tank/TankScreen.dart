@@ -462,7 +462,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                 height: 100,
                                 padding:
                                     const EdgeInsets.only(right: 15, left: 15),
-                                child: Image.asset(ImagePaths.imageLogo),
+                                child: Image.asset(ImagePaths.fish),
                               ),
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.start,

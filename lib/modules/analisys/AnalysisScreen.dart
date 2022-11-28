@@ -248,7 +248,7 @@ class _AnalysisScreenState extends State<AnalysisScreen>
                               height: 190,
                               decoration: _getBoxDecoration(Colors.white,
                                   borderColor, false, shadowCardColor),
-                              child: Image.asset(ImagePaths.imageLogo),
+                              child: Image.asset(ImagePaths.fish),
                             ),
                             Container(
                               padding: const EdgeInsets.only(left: 15),

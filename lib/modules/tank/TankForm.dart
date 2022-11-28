@@ -506,7 +506,7 @@ class TankForm {
       }
     }
     if (isValid >= 2) {
-      return "Valor informado como peso unitário inválido.";
+      return "Valor informado como peso unitário é inválido.";
     }
     return controller.text.isEmpty && submitted ? errorMessage : null;
   }
