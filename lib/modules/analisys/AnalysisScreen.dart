@@ -65,11 +65,11 @@ class _AnalysisScreenState extends State<AnalysisScreen>
         : waitingSonar;
 
     final String dailyFoodAmount = isConcluded
-        ? _analysisModel.dailyFoodAmount.toString() + '0 Kg'
+        ? _analysisModel.dailyFoodAmount.toString().replaceAll('.', ',') + '0 Kg'
         : waitingSonar;
 
     final String mealFoodAmount = isConcluded
-        ? _analysisModel.mealFoodAmout.toString() + '0 Kg'
+        ? _analysisModel.mealFoodAmout.toString().replaceAll('.', ',') + '0 Kg'
         : waitingSonar;
 
     final String foodType =
@@ -80,7 +80,7 @@ class _AnalysisScreenState extends State<AnalysisScreen>
         : waitingSonar;
 
     final tankWeight = isConcluded
-        ? _analysisModel.avergageTankWeight.toString() + '0 Kg'
+        ? _analysisModel.avergageTankWeight.toString().replaceAll('.', ',') + '0 Kg'
         : waitingSonar;
 
     final tankTemperature = isConcluded
@@ -248,7 +248,7 @@ class _AnalysisScreenState extends State<AnalysisScreen>
                               height: 190,
                               decoration: _getBoxDecoration(Colors.white,
                                   borderColor, false, shadowCardColor),
-                              child: Image.asset(ImagePaths.imageLogo),
+                              child: Image.asset(ImagePaths.fish),
                             ),
                             Container(
                               padding: const EdgeInsets.only(left: 15),

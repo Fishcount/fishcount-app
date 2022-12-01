@@ -48,11 +48,14 @@ class TankForm {
 
   Future<void> openRegisterModal() async {
     final bool _isUpdate = tankModel != null;
-    final List<SpeciesModel> _species = await _speciesService.listarEspecies(context);
+    final List<SpeciesModel> _species =
+        await _speciesService.listarEspecies(context);
 
     bool? _hasTemperature = false;
     bool _submitted = false;
     bool _loading = false;
+    bool isGrams = false;
+
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -64,8 +67,6 @@ class TankForm {
         ),
       ),
       builder: (BuildContext context) {
-        bool isGrams = false;
-
         final Color selectedColor = Colors.grey.shade600;
         final Color noSelectedColor = Colors.grey.shade300;
         const Color borderColor = Colors.black;
@@ -172,21 +173,6 @@ class TankForm {
                       ),
                     ),
                   ),
-                  // TextFieldWidget(
-                  //   controller: fishAmounController,
-                  //   hintText: 'Quantidade de peixes',
-                  //   focusedBorderColor: Colors.blueGrey,
-                  //   iconColor: Colors.blueGrey,
-                  //   obscureText: false,
-                  //   labelText: 'Quantidade inicial de peixes',
-                  //   keyBoardType: TextInputType.number,
-                  //   errorText:
-                  //       resolverFishAmount(fishAmounController, _submitted),
-                  //   onChanged: (text) => setState(
-                  //     () => resolverFishAmountOnChange(
-                  //         fishAmounController, _submitted, text),
-                  //   ),
-                  // ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -196,54 +182,96 @@ class TankForm {
                       width: MediaQuery.of(context).size.width / 1.5,
                       padding:
                           const EdgeInsets.only(top: 20, left: 20, right: 20),
-                      child: TextFieldWidget(
+                      child: TextFormField(
+                        onChanged: (text) => setState(() => resolveOnChaged(
+                            initialWeightController, _submitted, text)),
+                        inputFormatters: [
+                          FilteringTextInputFormatter(RegExp(r'[0-9.]'),
+                              allow: true)
+                        ],
                         controller: initialWeightController,
-                        hintText: 'Peso Inicial',
-                        focusedBorderColor: Colors.blueGrey,
-                        iconColor: Colors.blueGrey,
-                        obscureText: false,
-                        labelText: 'Peso unitário inicial',
-                        keyBoardType: TextInputType.phone,
-                        errorText: resolveErrorText(
+                        keyboardType: TextInputType.number,
+                        autofocus: false,
+                        decoration: InputDecoration(
+                          errorText: resolveFishAmount(
                             controller: initialWeightController,
                             submitted: _submitted,
                             errorMessage:
-                                ' O peso inicial dos peixes não pode estar vazio.'),
-                        onChanged: (text) => setState(
-                          () => resolveOnChaged(
-                              fishAmounController, _submitted, text),
+                                'O peso unitario não pode estar vazio.',
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: const BorderSide(
+                                style: BorderStyle.solid, color: Colors.red),
+                          ),
+                          labelText: 'Peso unitário inicial',
+                          filled: true,
+                          hintText: 'Peso unitário',
+                          prefixIconColor: Colors.blueGrey,
+                          disabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: const BorderSide(
+                              style: BorderStyle.none,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                              style: BorderStyle.none,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: const BorderSide(
+                              color: Colors.blueGrey,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () => setState(() => isGrams = true),
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 25),
-                        width: 50,
-                        height: 40,
-                        child: const Center(child: Text("Gr")),
-                        decoration: BoxDecoration(
-                          color: !isGrams ? noSelectedColor : selectedColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          border: border,
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => setState(() => isGrams = false),
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 25, left: 15),
-                        width: 50,
-                        height: 40,
-                        child: const Center(child: Text("Kg")),
-                        decoration: BoxDecoration(
-                          color: isGrams ? noSelectedColor : selectedColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          border: border,
-                        ),
-                      ),
+                    StatefulBuilder(
+                      builder: (BuildContext context, StateSetter setState) {
+                        return Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () => setState(() => isGrams = true),
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 25),
+                                width: 50,
+                                height: 40,
+                                child: const Center(child: Text("Gr")),
+                                decoration: BoxDecoration(
+                                  color: !isGrams
+                                      ? noSelectedColor
+                                      : selectedColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  border: border,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => setState(() => isGrams = false),
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.only(top: 25, left: 15),
+                                width: 50,
+                                height: 40,
+                                child: const Center(child: Text("Kg")),
+                                decoration: BoxDecoration(
+                                  color:
+                                      isGrams ? noSelectedColor : selectedColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  border: border,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -465,11 +493,40 @@ class TankForm {
     return controller.text.isEmpty && submitted ? errorMessage : null;
   }
 
+  String? resolveFishAmount({
+    controller = TextEditingController,
+    submitted = bool,
+    errorMessage = String,
+  }) {
+    final List<String> s = initialWeightController.text.characters.toList();
+    int isValid = 0;
+    for (int i = 0; i < s.length; i++) {
+      if (s[i] == '.') {
+        isValid++;
+      }
+    }
+    if (isValid >= 2) {
+      return "Valor informado como peso unitário é inválido.";
+    }
+    return controller.text.isEmpty && submitted ? errorMessage : null;
+  }
+
   bool isInvalid(
-          TextEditingController initialWeightController,
-          TextEditingController fishAmounController,
-          TextEditingController tankNameController) =>
-      initialWeightController.text.isEmpty ||
-      fishAmounController.text.isEmpty ||
-      tankNameController.text.isEmpty;
+      TextEditingController initialWeightController,
+      TextEditingController fishAmounController,
+      TextEditingController tankNameController) {
+    final List<String> s = initialWeightController.text.characters.toList();
+    int isValid = 0;
+    for (int i = 0; i < s.length; i++) {
+      if (s[i] == '.') {
+        isValid++;
+      }
+    }
+    if (isValid >= 2) {
+      return true;
+    }
+    return  initialWeightController.text.isEmpty ||
+        fishAmounController.text.isEmpty ||
+        tankNameController.text.isEmpty;
+  }
 }

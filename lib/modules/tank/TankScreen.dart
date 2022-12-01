@@ -8,7 +8,6 @@ import 'package:fishcount_app/model/TankModel.dart';
 import 'package:fishcount_app/model/enums/EnumStatusAnalise.dart';
 import 'package:fishcount_app/model/enums/EnumUnidadeAumento.dart';
 import 'package:fishcount_app/modules/analisys/AnalysisListScreen.dart';
-import 'package:fishcount_app/modules/analisys/AnalysisScreen.dart';
 import 'package:fishcount_app/modules/financial/FinancialForm.dart';
 import 'package:fishcount_app/modules/financial/FinancialScreen.dart';
 import 'package:fishcount_app/modules/financial/payment/PaymentService.dart';
@@ -462,7 +461,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                 height: 100,
                                 padding:
                                     const EdgeInsets.only(right: 15, left: 15),
-                                child: Image.asset(ImagePaths.imageLogo),
+                                child: Image.asset(ImagePaths.fish),
                               ),
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -481,7 +480,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                     child: Text(
                                       "Peso Médio: " +
                                           tankModel.species.averageWeight
-                                              .toString() +
+                                              .toString().replaceAll('.', ',') +
                                           '0 ' +
                                           tankModel.species.unidadePesoMedio
                                               .toLowerCase() +
@@ -499,6 +498,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                           tankModel.species.unidadePesoRacao
                                               .toLowerCase() +
                                           's',
+
                                       style: const TextStyle(fontSize: 15),
                                     ),
                                   ),
@@ -507,7 +507,7 @@ class _TankScreenState extends State<TankScreen> with TickerProviderStateMixin {
                                     child: Text(
                                       "Tamanho médio: " +
                                           tankModel.species.tamanhoMedio
-                                              .toString() +
+                                              .toString().replaceAll('.', ',') +
                                           '0 ' +
                                           UnidadeAumentoHandler.getLowerCase(
                                               tankModel.species.unidadeTamanho),

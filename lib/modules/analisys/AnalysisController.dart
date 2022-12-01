@@ -21,6 +21,7 @@ class AnalysisController extends AbstractController {
     TextEditingController _actualWeightController = TextEditingController();
     TextEditingController _fishAmountController = TextEditingController();
     bool _submitted = false;
+    bool isGrams = false;
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -50,7 +51,7 @@ class AnalysisController extends AbstractController {
           ),
         );
 
-        bool isGrams = false;
+
         bool loading = false;
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
@@ -120,16 +121,16 @@ class AnalysisController extends AbstractController {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => setState(() => isGrams = false),
+                              onTap: () => setState(() => isGrams = true),
                               child: Container(
                                 margin:
                                     const EdgeInsets.only(top: 25, right: 15),
                                 width: 50,
                                 height: 40,
-                                child: const Center(child: Text("Kg")),
+                                child: const Center(child: Text("Gr")),
                                 decoration: BoxDecoration(
                                   color:
-                                      isGrams ? noSelectedColor : selectedColor,
+                                      !isGrams ? noSelectedColor : selectedColor,
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(10)),
                                   border: border,
@@ -137,14 +138,14 @@ class AnalysisController extends AbstractController {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => setState(() => isGrams = true),
+                              onTap: () => setState(() => isGrams = false),
                               child: Container(
                                 margin: const EdgeInsets.only(top: 25),
                                 width: 50,
                                 height: 40,
-                                child: const Center(child: Text("Gr")),
+                                child: const Center(child: Text("Kg")),
                                 decoration: BoxDecoration(
-                                  color: !isGrams
+                                  color: isGrams
                                       ? noSelectedColor
                                       : selectedColor,
                                   borderRadius: const BorderRadius.all(
